@@ -18,6 +18,7 @@ package de.janrenz.app.ardtheke;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,9 @@ public class ArticleFragment extends Fragment {
     // The article we are to display
     NewsArticle mNewsArticle = null;
 
+    // The id of our movie
+    String extId = null;
+    
     // Parameterless constructor is needed by framework
     public ArticleFragment() {
         super();
@@ -43,19 +47,17 @@ public class ArticleFragment extends Fragment {
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mWebView = new WebView(getActivity());
-        loadWebView();
-        return mWebView;
+    	 return inflater.inflate(R.layout.detail, container, false);
     }
 
     /**
      * Displays a particular article.
      *
-     * @param article the article to display
+     * @param extId the article to display
      */
-    public void displayArticle(NewsArticle article) {
-        mNewsArticle = article;
-        loadWebView();
+    public void displayArticle(String extId) {
+        //mNewsArticle = extId;
+       this.extId = extId;
     }
 
     /**

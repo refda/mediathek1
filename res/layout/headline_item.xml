@@ -24,15 +24,16 @@
     <com.loopj.android.image.SmartImageView
  	
         android:id="@+id/thumbnail"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
 
+		android:scaleType="centerCrop"
+        android:layout_width="120dp"
+        android:layout_height="67dp" />
     <TextView
         android:id="@+id/text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/thumbnail"
-        android:padding="10dp"
+        android:padding="5dp"
         android:textColor="#01511a"
         android:textSize="16sp" />
 

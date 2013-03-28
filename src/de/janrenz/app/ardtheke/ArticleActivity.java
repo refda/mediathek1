@@ -61,6 +61,6 @@ public class ArticleActivity extends FragmentActivity {
 
         // Display the correct news article on the fragment
         NewsArticle article = NewsSource.getInstance().getCategory(mCatIndex).getArticle(mArtIndex);
-        f.displayArticle(article);
+        f.displayArticle("");
     }
 }

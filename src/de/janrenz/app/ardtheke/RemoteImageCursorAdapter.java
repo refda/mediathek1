@@ -40,7 +40,7 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	          /**
 	           * Next set the title of the entry.
 	           */
-
+	          
 	          TextView title_text = (TextView) v.findViewById(R.id.text_view);
 	          if (title_text != null) {
 	              title_text.setText(title);
@@ -53,22 +53,5 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	        	  image_view.setImageUrl(imagePath);
 	          }
 	    }
-	 /**
-	    @Override
-	    public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
-	        if (getFilterQueryProvider() != null) { return getFilterQueryProvider().runQuery(constraint); }
-	 
-	        StringBuilder buffer = null;
-	        String[] args = null;
-	        if (constraint != null) {
-	            buffer = new StringBuilder();
-	            buffer.append("UPPER(");
-	            buffer.append(People.NAME);
-	            buffer.append(") GLOB ?");
-	            args = new String[] { constraint.toString().toUpperCase() + "*" };
-	        }
-	 
-	        return context.getContentResolver().query(People.CONTENT_URI, null,
-	                buffer == null ? null : buffer.toString(), args, People.NAME + " ASC");
-	    */
+	
 }

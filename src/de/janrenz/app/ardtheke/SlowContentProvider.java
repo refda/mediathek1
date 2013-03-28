@@ -48,11 +48,12 @@ public class SlowContentProvider extends ContentProvider {
 	
     @Override
     public Cursor query(Uri uri, String[] strings, String s, String[] strings1, String s1) {
-            Log.i(TAG,"sleeping");
+            Log.i(TAG,uri.toString());
             //Thread.sleep(3000);
             String url= "http://m-service.daserste.de/appservice/1.4.1/video/list/1364472896?func=getVideoList&unixTimestamp=1364472896";
+
             String result = "";
-            MatrixCursor cursor = new MatrixCursor(new String[]{"_id","title", "image"});
+            MatrixCursor cursor = new MatrixCursor(new String[]{"_id","title", "image", "extId"});
             try {
             	result = readJSONFeed(url);
             	// TODO Auto-generated catch block
@@ -63,13 +64,13 @@ public class SlowContentProvider extends ContentProvider {
             		JSONObject json_data = jsonArray.getJSONObject(i);
             		//build the Headline
             		String t2 = android.text.Html.fromHtml(json_data.getString("Title2")).toString();
-            		
-            		  cursor.addRow(new Object[]{0,t2, json_data.getString("ImageUrl").toString()});
+            		String t3 = android.text.Html.fromHtml(json_data.getString("Title3")).toString();
+            		cursor.addRow(new Object[]{0,t2 + " " + t3, json_data.getString("ImageUrl").toString() , json_data.getString("VId")});
             	}
 		    } catch (JSONException e) {
 		    	e.printStackTrace();
 		    	return null;
-		    	}
+		    }
 
             Log.i(TAG,"returning " + cursor);
             

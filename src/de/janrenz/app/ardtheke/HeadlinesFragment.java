@@ -26,6 +26,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.app.LoaderManager;
 
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -40,120 +41,149 @@ import de.janrenz.app.ardtheke.R;
 
 /**
  * Fragment that displays the news headlines for a particular news category.
- *
- * This Fragment displays a list with the news headlines for a particular news category.
- * When an item is selected, it notifies the configured listener that a headlines was selected.
+ * 
+ * This Fragment displays a list with the news headlines for a particular news
+ * category. When an item is selected, it notifies the configured listener that
+ * a headlines was selected.
  */
-public class HeadlinesFragment extends ListFragment implements OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor>  {
-    // The list of headlines that we are displaying
-    List<String> mHeadlinesList = new ArrayList<String>();
+public class HeadlinesFragment extends ListFragment implements
+		OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+	// The list of headlines that we are displaying
+	List<String> mHeadlinesList = new ArrayList<String>();
 
-    // The list adapter for the list we are displaying
-    SimpleCursorAdapter mListAdapter;
+	// The list adapter for the list we are displaying
+	SimpleCursorAdapter mListAdapter;
 
-    // The listener we are to notify when a headline is selected
-    OnHeadlineSelectedListener mHeadlineSelectedListener = null;
-    private static final int LOADER_ID = 0x02;
+	private Cursor myCursor;
+	// The listener we are to notify when a headline is selected
+	OnHeadlineSelectedListener mHeadlineSelectedListener = null;
+	private static final int LOADER_ID = 0x02;
 
+	/**
+	 * Represents a listener that will be notified of headline selections.
+	 */
+	public interface OnHeadlineSelectedListener {
+		/**
+		 * Called when a given headline is selected.
+		 * 
+		 * @param index
+		 *            the index of the selected headline.
+		 * @param string 
+		 */
+		public void onHeadlineSelected(int index, String string);
+	}
 
-    /**
-     * Represents a listener that will be notified of headline selections.
-     */
-    public interface OnHeadlineSelectedListener {
-        /**
-         * Called when a given headline is selected.
-         * @param index the index of the selected headline.
-         */
-        public void onHeadlineSelected(int index);
-    }
+	/**
+	 * Default constructor required by framework.
+	 */
+	public HeadlinesFragment() {
+		super();
+	}
 
-    /**
-     * Default constructor required by framework.
-     */
-    public HeadlinesFragment() {
-        super();
-    }
+	@Override
+	public void onStart() {
+		setListShown(false);
+		super.onStart();
+		setListAdapter(mListAdapter);
+		getListView().setOnItemClickListener(this);
+		loadCategory(0);
+	}
 
-    @Override
-    public void onStart() {
-    	setListShown(false);
-        super.onStart();
-        setListAdapter(mListAdapter);
-        getListView().setOnItemClickListener(this);
-        loadCategory(0);
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		// mListAdapter = new ArrayAdapter<String>(getActivity(),
+		// R.layout.headline_item,
+		// mHeadlinesList);
+		mListAdapter = new RemoteImageCursorAdapter(getActivity(),
+				R.layout.headline_item, null,
+				new String[] { "title", "image" }, new int[] { R.id.text_view,
+						R.id.thumbnail });
+		// ListView listView = (ListView) findViewById(R.id.list);
+		this.setListAdapter(mListAdapter);
+		getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null,
+				this);
+	}
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //        mListAdapter = new ArrayAdapter<String>(getActivity(), R.layout.headline_item,
- //       mHeadlinesList);
-        mListAdapter = new RemoteImageCursorAdapter (getActivity(), R.layout.headline_item, null, new String[]{"title", "image"}, new int[]{R.id.text_view, R.id.thumbnail});
-        //ListView listView = (ListView) findViewById(R.id.list);
-        this.setListAdapter(mListAdapter);
-        getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-    }
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
-        return new CursorLoader(getActivity(), Uri.parse("content://de.janrenz.app.ardtheke.cursorloader.data") , new String[]{"title", "image"}, null, null, null);
-    }
-    /**
-     * Sets the listener that should be notified of headline selection events.
-     * @param listener the listener to notify.
-     */
-    public void setOnHeadlineSelectedListener(OnHeadlineSelectedListener listener) {
-        mHeadlineSelectedListener = listener;
-    }
+		return new CursorLoader(
+				getActivity(),
+				Uri.parse("content://de.janrenz.app.ardtheke.cursorloader.data"),
+				new String[] { "title", "image" , "extId"}, null, null, null);
+	}
+
+	/**
+	 * Sets the listener that should be notified of headline selection events.
+	 * 
+	 * @param listener
+	 *            the listener to notify.
+	 */
+	public void setOnHeadlineSelectedListener(
+			OnHeadlineSelectedListener listener) {
+		mHeadlineSelectedListener = listener;
+	}
+
 	public void onResume() {
 		setListShown(true);
 		super.onResume();
 	}
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-    	setListShown(true);
-    	mListAdapter.swapCursor(cursor);
-    }
 
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-    	setListShown(true);
-    	mListAdapter.swapCursor(null);
-    }
+	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+		setListShown(true);
+		mListAdapter.swapCursor(cursor);
+		myCursor = cursor;
+	}
 
-    /**
-     * Load and display the headlines for the given news category.
-     * @param categoryIndex the index of the news category to display.
-     */
-    public void loadCategory(int categoryIndex) {
-        mHeadlinesList.clear();
-        int i;
-        NewsCategory cat = NewsSource.getInstance().getCategory(categoryIndex);
-        for (i = 0; i < cat.getArticleCount(); i++) {
-            mHeadlinesList.add(cat.getArticle(i).getHeadline());
-        }
-        mListAdapter.notifyDataSetChanged();
-    }
+	public void onLoaderReset(Loader<Cursor> cursorLoader) {
+		setListShown(true);
+		mListAdapter.swapCursor(null);
+		myCursor = null;
+	}
 
-    /**
-     * Handles a click on a headline.
-     *
-     * This causes the configured listener to be notified that a headline was selected.
-     */
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (null != mHeadlineSelectedListener) {
-            mHeadlineSelectedListener.onHeadlineSelected(position);
-        }
-    }
+	/**
+	 * Load and display the headlines for the given news category.
+	 * 
+	 * @param categoryIndex
+	 *            the index of the news category to display.
+	 */
+	public void loadCategory(int categoryIndex) {
+		mHeadlinesList.clear();
+		int i;
+		NewsCategory cat = NewsSource.getInstance().getCategory(categoryIndex);
+		for (i = 0; i < cat.getArticleCount(); i++) {
+			mHeadlinesList.add(cat.getArticle(i).getHeadline());
+		}
+		mListAdapter.notifyDataSetChanged();
+	}
 
-    /** Sets choice mode for the list
-     *
-     * @param selectable whether list is to be selectable.
-     */
-    public void setSelectable(boolean selectable) {
-        if (selectable) {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        }
-        else {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_NONE);
-        }
-    }
+	/**
+	 * Handles a click on a headline.
+	 * 
+	 * This causes the configured listener to be notified that a headline was
+	 * selected.
+	 */
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		if (null != mHeadlineSelectedListener) {
+			myCursor.moveToPosition(position);
+			Log.v ("DEBUG ", myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
+			mHeadlineSelectedListener.onHeadlineSelected(position,  myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
+		}
+	}
+
+	/**
+	 * Sets choice mode for the list
+	 * 
+	 * @param selectable
+	 *            whether list is to be selectable.
+	 */
+	public void setSelectable(boolean selectable) {
+		if (selectable) {
+			getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+		} else {
+			getListView().setChoiceMode(ListView.CHOICE_MODE_NONE);
+		}
+	}
 }

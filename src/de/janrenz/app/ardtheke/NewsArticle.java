@@ -36,15 +36,15 @@ public class NewsArticle {
      * Create a news article with randomly generated text.
      * @param ngen the nonsense generator to use.
      */
-    public NewsArticle(NonsenseGenerator ngen) {
-        mHeadline = ngen.makeHeadline();
+    public NewsArticle() {
+        //mHeadline = ngen.makeHeadline();
 
         StringBuilder sb = new StringBuilder();
         sb.append("<html><body>");
-        sb.append("<h1>" + mHeadline + "</h1>");
+        //sb.append("<h1>" + mHeadline + "</h1>");
         int i;
         for (i = 0; i < PARAGRAPHS_PER_ARTICLE; i++) {
-            sb.append("<p>").append(ngen.makeText(SENTENCES_PER_PARAGRAPH)).append("</p>");
+           // sb.append("<p>").append(ngen.makeText(SENTENCES_PER_PARAGRAPH)).append("</p>");
         }
 
         sb.append("</body></html>");

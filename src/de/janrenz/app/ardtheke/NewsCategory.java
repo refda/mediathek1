@@ -36,7 +36,7 @@ public class NewsCategory {
         mArticles = new NewsArticle[ARTICLES_PER_CATEGORY];
         int i;
         for (i = 0; i < mArticles.length; i++) {
-            mArticles[i] = new NewsArticle(ngen);
+            mArticles[i] = new NewsArticle();
         }
     }
 

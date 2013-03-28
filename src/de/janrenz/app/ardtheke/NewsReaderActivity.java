@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -113,7 +114,7 @@ public class NewsReaderActivity extends FragmentActivity
             if (mIsDualPane) {
                 int artIndex = savedInstanceState.getInt("artIndex", 0);
                 mHeadlinesFragment.setSelection(artIndex);
-                onHeadlineSelected(artIndex);
+                onHeadlineSelected(artIndex, null);
             }
         }
     }
@@ -177,7 +178,8 @@ public class NewsReaderActivity extends FragmentActivity
 
         // If we are displaying the article on the right, we have to update that too
         if (mIsDualPane) {
-            mArticleFragment.displayArticle(mCurrentCat.getArticle(0));
+        	// mArticleFragment.displayArticle(mCurrentCat.getArticle(0));
+           // mArticleFragment.displayArticle("");
         }
 
         // If we are displaying a "category" button (on the ActionBar-less UI), we have to update
@@ -198,17 +200,19 @@ public class NewsReaderActivity extends FragmentActivity
      * @param index the index of the selected headline.
      */
     @Override
-    public void onHeadlineSelected(int index) {
+    public void onHeadlineSelected(int index, String extId) {
+
         mArtIndex = index;
         if (mIsDualPane) {
             // display it on the article fragment
-            mArticleFragment.displayArticle(mCurrentCat.getArticle(index));
+            mArticleFragment.displayArticle(extId);
         }
         else {
             // use separate activity
             Intent i = new Intent(this, ArticleActivity.class);
             i.putExtra("catIndex", mCatIndex);
             i.putExtra("artIndex", index);
+            i.putExtra("extId", extId);
             startActivity(i);
         }
     }
