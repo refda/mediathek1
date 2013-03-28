@@ -34,7 +34,8 @@ import android.support.v4.app.FragmentActivity;
 public class ArticleActivity extends FragmentActivity {
     // The news category index and the article index for the article we are to display
     int mCatIndex, mArtIndex;
-
+    //the external id
+    String extId;
     /**
      * Sets up the activity.
      *
@@ -48,7 +49,7 @@ public class ArticleActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         mCatIndex = getIntent().getExtras().getInt("catIndex", 0);
         mArtIndex = getIntent().getExtras().getInt("artIndex", 0);
-
+        extId     = getIntent().getExtras().getString("extId");
         // If we are in two-pane layout mode, this activity is no longer necessary
         if (getResources().getBoolean(R.bool.has_two_panes)) {
             finish();
@@ -59,8 +60,7 @@ public class ArticleActivity extends FragmentActivity {
         ArticleFragment f = new ArticleFragment();
         getSupportFragmentManager().beginTransaction().add(android.R.id.content, f).commit();
 
-        // Display the correct news article on the fragment
-        NewsArticle article = NewsSource.getInstance().getCategory(mCatIndex).getArticle(mArtIndex);
-        f.displayArticle("");
+        // Display the correct  article on the fragment
+        f.displayArticle(extId);
     }
 }

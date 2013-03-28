@@ -32,7 +32,7 @@ public class NewsCategory {
      * The articles are dynamically generated with fun and random nonsense.
      */
     public NewsCategory() {
-        NonsenseGenerator ngen = new NonsenseGenerator();
+
         mArticles = new NewsArticle[ARTICLES_PER_CATEGORY];
         int i;
         for (i = 0; i < mArticles.length; i++) {
