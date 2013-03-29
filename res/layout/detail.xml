@@ -26,6 +26,20 @@
 	     android:layout_height="wrap_content"
 	     android:text="Button" />
 
+	 <SeekBar
+	     android:id="@+id/qualitySeekBar"
+	     android:layout_width="match_parent"
+	     android:layout_height="wrap_content"
+	     android:layout_marginTop="@dimen/smallPadding"
+	     android:max="@integer/anzahlSlider" />
+
+	 <TextView
+	     android:id="@+id/qualityText"
+	     android:layout_width="wrap_content"
+	     android:layout_height="wrap_content"
+	     android:text="Small Text"
+	     android:textAppearance="?android:attr/textAppearanceSmall" />
+
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
