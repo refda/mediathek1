@@ -113,6 +113,7 @@ public class ArticleFragment extends Fragment{
 			InputSource inputSrc = new InputSource(new StringReader(result));
 			//Toast.makeText(getActivity().getBaseContext(), result, Toast.LENGTH_LONG).show();
 			XPath xpath = XPathFactory.newInstance().newXPath();
+			
 			// specify the xpath expression
 			String expression = "//playlist/video/teaserImage/variants/variant/url";
 			// list of nodes queried
@@ -148,6 +149,7 @@ public class ArticleFragment extends Fragment{
 			//get the streams
 			expression = "//playlist/video/assets/asset";
 			inputSrc = new InputSource(new StringReader(result));
+			inputSrc.setEncoding("UTF-8");
 			videoSources = new ArrayList<String[]>();
 			// list of nodes queried
 			try {
