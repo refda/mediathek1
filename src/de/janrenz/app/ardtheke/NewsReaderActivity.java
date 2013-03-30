@@ -16,6 +16,9 @@
 
 package de.janrenz.app.ardtheke;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.janrenz.app.ardtheke.R;
 
 import android.app.AlertDialog;
@@ -114,7 +117,8 @@ public class NewsReaderActivity extends FragmentActivity
             if (mIsDualPane) {
                 int artIndex = savedInstanceState.getInt("artIndex", 0);
                 mHeadlinesFragment.setSelection(artIndex);
-                onHeadlineSelected(artIndex, null);
+                //!TODO handle this
+                onHeadlineSelected(artIndex, null, null);
             }
         }
     }
@@ -173,8 +177,8 @@ public class NewsReaderActivity extends FragmentActivity
      */
     void setNewsCategory(int categoryIndex) {
         mCatIndex = categoryIndex;
-        mCurrentCat = NewsSource.getInstance().getCategory(categoryIndex);
-        mHeadlinesFragment.loadCategory(categoryIndex);
+       // mCurrentCat = NewsSource.getInstance().getCategory(categoryIndex);
+       // mHeadlinesFragment.loadCategory(categoryIndex);
 
         // If we are displaying the article on the right, we have to update that too
         if (mIsDualPane) {
@@ -200,12 +204,12 @@ public class NewsReaderActivity extends FragmentActivity
      * @param index the index of the selected headline.
      */
     @Override
-    public void onHeadlineSelected(int index, String extId) {
+    public void onHeadlineSelected(int index, String extId, ArrayList allIds) {
 
         mArtIndex = index;
         if (mIsDualPane) {
             // display it on the article fragment
-            mArticleFragment.displayArticle(extId);
+            mArticleFragment.displayArticle();
         }
         else {
             // use separate activity
@@ -213,6 +217,8 @@ public class NewsReaderActivity extends FragmentActivity
             i.putExtra("catIndex", mCatIndex);
             i.putExtra("artIndex", index);
             i.putExtra("extId", extId);
+            i.putExtra("allIds", allIds);
+            Log.v("DEBUG", "index" + index );
             startActivity(i);
         }
     }

@@ -59,14 +59,14 @@ import org.xml.sax.InputSource;
 
 import com.loopj.android.image.SmartImageView;
 
+import de.janrenz.app.ardtheke.HeadlinesFragment.OnHeadlineSelectedListener;
 
 /**
  * Fragment that displays a news article.
  */
 public class ArticleFragment extends Fragment{
-	// The webview where we display the article (our only view)
-	WebView mWebView;
-
+	
+	View mView = null;
 	// The article we are to display
 	NewsArticle mNewsArticle = null;
 
@@ -79,29 +79,53 @@ public class ArticleFragment extends Fragment{
 	List<String[]> videoSources = new ArrayList<String[]>();
 	// Parameterless constructor is needed by framework
 	public ArticleFragment() {
+	
 		super();
 	}
-
+	
+	OnMovieClickedListener mOnMovieClickedListener = null;
+	
 	/**
-	 * Sets up the UI. It consists if a single WebView.
+	 * Represents a listener that will be notified of selections.
+	 */
+	public interface OnMovieClickedListener {
+		/**
+		 * Called when a given item is selected.
+		 * 
+		 * @param index
+		 *            the index of the selected item.
+		 * @param string 
+		 */
+		public void onMovieSelected(String url);
+	}
+	/**
+	 * Sets up the UI. 
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.detail, container, false);
+		mView = inflater.inflate(R.layout.detail, container, false);;
+		return mView;
 	}
 
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		displayArticle();
+	};
+	
+	public void setOnMovieClickedListener(
+			OnMovieClickedListener listener) {
+		mOnMovieClickedListener = listener;
+	}
 	/**
 	 * Displays a particular article.
 	 * 
 	 * @param extId
 	 *            the article to display
 	 */
-	public void displayArticle(String extId) {
-		// mNewsArticle = extId;
-		this.extId = extId;
-		new AccessWebServiceTask().execute("http://m-service.daserste.de/appservice/1.4.1/video/" + extId);
-	
+	public void displayArticle() {
+
+		new AccessWebServiceTask().execute("http://m-service.daserste.de/appservice/1.4.1/video/" + getArguments().getString("extId"));
 	}
 
 	private class AccessWebServiceTask extends AsyncTask <String, Void, String> {
@@ -124,7 +148,7 @@ public class ArticleFragment extends Fragment{
 		            //
 		            String url = node.getTextContent();
 		            Log.v("**", url);
-		            SmartImageView imageView = (SmartImageView) getActivity().findViewById(R.id.thumbnail);
+		            SmartImageView imageView = (SmartImageView) mView.findViewById(R.id.thumbnail);
 		            imageView.setImageUrl(url);
 			    }
 			} catch (XPathExpressionException e) {
@@ -139,8 +163,25 @@ public class ArticleFragment extends Fragment{
 		            Node node = nodes.item(0);
 		            String title = node.getTextContent();
 		            Log.v("**", title);
-		            TextView text = (TextView) getActivity().findViewById(R.id.headline1);
+		            TextView text = (TextView) mView.findViewById(R.id.headline1);
 		            text.setText(title);
+		           			 
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			//get headline 2
+			expression = "//playlist/video/broadcast";
+			inputSrc = new InputSource(new StringReader(result));
+			// list of nodes queried
+			try {
+				NodeList nodes = (NodeList)xpath.evaluate(expression, inputSrc, XPathConstants.NODESET);
+		            Node node = nodes.item(0);
+		            String title2 = node.getTextContent();
+		            Log.v("**", title2);
+		            TextView text2 = (TextView) mView.findViewById(R.id.headline2);
+		            text2.setText(title2);
 		           			 
 			} catch (XPathExpressionException e) {
 				// TODO Auto-generated catch block
@@ -202,7 +243,7 @@ public class ArticleFragment extends Fragment{
 		           
 			    }
 			    //set qualitySeekBar
-			    SeekBar seekbar =  (SeekBar) getActivity().findViewById(R.id.qualitySeekBar);
+			    SeekBar seekbar =  (SeekBar) mView.findViewById(R.id.qualitySeekBar);
 			    seekbar.setMax(videoSources.size()-1);
 			    seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 					
@@ -222,25 +263,28 @@ public class ArticleFragment extends Fragment{
 					public void onProgressChanged(SeekBar seekBar, int progress,
 							boolean fromUser) {
 						// TODO Auto-generated method stub
-						TextView qualityText = (TextView) getActivity().findViewById(R.id.qualityText);
+						TextView qualityText = (TextView) mView.findViewById(R.id.qualityText);
 						String newQualityText = videoSources.get(progress)[0];
 						qualityText.setText(newQualityText);
 						videoPath = videoSources.get(progress)[1];
-						
 					}
 				});
 					
-			    Button button = (Button) getActivity().findViewById(R.id.button1);
+			    Button button = (Button) mView.findViewById(R.id.button1);
 		        
 		        button.setOnClickListener(new View.OnClickListener() {
 
 		            public void onClick(View v) {
-		                Activity activity = getActivity();
-		                
-		                if (activity != null) {
-		                    Toast.makeText(activity, "Lade Video "+videoPath, Toast.LENGTH_LONG).show();
-		                    OpenMovieIntent();
-		                }
+		               //if (mOnMovieClickedListener != null) {
+		            	   SeekBar seekbar =  (SeekBar) mView.findViewById(R.id.qualitySeekBar);
+		            	   String url = videoSources.get(seekbar.getProgress())[1];
+		            	   if (url != null){
+		           			Intent intent = new Intent(Intent.ACTION_VIEW); 
+		           			intent.setDataAndType(Uri.parse(url), "video/mp4");
+		           			startActivity(intent);
+		           			Toast.makeText(getActivity(), "Lade Video " + url, Toast.LENGTH_LONG).show();
+		           		}
+		               //}
 		            }
 		            
 		        });
@@ -252,15 +296,7 @@ public class ArticleFragment extends Fragment{
 		}
 		
 	}
-	void OpenMovieIntent(){
-		Log.v("THIS", videoPath);
-		if (videoPath != null){
-			Intent intent = new Intent(Intent.ACTION_VIEW); 
-			intent.setDataAndType(Uri.parse(this.videoPath), "video/mp4");
-			startActivity(intent);
-		}
-		
-	}
+
 	/**
 	 * Loads article data into the webview.
 	 * 

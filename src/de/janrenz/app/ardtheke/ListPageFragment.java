@@ -28,6 +28,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -45,8 +46,10 @@ import de.janrenz.app.ardtheke.R;
  * category. When an item is selected, it notifies the configured listener that
  * a headlines was selected.
  */
-public class HeadlinesFragment extends ListFragment implements
+public class ListPageFragment extends ListFragment implements
 		OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+	// The list of headlines that we are displaying
+	List<String> mHeadlinesList = new ArrayList<String>();
 
 	// The list adapter for the list we are displaying
 	SimpleCursorAdapter mListAdapter;
@@ -55,8 +58,7 @@ public class HeadlinesFragment extends ListFragment implements
 	// The listener we are to notify when a headline is selected
 	OnHeadlineSelectedListener mHeadlineSelectedListener = null;
 	private static final int LOADER_ID = 0x02;
-	private ArrayList<String> mArrayList = new ArrayList<String>();
-	
+
 	/**
 	 * Represents a listener that will be notified of headline selections.
 	 */
@@ -68,13 +70,13 @@ public class HeadlinesFragment extends ListFragment implements
 		 *            the index of the selected headline.
 		 * @param string 
 		 */
-		public void onHeadlineSelected(int index, String string, ArrayList all);
+		public void onHeadlineSelected(int index, String string);
 	}
 
 	/**
 	 * Default constructor required by framework.
 	 */
-	public HeadlinesFragment() {
+	public ListPageFragment() {
 		super();
 	}
 
@@ -84,7 +86,7 @@ public class HeadlinesFragment extends ListFragment implements
 		super.onStart();
 		setListAdapter(mListAdapter);
 		getListView().setOnItemClickListener(this);
-//		loadCategory(0);
+		loadCategory(0);
 	}
 
 	@Override
@@ -131,11 +133,6 @@ public class HeadlinesFragment extends ListFragment implements
 		setListShown(true);
 		mListAdapter.swapCursor(cursor);
 		myCursor = cursor;
-		
-		for(myCursor.moveToFirst(); !myCursor.isAfterLast(); myCursor.moveToNext()) {
-		    // The Cursor is now set to the right position
-		    mArrayList.add( myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
-		}
 	}
 
 	public void onLoaderReset(Loader<Cursor> cursorLoader) {
@@ -144,7 +141,22 @@ public class HeadlinesFragment extends ListFragment implements
 		myCursor = null;
 	}
 
-	
+	/**
+	 * Load and display the headlines for the given news category.
+	 * 
+	 * @param categoryIndex
+	 *            the index of the news category to display.
+	 */
+	public void loadCategory(int categoryIndex) {
+		mHeadlinesList.clear();
+		int i;
+		NewsCategory cat = NewsSource.getInstance().getCategory(categoryIndex);
+		for (i = 0; i < cat.getArticleCount(); i++) {
+			mHeadlinesList.add(cat.getArticle(i).getHeadline());
+		}
+		mListAdapter.notifyDataSetChanged();
+	}
+
 	/**
 	 * Handles a click on a headline.
 	 * 
@@ -156,8 +168,8 @@ public class HeadlinesFragment extends ListFragment implements
 			long id) {
 		if (null != mHeadlineSelectedListener) {
 			myCursor.moveToPosition(position);
-			//Log.v ("DEBUG ", myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
-			mHeadlineSelectedListener.onHeadlineSelected(position,  myCursor.getString(myCursor.getColumnIndexOrThrow("extId")), mArrayList);
+			Log.v ("DEBUG ", myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
+			mHeadlineSelectedListener.onHeadlineSelected(position,  myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
 		}
 	}
 

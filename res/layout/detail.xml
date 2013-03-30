@@ -11,20 +11,26 @@
 		android:scaleType="centerCrop"
         android:layout_width="fill_parent"
         android:layout_height="150dp" />
+    <TextView
+	     android:id="@+id/headline2"
+	     android:layout_width="320dp"
+	     android:layout_height="wrap_content"
+	     android:text=""
+	     android:padding = "5dp"
+	     android:textAppearance="?android:attr/textAppearanceMedium" />
 
 	 <TextView
 	     android:id="@+id/headline1"
 	     android:layout_width="320dp"
 	     android:layout_height="wrap_content"
-	     android:text="Medium Text"
+	     android:text=""
 	     android:padding = "5dp"
-	     android:textAppearance="?android:attr/textAppearanceMedium" />
-
+	     android:textAppearance="?android:attr/textAppearanceLarge" />
 	 <Button
 	     android:id="@+id/button1"
 	     android:layout_width="match_parent"
 	     android:layout_height="wrap_content"
-	     android:text="Button" />
+	     android:text="Jetzt ansehen" />
 
 	 <SeekBar
 	     android:id="@+id/qualitySeekBar"
