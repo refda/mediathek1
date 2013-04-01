@@ -32,14 +32,16 @@
                  android:logo="@drawable/logo" android:theme="@style/NewsReaderStyle" android:name="BaseApplication"
                  >
                  
-        <activity android:name="de.janrenz.app.ardtheke.NewsReaderActivity" android:label="@string/app_name">
+        <activity android:name="de.janrenz.app.ardtheke.NewsReaderActivity" android:label="@string/app_name" 
+              android:theme="@style/Theme.Sherlock.Light.DarkActionBar"
+              >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name="de.janrenz.app.ardtheke.ArticleActivity"
-                  android:theme="@style/NewsReaderStyle_NoActionBar" />
+                  android:theme="@style/Theme.Sherlock.Light.DarkActionBar" />
  <provider android:name="de.janrenz.app.ardtheke.SlowContentProvider"
                   android:authorities="de.janrenz.app.ardtheke.cursorloader.data"
                 />

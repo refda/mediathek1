@@ -18,9 +18,11 @@ package de.janrenz.app.ardtheke;
 
 import java.util.ArrayList;
 
-import com.viewpagerindicator.CirclePageIndicator;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.LinePageIndicator;
-import com.viewpagerindicator.TitlePageIndicator;
 
 import de.janrenz.app.ardtheke.R;
 
@@ -29,10 +31,10 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,7 +54,7 @@ import android.widget.Toast;
  * in that case the news article will be displayed by the {@link NewsReaderActivity} and this
  * Activity therefore becomes unnecessary.
  */
-public class ArticleActivity extends FragmentActivity  implements ArticleFragment.OnMovieClickedListener {
+public class ArticleActivity extends SherlockFragmentActivity implements ArticleFragment.OnMovieClickedListener {
     // The news category index and the article index for the article we are to display
     int mCatIndex, mArtIndex;
     //the external id
@@ -72,6 +74,7 @@ public class ArticleActivity extends FragmentActivity  implements ArticleFragmen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
         mCatIndex = getIntent().getExtras().getInt("catIndex", 0);
         mArtIndex = getIntent().getExtras().getInt("artIndex", 0);
         extId     = getIntent().getExtras().getString("extId");
@@ -85,6 +88,10 @@ public class ArticleActivity extends FragmentActivity  implements ArticleFragmen
             finish();
             return;
         }
+        
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        
         setContentView( R.layout.daylistwrapper );
         mAdapter = new MyAdapter(getSupportFragmentManager());
         mAdapter.setCount(allIds.size());
@@ -98,7 +105,32 @@ public class ArticleActivity extends FragmentActivity  implements ArticleFragmen
         mPager.setCurrentItem(mArtIndex);
     }
     
-	
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        
+            menu.add("Text")
+                .setIcon(R.drawable.abs__ic_menu_share_holo_dark)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+           
+
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // This ID represents the Home or Up button. In the case of this
+                // activity, the Up button is shown. Use NavUtils to allow users
+                // to navigate up one level in the application structure. For
+                // more details, see the Navigation pattern on Android Design:
+                //
+                // http://developer.android.com/design/patterns/navigation.html#up-vs-back
+                //
+                NavUtils.navigateUpTo(this, new Intent(this, NewsReaderActivity.class));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     public static class MyAdapter extends FragmentPagerAdapter {
     	private int mcount = 0;
     	private ArrayList<String> mallIds, mallTitles, mallSubtitles;

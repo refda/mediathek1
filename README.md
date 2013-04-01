@@ -3,13 +3,10 @@ ARDTHEKE
 
 Offene ToDos:
 
-* Speichern der Bandbreitenauswahl in den Anwendungspräferenzen
-* Ladeanimation Detailansicht
 * Sortieren der Bandbreiten
-* Caching der HTTP Requests
-* besseres LazyLoading der Bilder
+* Caching der HTTP Requests (für >4 done)
+* Cache einmal pro Tag löschen (via Prefernezes und Helperklasse)
 * Logo
-* UTF-8 Darstellung von XML Inhalten
 
 Credits:
 https://github.com/JakeWharton/Android-ViewPagerIndicator/

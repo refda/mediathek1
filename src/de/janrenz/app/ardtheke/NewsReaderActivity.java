@@ -231,23 +231,18 @@ public class NewsReaderActivity extends FragmentActivity
         else {
             // use separate activity
             Intent i = new Intent(this, ArticleActivity.class);
-            i.putExtra("catIndex", mCatIndex );
             i.putExtra("artIndex", index );
             i.putExtra("extId", extId );
             i.putExtra("allIds", allIds );
             i.putExtra("allTitles", allTitles );
             i.putExtra("allSubtitles", allSubtitles );
-            Log.v("DEBUG", "index" + index );
             startActivity(i);
         }
     }
 
-  
-
     /** Save instance state. Saves current category/article index. */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-       
         outState.putInt("artIndex", mArtIndex);
         super.onSaveInstanceState(outState);
     }
