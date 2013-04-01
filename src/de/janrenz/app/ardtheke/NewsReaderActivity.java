@@ -63,11 +63,12 @@ import android.widget.SpinnerAdapter;
  * controls are shown in the Action Bar (whether to show tabs or a list depends on the layout).
  * If an Action Bar is not available, a regular image and button are shown in the top area of
  * the screen, emulating an Action Bar.
+ * 
+ *CompatActionBarNavListener,OnClickListener 
  */
 public class NewsReaderActivity extends FragmentActivity
-        implements HeadlinesFragment.OnHeadlineSelectedListener,
-                   CompatActionBarNavListener,
-                   OnClickListener  {
+        implements HeadlinesFragment.OnHeadlineSelectedListener
+                    {
 
     // Whether or not we are in dual-pane mode
     boolean mIsDualPane = false;
@@ -84,7 +85,7 @@ public class NewsReaderActivity extends FragmentActivity
     NewsCategory mCurrentCat;
 
     // List of category titles
-    final String CATEGORIES[] = { "Top Stories", "Politics", "Economy", "Technology" };
+  
     MyAdapter mAdapter;
     ViewPager mPager;
     
@@ -109,7 +110,7 @@ public class NewsReaderActivity extends FragmentActivity
 
         // Set up the Action Bar (or not, if one is not available)
         int catIndex = savedInstanceState == null ? 0 : savedInstanceState.getInt("catIndex", 0);
-        setUpActionBar(mIsDualPane, catIndex);
+        //setUpActionBar(mIsDualPane, catIndex);
 
         // Set up headlines fragment
         //mHeadlinesFragment.setSelectable(mIsDualPane);
@@ -123,12 +124,8 @@ public class NewsReaderActivity extends FragmentActivity
         TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.pageindicator);
         titleIndicator.setViewPager(mPager);
         mPager.setCurrentItem(6);
+      
         
-        // Set up the category button (shown if an Action Bar is not available)
-        Button catButton = (Button) findViewById(R.id.categorybutton);
-        if (catButton != null) {
-            catButton.setOnClickListener(this);
-        }
     }
 
     public static class MyAdapter extends FragmentPagerAdapter {
@@ -178,12 +175,12 @@ public class NewsReaderActivity extends FragmentActivity
     /** Restore category/article selection from saved state. */
     void restoreSelection(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            setNewsCategory(savedInstanceState.getInt("catIndex", 0));
+            //setNewsCategory(savedInstanceState.getInt("catIndex", 0));
             if (mIsDualPane) {
                 int artIndex = savedInstanceState.getInt("artIndex", 0);
                 mHeadlinesFragment.setSelection(artIndex);
                 //!TODO handle this
-                onHeadlineSelected(artIndex, null, null);
+                //onHeadlineSelected(artIndex, null, null);
             }
         }
     }
@@ -205,60 +202,15 @@ public class NewsReaderActivity extends FragmentActivity
             // top that looks and feels like an action bar, but is made up of regular views.
             return;
         }
-
-        android.app.ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-
-        // Set up a CompatActionBarNavHandler to deliver us the Action Bar nagivation events
-        CompatActionBarNavHandler handler = new CompatActionBarNavHandler(this);
-        if (showTabs) {
-            actionBar.setNavigationMode(android.app.ActionBar.NAVIGATION_MODE_TABS);
-            int i;
-            for (i = 0; i < CATEGORIES.length; i++) {
-                actionBar.addTab(actionBar.newTab().setText(CATEGORIES[i]).setTabListener(handler));
-            }
-            actionBar.setSelectedNavigationItem(selTab);
-        }
-        else {
-            actionBar.setNavigationMode(android.app.ActionBar.NAVIGATION_MODE_LIST);
-            SpinnerAdapter adap = new ArrayAdapter<String>(this, R.layout.actionbar_list_item,
-                    CATEGORIES);
-            actionBar.setListNavigationCallbacks(adap, handler);
-        }
-
-        // Show logo instead of icon+title.
-        actionBar.setDisplayUseLogoEnabled(true);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        setNewsCategory(0);
+       // setNewsCategory(0);
     }
 
-    /** Sets the displayed news category.
-     *
-     * This causes the headlines fragment to be repopulated with the appropriate headlines.
-     */
-    void setNewsCategory(int categoryIndex) {
-        mCatIndex = categoryIndex;
-       // mCurrentCat = NewsSource.getInstance().getCategory(categoryIndex);
-       // mHeadlinesFragment.loadCategory(categoryIndex);
-
-        // If we are displaying the article on the right, we have to update that too
-        if (mIsDualPane) {
-        	// mArticleFragment.displayArticle(mCurrentCat.getArticle(0));
-           // mArticleFragment.displayArticle("");
-        }
-
-        // If we are displaying a "category" button (on the ActionBar-less UI), we have to update
-        // its text to reflect the current category.
-        Button catButton = (Button) findViewById(R.id.categorybutton);
-        if (catButton != null) {
-            catButton.setText(CATEGORIES[mCatIndex]);
-        }
-    }
-
+  
     /** Called when a headline is selected.
      *
      * This is called by the HeadlinesFragment (via its listener interface) to notify us that a
@@ -269,7 +221,7 @@ public class NewsReaderActivity extends FragmentActivity
      * @param index the index of the selected headline.
      */
     @Override
-    public void onHeadlineSelected(int index, String extId, ArrayList allIds) {
+    public void onHeadlineSelected(int index, String extId, ArrayList allIds, ArrayList allTitles, ArrayList allSubtitles) {
 
         mArtIndex = index;
         if (mIsDualPane) {
@@ -279,52 +231,26 @@ public class NewsReaderActivity extends FragmentActivity
         else {
             // use separate activity
             Intent i = new Intent(this, ArticleActivity.class);
-            i.putExtra("catIndex", mCatIndex);
-            i.putExtra("artIndex", index);
-            i.putExtra("extId", extId);
-            i.putExtra("allIds", allIds);
+            i.putExtra("catIndex", mCatIndex );
+            i.putExtra("artIndex", index );
+            i.putExtra("extId", extId );
+            i.putExtra("allIds", allIds );
+            i.putExtra("allTitles", allTitles );
+            i.putExtra("allSubtitles", allSubtitles );
             Log.v("DEBUG", "index" + index );
             startActivity(i);
         }
     }
 
-    /** Called when a news category is selected.
-     *
-     * This is called by our CompatActionBarNavHandler in response to the user selecting a
-     * news category in the Action Bar. We react by loading and displaying the headlines for
-     * that category.
-     *
-     * @param catIndex the index of the selected news category.
-     */
-    @Override
-    public void onCategorySelected(int catIndex) {
-        setNewsCategory(catIndex);
-    }
+  
 
     /** Save instance state. Saves current category/article index. */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt("catIndex", mCatIndex);
+       
         outState.putInt("artIndex", mArtIndex);
         super.onSaveInstanceState(outState);
     }
 
-    /** Called when news category button is clicked.
-     *
-     * This is the button that we display on UIs that don't have an action bar. This button
-     * calls up a list of news categories and switches to the given category.
-     */
-    @Override
-    public void onClick(View v) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select a Category");
-        builder.setItems(CATEGORIES, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                setNewsCategory(which);
-            }
-        });
-        AlertDialog d = builder.create();
-        d.show();
-    }
+
 }

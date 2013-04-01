@@ -17,9 +17,11 @@
 package de.janrenz.app.ardtheke;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +34,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,9 +45,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -117,6 +124,19 @@ public class ArticleFragment extends Fragment{
 			OnMovieClickedListener listener) {
 		mOnMovieClickedListener = listener;
 	}
+	
+	private Integer getQualityPositionForString (String quality) {
+		 for (int j = 0; j < videoSources.size(); j++) {
+		// for (String[] obj : videoSources) {
+		    	//qualities.add(obj[0]);
+			 String[] arr = videoSources.get(j);
+			  if (arr[0].equals(quality)){
+				  Log.v("QUALITY", quality);
+				  return j;
+		      }
+		 }
+		return 1;
+	}
 	/**
 	 * Displays a particular article.
 	 * 
@@ -124,7 +144,10 @@ public class ArticleFragment extends Fragment{
 	 *            the article to display
 	 */
 	public void displayArticle() {
-
+		 TextView text = (TextView) mView.findViewById(R.id.headline1);
+         text.setText(getArguments().getString("title"));
+		 TextView text2 = (TextView) mView.findViewById(R.id.headline2);
+		 text2.setText(getArguments().getString("subtitle"));
 		new AccessWebServiceTask().execute("http://m-service.daserste.de/appservice/1.4.1/video/" + getArguments().getString("extId"));
 	}
 
@@ -133,7 +156,7 @@ public class ArticleFragment extends Fragment{
 			return loadXML(urls[0]);
 		}
 		protected void onPostExecute(String result) { 
-			 Log.v("*XMLLOADER*", result);
+			
 			InputSource inputSrc = new InputSource(new StringReader(result));
 			//Toast.makeText(getActivity().getBaseContext(), result, Toast.LENGTH_LONG).show();
 			XPath xpath = XPathFactory.newInstance().newXPath();
@@ -147,51 +170,26 @@ public class ArticleFragment extends Fragment{
 		            Node node = nodes.item(i);
 		            //
 		            String url = node.getTextContent();
-		            Log.v("**", url);
 		            SmartImageView imageView = (SmartImageView) mView.findViewById(R.id.thumbnail);
 		            imageView.setImageUrl(url);
 			    }
 			} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			expression = "//playlist/video/title";
-			inputSrc = new InputSource(new StringReader(result));
-			// list of nodes queried
-			try {
-				NodeList nodes = (NodeList)xpath.evaluate(expression, inputSrc, XPathConstants.NODESET);
-		            Node node = nodes.item(0);
-		            String title = node.getTextContent();
-		            Log.v("**", title);
-		            TextView text = (TextView) mView.findViewById(R.id.headline1);
-		            text.setText(title);
-		           			 
-			} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
-			//get headline 2
-			expression = "//playlist/video/broadcast";
-			inputSrc = new InputSource(new StringReader(result));
-			// list of nodes queried
-			try {
-				NodeList nodes = (NodeList)xpath.evaluate(expression, inputSrc, XPathConstants.NODESET);
-		            Node node = nodes.item(0);
-		            String title2 = node.getTextContent();
-		            Log.v("**", title2);
-		            TextView text2 = (TextView) mView.findViewById(R.id.headline2);
-		            text2.setText(title2);
-		           			 
-			} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		
+			
+			
+			
+			
 			//get the streams
 			expression = "//playlist/video/assets/asset";
 			inputSrc = new InputSource(new StringReader(result));
 			inputSrc.setEncoding("UTF-8");
 			videoSources = new ArrayList<String[]>();
+			
+			 
+			  
 			// list of nodes queried
 			try {
 				String tempUrl = "";
@@ -214,27 +212,27 @@ public class ArticleFragment extends Fragment{
 							
 						}else if(nodeName.equals("fileName")){
 							tempUrl = nodeValue;	
-							Log.v("XML", "**** "+nodeName + " with value " + nodeValue);
+							//Log.v("XML", "**** "+nodeName + " with value " + nodeValue);
 		            
 			            }else if(nodeName.equals("serverPrefix")){
 			            	serverPrefix = nodeValue;	
-							Log.v("XML", "**** "+nodeName + " with value " + nodeValue);
+							//Log.v("XML", "**** "+nodeName + " with value " + nodeValue);
 		            	}else
 						{
 							//Log.v("XML", "Untreated Nodetype "+nodeName + " with value " + nodeValue);
 						}
 		            }
 		            
-		            Log.v("XML", useThisUrl.toString());
+		            //Log.v("XML", useThisUrl.toString());
 		            //if (useThisUrl){
-		            	Log.v("XML" , "Set url to" + tempUrl);
+		            	//Log.v("XML" , "Set url to" + tempUrl);
 		            	videoPath = tempUrl;
 		            	String videoUrl =  serverPrefix + videoPath;
 		            	if (videoUrl.startsWith("http"))
 		            	{
 		            		if (bandwith.equals(""))
 		            		{
-		            			bandwith = "HbbTV (SmartTV)";
+		            			bandwith = "HbbTV";
 		            		}
 		            		videoSources.add( new String[] {bandwith, videoUrl}); 
 		            	}
@@ -243,51 +241,71 @@ public class ArticleFragment extends Fragment{
 		           
 			    }
 			    //set qualitySeekBar
-			    SeekBar seekbar =  (SeekBar) mView.findViewById(R.id.qualitySeekBar);
-			    seekbar.setMax(videoSources.size()-1);
-			    seekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-					
-					@Override
-					public void onStopTrackingTouch(SeekBar seekBar) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void onStartTrackingTouch(SeekBar seekBar) {
-						// TODO Auto-generated method stub
-						
-					}
-					
-					@Override
-					public void onProgressChanged(SeekBar seekBar, int progress,
-							boolean fromUser) {
-						// TODO Auto-generated method stub
+			    /**
 						TextView qualityText = (TextView) mView.findViewById(R.id.qualityText);
 						String newQualityText = videoSources.get(progress)[0];
 						qualityText.setText(newQualityText);
-						videoPath = videoSources.get(progress)[1];
-					}
-				});
-					
+						videoPath = videoSources.get(1)[1];
+			*/
+					//Spinner population
+			    //default quality
+			    
+			    ArrayList qualities = new ArrayList();
+			    for (String[] obj : videoSources) {
+			    	qualities.add(obj[0]);
+			      }
+			    final Spinner s = (Spinner) mView.findViewById(
+			            R.id.qualitySpinner);
+			    ArrayAdapter<String> mspinnerAdapter = new ArrayAdapter<String>(getActivity(), 
+			    		android.R.layout.simple_spinner_item, qualities);
+			    s.setAdapter(mspinnerAdapter);
+			    SharedPreferences appSettings = getActivity().getSharedPreferences("AppPreferences", getActivity().MODE_PRIVATE);  
+				String defaultQuality = appSettings.getString("Quality", "DSL768");
+				
+				videoPath = videoSources.get(getQualityPositionForString(defaultQuality))[1];
+				s.setSelection(getQualityPositionForString(defaultQuality));
+				
+			    s.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+						@Override
+						public void onItemSelected(AdapterView<?> arg0,
+								View arg1, int arg2, long arg3) {
+							// TODO Auto-generated method stub
+							//Integer item = s.getSelectedItemPosition();
+						
+							videoPath = videoSources.get(arg2)[1];
+							SharedPreferences appSettings = getActivity().getSharedPreferences("AppPreferences", getActivity().MODE_PRIVATE);  
+							SharedPreferences.Editor prefEditor = appSettings.edit();  
+							prefEditor.putString("Quality", videoSources.get(arg2)[0]);    
+							prefEditor.commit();  
+						}
+
+						@Override
+						public void onNothingSelected(AdapterView<?> arg0) {
+							// TODO Auto-generated method stub
+							
+						}
+			    });
 			    Button button = (Button) mView.findViewById(R.id.button1);
 		        
 		        button.setOnClickListener(new View.OnClickListener() {
 
 		            public void onClick(View v) {
 		               //if (mOnMovieClickedListener != null) {
-		            	   SeekBar seekbar =  (SeekBar) mView.findViewById(R.id.qualitySeekBar);
-		            	   String url = videoSources.get(seekbar.getProgress())[1];
-		            	   if (url != null){
+		            	
+		            	 
+		            	   if (videoPath != null){
 		           			Intent intent = new Intent(Intent.ACTION_VIEW); 
-		           			intent.setDataAndType(Uri.parse(url), "video/mp4");
+		           			intent.setDataAndType(Uri.parse(videoPath), "video/mp4");
 		           			startActivity(intent);
-		           			Toast.makeText(getActivity(), "Lade Video " + url, Toast.LENGTH_LONG).show();
+		           			Toast.makeText(getActivity(), "Lade Video " + videoPath, Toast.LENGTH_LONG).show();
 		           		}
 		               //}
 		            }
 		            
 		        });
+		        mView.findViewById(R.id.showAfterLoadItems).setVisibility(View.VISIBLE);
+		        mView.findViewById(R.id.hideAfterLoadItems).setVisibility(View.GONE);
 		           			 
 			} catch (XPathExpressionException e) {
 				// TODO Auto-generated catch block
@@ -304,6 +322,15 @@ public class ArticleFragment extends Fragment{
 	 * appropriate article's text.
 	 */
 	String loadXML(String URL) {
+		final long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
+		final File httpCacheDir = new File(getActivity().getCacheDir(), "http");
+		try {
+		    Class.forName("android.net.http.HttpResponseCache")
+		        .getMethod("install", File.class, long.class)
+		        .invoke(null, httpCacheDir, httpCacheSize);
+		} catch (Exception httpResponseCacheNotAvailable) {
+		    
+		}
 		StringBuilder stringBuilder = new StringBuilder();
 		HttpClient httpClient = new DefaultHttpClient();
 		HttpGet httpGet = new HttpGet(URL);
@@ -315,7 +342,8 @@ public class ArticleFragment extends Fragment{
 				HttpEntity entity = response.getEntity();
 				InputStream inputStream = entity.getContent();
 				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(inputStream));
+					new InputStreamReader(inputStream)
+				);
 				String line;
 				while ((line = reader.readLine()) != null) {
 					stringBuilder.append(line);
@@ -329,8 +357,6 @@ public class ArticleFragment extends Fragment{
 		}
 		String xml = stringBuilder.toString();
 		return xml;
-		
-	
 	}
 
 }

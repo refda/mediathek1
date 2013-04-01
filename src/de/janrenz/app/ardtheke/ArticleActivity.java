@@ -57,7 +57,7 @@ public class ArticleActivity extends FragmentActivity  implements ArticleFragmen
     int mCatIndex, mArtIndex;
     //the external id
     String extId;
-    ArrayList<String> allIds;
+    ArrayList<String> allIds, allTitles, allSubtitles;
     MyAdapter mAdapter;
 
     ViewPager mPager;
@@ -75,7 +75,10 @@ public class ArticleActivity extends FragmentActivity  implements ArticleFragmen
         mCatIndex = getIntent().getExtras().getInt("catIndex", 0);
         mArtIndex = getIntent().getExtras().getInt("artIndex", 0);
         extId     = getIntent().getExtras().getString("extId");
-        allIds  = getIntent().getExtras().getStringArrayList("allIds");
+        //!TODO: MAke this multidensional
+        allTitles = getIntent().getExtras().getStringArrayList("allTitles");
+        allSubtitles     = getIntent().getExtras().getStringArrayList("allSubtitles");
+        allIds    = getIntent().getExtras().getStringArrayList("allIds");
         
         // If we are in two-pane layout mode, this activity is no longer necessary
         if (getResources().getBoolean(R.bool.has_two_panes)) {
@@ -85,32 +88,30 @@ public class ArticleActivity extends FragmentActivity  implements ArticleFragmen
         setContentView( R.layout.daylistwrapper );
         mAdapter = new MyAdapter(getSupportFragmentManager());
         mAdapter.setCount(allIds.size());
-        mAdapter.setAllItems(allIds);
+        mAdapter.setAllItems(allIds, allTitles, allSubtitles);
         mPager = (ViewPager)findViewById(R.id.pager);
-       
         mPager.setAdapter(mAdapter);
         //Set the pager with an adapter
-    
         //Bind the title indicator to the adapter
         LinePageIndicator titleIndicator = (LinePageIndicator)findViewById(R.id.pageindicator);
         titleIndicator.setViewPager(mPager);
         mPager.setCurrentItem(mArtIndex);
-     
     }
     
 	
     public static class MyAdapter extends FragmentPagerAdapter {
     	private int mcount = 0;
-    	private ArrayList<String> mallIds = null;
-    	//TODO keep an instance of the fragment per id
+    	private ArrayList<String> mallIds, mallTitles, mallSubtitles;
         public MyAdapter(FragmentManager fm) {
             super(fm);
         }
         public void setCount( int newCount ) {
         	mcount = newCount;
         }
-        public void setAllItems(ArrayList<String> allIds) {
+        public void setAllItems(ArrayList<String> allIds, ArrayList<String> allTitles, ArrayList<String> allSubtitles ) {
         	 mallIds = allIds;
+        	 mallTitles = allTitles;
+        	 mallSubtitles = allSubtitles;
         }
         public String getPageTitle (int position ) {
         	return "Titel" + position;
@@ -128,6 +129,8 @@ public class ArticleActivity extends FragmentActivity  implements ArticleFragmen
         Bundle args = new Bundle();
         	args.putInt("num", position);
             args.putString("extId", mallIds.get(position));
+            args.putString("title", mallTitles.get(position));
+            args.putString("subtitle", mallSubtitles.get(position));
             f.setArguments(args);
             return f;
         }
@@ -140,6 +143,5 @@ public class ArticleActivity extends FragmentActivity  implements ArticleFragmen
 	public void onMovieSelected(String url) {
 		// TODO Auto-generated method stub
 		Log.v("THIS", url);
-		
 	}
 }

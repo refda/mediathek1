@@ -10,7 +10,7 @@
 	android:layout_marginBottom="1dip"
 	android:layout_height="wrap_content"
 	android:layout_width="fill_parent" 
-	    android:background="#CCCCCC"
+	    android:background="#DDDDDD"
         android:textColor="#1C3144"
         app:footerColor="#1C3144"
         app:footerLineHeight="1dp"

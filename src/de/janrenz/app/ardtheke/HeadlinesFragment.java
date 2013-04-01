@@ -53,7 +53,8 @@ public class HeadlinesFragment extends ListFragment implements
 	OnHeadlineSelectedListener mHeadlineSelectedListener = null;
 	private static  int LOADER_ID = 0x02;
 	private ArrayList<String> mArrayList = new ArrayList<String>();
-	
+	private ArrayList<String> mSubtitles = new ArrayList<String>();
+	private ArrayList<String> mTitles    = new ArrayList<String>();
 	/**
 	 * Represents a listener that will be notified of headline selections.
 	 */
@@ -64,8 +65,14 @@ public class HeadlinesFragment extends ListFragment implements
 		 * @param index
 		 *            the index of the selected headline.
 		 * @param string 
+		 * 
+		 * @param allids
+		 * 
+		 * @param title
+		 * 
+		 * @param subtitle
 		 */
-		public void onHeadlineSelected(int index, String string, ArrayList all);
+		public void onHeadlineSelected(int index, String string, ArrayList all,  ArrayList allTitles, ArrayList allSubtitles);
 	}
 
 	/**
@@ -84,6 +91,17 @@ public class HeadlinesFragment extends ListFragment implements
 //		loadCategory(0);
 	}
 
+	
+	@Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.d("TAG", "onViewCreated");
+        //...do something
+        Bundle args = new Bundle();
+        args.putInt("datepos", getArguments().getInt("datepos", 0));
+        //note that we need a different loader id for each loader
+        getActivity().getSupportLoaderManager().initLoader(getArguments().getInt("datepos", 0)+LOADER_ID, args, this);
+    }
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -96,10 +114,6 @@ public class HeadlinesFragment extends ListFragment implements
 						R.id.thumbnail });
 		// ListView listView = (ListView) findViewById(R.id.list);
 		this.setListAdapter(mListAdapter);
-		Bundle args = new Bundle();
-		args.putInt("datepos", getArguments().getInt("datepos", 0));
-		//note that we need a different loader id for each loader
-		getActivity().getSupportLoaderManager().initLoader(getArguments().getInt("datepos", 0)+LOADER_ID, args, this);
 	}
 
 	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -109,7 +123,12 @@ public class HeadlinesFragment extends ListFragment implements
 		Uri queryUri = Uri.parse("content://de.janrenz.app.ardtheke.cursorloader.data");
 		Integer offset =  getArguments().getInt("datepos", 0);
 		queryUri = queryUri.buildUpon().appendQueryParameter("offset", offset.toString()).build();
-
+		try {
+			
+			setListShown(false);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		return new CursorLoader(
 				getActivity(),
 				queryUri,
@@ -148,6 +167,8 @@ public class HeadlinesFragment extends ListFragment implements
 		for(myCursor.moveToFirst(); !myCursor.isAfterLast(); myCursor.moveToNext()) {
 		    // The Cursor is now set to the right position
 		    mArrayList.add( myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
+		    mTitles.add( myCursor.getString(myCursor.getColumnIndexOrThrow("title")));
+		    mSubtitles.add( myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle")));
 		}
 	}
 
@@ -169,8 +190,14 @@ public class HeadlinesFragment extends ListFragment implements
 			long id) {
 		if (null != mHeadlineSelectedListener) {
 			myCursor.moveToPosition(position);
-			//Log.v ("DEBUG ", myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
-			mHeadlineSelectedListener.onHeadlineSelected(position,  myCursor.getString(myCursor.getColumnIndexOrThrow("extId")), mArrayList);
+			//Log.v ("DEBUG ", myCursor.getString(myCursor.getColumnIndexOrThrow("title")));
+			mHeadlineSelectedListener.onHeadlineSelected(
+					position,  
+					myCursor.getString(myCursor.getColumnIndexOrThrow("extId")), 
+					mArrayList,
+					mTitles,
+					mSubtitles
+					);
 		}
 	}
 

@@ -1,5 +1,8 @@
 package de.janrenz.app.ardtheke;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import com.loopj.android.image.SmartImageView;
 
 import android.content.Context;
@@ -36,7 +39,7 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	    public void bindView(View v, Context context, Cursor c) {
 	    	  String title = c.getString(c.getColumnIndexOrThrow("title"));
 	    	  String subtitle = c.getString(c.getColumnIndexOrThrow("subtitle"));
-	          String imagePath = c.getString(c.getColumnIndexOrThrow("image"));
+	    	  String imagePath = c.getString(c.getColumnIndexOrThrow("image"));
 
 	          /**
 	           * Next set the title of the entry.

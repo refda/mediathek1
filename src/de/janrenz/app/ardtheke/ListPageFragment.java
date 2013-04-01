@@ -70,7 +70,7 @@ public class ListPageFragment extends ListFragment implements
 		 *            the index of the selected headline.
 		 * @param string 
 		 */
-		public void onHeadlineSelected(int index, String string);
+		public void onHeadlineSelected(int index, String string, ArrayList all, String title, String subtitle);
 	}
 
 	/**
@@ -86,7 +86,6 @@ public class ListPageFragment extends ListFragment implements
 		super.onStart();
 		setListAdapter(mListAdapter);
 		getListView().setOnItemClickListener(this);
-		loadCategory(0);
 	}
 
 	@Override
@@ -141,21 +140,6 @@ public class ListPageFragment extends ListFragment implements
 		myCursor = null;
 	}
 
-	/**
-	 * Load and display the headlines for the given news category.
-	 * 
-	 * @param categoryIndex
-	 *            the index of the news category to display.
-	 */
-	public void loadCategory(int categoryIndex) {
-		mHeadlinesList.clear();
-		int i;
-		NewsCategory cat = NewsSource.getInstance().getCategory(categoryIndex);
-		for (i = 0; i < cat.getArticleCount(); i++) {
-			mHeadlinesList.add(cat.getArticle(i).getHeadline());
-		}
-		mListAdapter.notifyDataSetChanged();
-	}
 
 	/**
 	 * Handles a click on a headline.
@@ -169,7 +153,14 @@ public class ListPageFragment extends ListFragment implements
 		if (null != mHeadlineSelectedListener) {
 			myCursor.moveToPosition(position);
 			Log.v ("DEBUG ", myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
-			mHeadlineSelectedListener.onHeadlineSelected(position,  myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
+			mHeadlineSelectedListener.onHeadlineSelected(
+					position,
+					myCursor.getString(myCursor.getColumnIndexOrThrow("extId")),
+					null,
+					myCursor.getString(myCursor.getColumnIndexOrThrow("title")),
+					myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle"))
+					
+					);
 		}
 	}
 
