@@ -3,6 +3,7 @@ package de.janrenz.app.ardtheke;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URLEncoder;
 import java.util.Date;
 
 import org.apache.http.HttpEntity;
@@ -48,14 +49,8 @@ public class SlowContentProvider extends ContentProvider {
 	
     @Override
     public Cursor query(Uri uri, String[] strings, String s, String[] strings1, String s1) {
-        /** 
-    	try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			*/
+         
+    	
             String queryparam = uri.getQueryParameter("offset");
             if (queryparam == null){
             	queryparam = "0";
@@ -81,7 +76,27 @@ public class SlowContentProvider extends ContentProvider {
             		//build the Headline
             		String t2 = android.text.Html.fromHtml(json_data.getString("Title3")).toString();
             		String t3 = android.text.Html.fromHtml(json_data.getString("Title2")).toString();
-            		cursor.addRow(new Object[]{i,t2,t3,json_data.getString("ImageUrl").toString() , json_data.getString("VId")});
+            		//Handle grouped views, like tatort
+            		if (json_data.getBoolean("IsGrouped")){
+            			String mtime = json_data.getString("BTime").toString();
+            			String  cliplisturl = "http://m-service.daserste.de/appservice/1.4.1/video/clip/list/" + mtime + "/"+URLEncoder.encode(t3)+"?func=getVideoClipList&clipTimestamp=" + mtime + 
+            					"&clipTitle=" + URLEncoder.encode(t3);
+            			Log.e("URL" ,cliplisturl );
+            			String result2 = "";
+            			result2 = readJSONFeed(cliplisturl);
+            			JSONArray jsonArray2 = new JSONArray(result2); 
+            			Log.e("XML" ,result2);
+                    	for(int j=0;j<jsonArray2.length();j++){
+                    		JSONObject json_data2 = jsonArray2.getJSONObject(j);
+                    		 t2 = android.text.Html.fromHtml(json_data2.getString("Title3")).toString();
+                    		 t3 = android.text.Html.fromHtml(json_data2.getString("Title2")).toString();
+                    		cursor.addRow(new Object[]{1000+j,t2,t3,json_data2.getString("ImageUrl").toString() , json_data2.getString("VId")});
+                    	}
+            		} 
+            		if (!json_data.getBoolean("IsGrouped")){
+            			
+            			cursor.addRow(new Object[]{i,t2,t3,json_data.getString("ImageUrl").toString() , json_data.getString("VId")});
+            		}
             	}
 		    } catch (JSONException e) {
 		    	e.printStackTrace();

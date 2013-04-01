@@ -161,6 +161,7 @@ public class ArticleFragment extends Fragment{
 		protected void onPostExecute(String result) { 
 			
 			InputSource inputSrc = new InputSource(new StringReader(result));
+			inputSrc.setEncoding("UTF-8");
 			//Toast.makeText(getActivity().getBaseContext(), result, Toast.LENGTH_LONG).show();
 			XPath xpath = XPathFactory.newInstance().newXPath();
 			

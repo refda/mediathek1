@@ -84,7 +84,7 @@ public class HeadlinesFragment extends ListFragment implements
 
 	@Override
 	public void onStart() {
-		setListShown(false);
+		
 		super.onStart();
 		setListAdapter(mListAdapter);
 		getListView().setOnItemClickListener(this);
@@ -94,6 +94,7 @@ public class HeadlinesFragment extends ListFragment implements
 	
 	@Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+		setListShown(false);
         Log.d("TAG", "onViewCreated");
         //...do something
         Bundle args = new Bundle();
@@ -155,11 +156,6 @@ public class HeadlinesFragment extends ListFragment implements
 	}
 
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-		try {
-			setListShown(true);		
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
 		setOnHeadlineSelectedListener((OnHeadlineSelectedListener) getActivity());
 		mListAdapter.swapCursor(cursor);
 		myCursor = cursor;
@@ -170,10 +166,15 @@ public class HeadlinesFragment extends ListFragment implements
 		    mTitles.add( myCursor.getString(myCursor.getColumnIndexOrThrow("title")));
 		    mSubtitles.add( myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle")));
 		}
+		try {
+			setListShown(true);		
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public void onLoaderReset(Loader<Cursor> cursorLoader) {
-		setListShown(true);
+		//setListShown(true);
 		mListAdapter.swapCursor(null);
 		myCursor = null;
 	}
