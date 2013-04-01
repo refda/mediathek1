@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
-        <com.loopj.android.image.SmartImageView
+        <ImageView
             android:id="@+id/thumbnail"
             android:layout_width="fill_parent"
             android:layout_height="150dp"

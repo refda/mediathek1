@@ -49,6 +49,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
@@ -65,6 +66,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import com.loopj.android.image.SmartImageView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import de.janrenz.app.ardtheke.HeadlinesFragment.OnHeadlineSelectedListener;
 
@@ -170,8 +173,25 @@ public class ArticleFragment extends Fragment{
 		            Node node = nodes.item(i);
 		            //
 		            String url = node.getTextContent();
-		            SmartImageView imageView = (SmartImageView) mView.findViewById(R.id.thumbnail);
-		            imageView.setImageUrl(url);
+		            ImageView imageView = (ImageView) mView.findViewById(R.id.thumbnail);
+		            /**
+			           * Set the image
+			           */
+			          DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
+			          .showStubImage(R.drawable.ic_stub)
+			         // .showImageForEmptyUri(R.drawable.ic_empty)
+			          .showImageOnFail(R.drawable.ic_error)
+			         // .resetViewBeforeLoading()
+			          //.delayBeforeLoading(1000)
+			          .cacheInMemory()
+			          //.cacheOnDisc()
+			             .build();
+			          
+			          ImageView image_view =  (ImageView) mView.findViewById(R.id.thumbnail);
+			         
+			          if (image_view != null) {
+			        	  ImageLoader.getInstance().displayImage(url, image_view, loadingOptions);
+			          }
 			    }
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();

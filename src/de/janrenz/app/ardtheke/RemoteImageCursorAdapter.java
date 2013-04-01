@@ -3,7 +3,8 @@ package de.janrenz.app.ardtheke;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-import com.loopj.android.image.SmartImageView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Filterable {
@@ -60,9 +62,19 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	          /**
 	           * Set the image
 	           */
-	          SmartImageView image_view = (SmartImageView) v.findViewById(R.id.thumbnail);
+	          DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
+	          .showStubImage(R.drawable.ic_stub)
+	         // .showImageForEmptyUri(R.drawable.ic_empty)
+	          .showImageOnFail(R.drawable.ic_error)
+	         // .resetViewBeforeLoading()
+	          //.delayBeforeLoading(1000)
+	          .cacheInMemory()
+	          //.cacheOnDisc()
+	             .build();
+	          ImageView image_view =  (ImageView) v.findViewById(R.id.thumbnail);
+	         
 	          if (image_view != null) {
-	        	  image_view.setImageUrl(imagePath);
+	        	  ImageLoader.getInstance().displayImage(imagePath, image_view, loadingOptions);
 	          }
 	    }
 	

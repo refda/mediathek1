@@ -21,7 +21,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
-    <com.loopj.android.image.SmartImageView
+    <ImageView
         android:id="@+id/thumbnail"
         android:layout_width="120dp"
         android:layout_height="67dp"
