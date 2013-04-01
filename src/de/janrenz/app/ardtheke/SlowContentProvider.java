@@ -3,6 +3,7 @@ package de.janrenz.app.ardtheke;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -27,7 +28,6 @@ public class SlowContentProvider extends ContentProvider {
     
     @Override
     public boolean onCreate() {
-        Log.i(TAG,"onCreate");
         return true;
     }
     public String readJSONFeed(String URL) {
@@ -48,12 +48,28 @@ public class SlowContentProvider extends ContentProvider {
 	
     @Override
     public Cursor query(Uri uri, String[] strings, String s, String[] strings1, String s1) {
-            Log.i(TAG,uri.toString());
+            Log.i("********"+TAG,uri.toString());
             //Thread.sleep(3000);
-            String url= "http://m-service.daserste.de/appservice/1.4.1/video/list/1364472896?func=getVideoList&unixTimestamp=1364472896";
-
+            String queryparam = uri.getQueryParameter("offset");
+            if (queryparam == null){
+            	queryparam = "0";
+            }
+            Integer offset = Integer.parseInt(queryparam);
+            
+            Date dt = new Date();
+              // z.B. 'Fri Jan 26 19:03:56 GMT+01:00 2001'
+            dt.setHours(24);
+            dt.setMinutes(0);
+            dt.setSeconds(0);
+            
+            Long curtime = dt.getTime()/1000 - ((24*60*60)*offset);
+            
+            Log.v("TIME", curtime.toString());
+//1364763686
+            String url= "http://m-service.daserste.de/appservice/1.4.1/video/list/" + curtime + "?func=getVideoList&unixTimestamp=" + curtime;
+          
             String result = "";
-            MatrixCursor cursor = new MatrixCursor(new String[]{"_id","title", "image", "extId"});
+            MatrixCursor cursor = new MatrixCursor(new String[]{"_id","title", "subtitle", "image", "extId"});
             try {
             	result = readJSONFeed(url);
             	// TODO Auto-generated catch block
@@ -63,9 +79,9 @@ public class SlowContentProvider extends ContentProvider {
             	
             		JSONObject json_data = jsonArray.getJSONObject(i);
             		//build the Headline
-            		String t2 = android.text.Html.fromHtml(json_data.getString("Title2")).toString();
-            		String t3 = android.text.Html.fromHtml(json_data.getString("Title3")).toString();
-            		cursor.addRow(new Object[]{0,t2 + " " + t3, json_data.getString("ImageUrl").toString() , json_data.getString("VId")});
+            		String t2 = android.text.Html.fromHtml(json_data.getString("Title3")).toString();
+            		String t3 = android.text.Html.fromHtml(json_data.getString("Title2")).toString();
+            		cursor.addRow(new Object[]{0,t2,t3,json_data.getString("ImageUrl").toString() , json_data.getString("VId")});
             	}
 		    } catch (JSONException e) {
 		    	e.printStackTrace();

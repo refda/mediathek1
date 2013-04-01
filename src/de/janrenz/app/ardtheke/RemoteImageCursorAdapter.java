@@ -35,6 +35,7 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	    @Override
 	    public void bindView(View v, Context context, Cursor c) {
 	    	  String title = c.getString(c.getColumnIndexOrThrow("title"));
+	    	  String subtitle = c.getString(c.getColumnIndexOrThrow("subtitle"));
 	          String imagePath = c.getString(c.getColumnIndexOrThrow("image"));
 
 	          /**
@@ -44,6 +45,14 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	          TextView title_text = (TextView) v.findViewById(R.id.text_view);
 	          if (title_text != null) {
 	              title_text.setText(title);
+	          }
+	          /**
+	           * Next set the title of the entry.
+	           */
+	          
+	          TextView subtitle_text = (TextView) v.findViewById(R.id.text_view_sub);
+	          if (subtitle_text != null) {
+	        	  subtitle_text.setText(subtitle);
 	          }
 	          /**
 	           * Set the image

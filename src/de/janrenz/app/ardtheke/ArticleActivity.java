@@ -89,9 +89,8 @@ public class ArticleActivity extends FragmentActivity  implements ArticleFragmen
         mPager = (ViewPager)findViewById(R.id.pager);
        
         mPager.setAdapter(mAdapter);
-      //Set the pager with an adapter
+        //Set the pager with an adapter
     
-
         //Bind the title indicator to the adapter
         LinePageIndicator titleIndicator = (LinePageIndicator)findViewById(R.id.pageindicator);
         titleIndicator.setViewPager(mPager);

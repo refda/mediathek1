@@ -16,17 +16,27 @@
 
 package de.janrenz.app.ardtheke;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.viewpagerindicator.LinePageIndicator;
+import com.viewpagerindicator.TitlePageIndicator;
+
 import de.janrenz.app.ardtheke.R;
+import de.janrenz.app.ardtheke.ArticleActivity.MyAdapter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -75,7 +85,9 @@ public class NewsReaderActivity extends FragmentActivity
 
     // List of category titles
     final String CATEGORIES[] = { "Top Stories", "Politics", "Economy", "Technology" };
-
+    MyAdapter mAdapter;
+    ViewPager mPager;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +95,7 @@ public class NewsReaderActivity extends FragmentActivity
 
         // find our fragments
         mHeadlinesFragment = (HeadlinesFragment) getSupportFragmentManager().findFragmentById(
-                R.id.headlines);
+                R.id.pager);
         mArticleFragment = (ArticleFragment) getSupportFragmentManager().findFragmentById(
                 R.id.article);
 
@@ -93,16 +105,25 @@ public class NewsReaderActivity extends FragmentActivity
         mIsDualPane = articleView != null && articleView.getVisibility() == View.VISIBLE;
 
         // Register ourselves as the listener for the headlines fragment events.
-        mHeadlinesFragment.setOnHeadlineSelectedListener(this);
+       //
 
         // Set up the Action Bar (or not, if one is not available)
         int catIndex = savedInstanceState == null ? 0 : savedInstanceState.getInt("catIndex", 0);
         setUpActionBar(mIsDualPane, catIndex);
 
         // Set up headlines fragment
-        mHeadlinesFragment.setSelectable(mIsDualPane);
+        //mHeadlinesFragment.setSelectable(mIsDualPane);
         restoreSelection(savedInstanceState);
 
+        mAdapter = new MyAdapter(getSupportFragmentManager());
+        mPager = (ViewPager)findViewById(R.id.pager);
+        mPager.setAdapter(mAdapter);
+
+        //Bind the title indicator to the adapter
+        TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.pageindicator);
+        titleIndicator.setViewPager(mPager);
+        mPager.setCurrentItem(6);
+        
         // Set up the category button (shown if an Action Bar is not available)
         Button catButton = (Button) findViewById(R.id.categorybutton);
         if (catButton != null) {
@@ -110,6 +131,50 @@ public class NewsReaderActivity extends FragmentActivity
         }
     }
 
+    public static class MyAdapter extends FragmentPagerAdapter {
+    	private int mcount = 7;
+    	
+    	//TODO keep an instance of the fragment per id
+        public MyAdapter(FragmentManager fm) {
+            super(fm);
+        }
+        public void setCount( int newCount ) {
+        	mcount = newCount;
+        }
+       
+        public String getPageTitle (int position ) {
+        	//!TODO: get real page title
+            Date dt = new Date();
+            // z.B. 'Fri Jan 26 19:03:56 GMT+01:00 2001'
+          dt.setHours(20);
+          dt.setMinutes(0);
+          dt.setSeconds(0);
+          if (position == (mcount-1) ) {
+        	  return "Heute";
+          }
+          
+          Long fragmentTime = dt.getTime() - ((24*60*60*1000)*(mcount-position-1));
+          Date cdt = new Date(fragmentTime);
+          SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EE dd.MM");
+          return simpleDateFormat.format(fragmentTime);
+        	
+        }
+        
+        @Override
+        public int getCount() {
+        	return mcount;  
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+        	HeadlinesFragment f = new HeadlinesFragment();
+            Bundle args = new Bundle();
+            //this is now the offset
+        	args.putInt("datepos", 6-position);
+            f.setArguments(args);
+            return f;
+        }
+    }
     /** Restore category/article selection from saved state. */
     void restoreSelection(Bundle savedInstanceState) {
         if (savedInstanceState != null) {

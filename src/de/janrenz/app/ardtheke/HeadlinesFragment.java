@@ -30,11 +30,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-
 import android.widget.ListView;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import de.janrenz.app.ardtheke.R;
 
@@ -54,7 +51,7 @@ public class HeadlinesFragment extends ListFragment implements
 	private Cursor myCursor;
 	// The listener we are to notify when a headline is selected
 	OnHeadlineSelectedListener mHeadlineSelectedListener = null;
-	private static final int LOADER_ID = 0x02;
+	private static  int LOADER_ID = 0x02;
 	private ArrayList<String> mArrayList = new ArrayList<String>();
 	
 	/**
@@ -99,16 +96,27 @@ public class HeadlinesFragment extends ListFragment implements
 						R.id.thumbnail });
 		// ListView listView = (ListView) findViewById(R.id.list);
 		this.setListAdapter(mListAdapter);
-		getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null,
-				this);
+		Bundle args = new Bundle();
+		args.putInt("datepos", getArguments().getInt("datepos", 0));
+		//note that we need a different loader id for each loader
+		getActivity().getSupportLoaderManager().initLoader(getArguments().getInt("datepos", 0)+LOADER_ID, args, this);
 	}
 
 	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+		
+		// query code
+		Log.v("CURSOR", "called with i "+i + " and " +getArguments().getInt("datepos", 0));
+		Uri queryUri = Uri.parse("content://de.janrenz.app.ardtheke.cursorloader.data");
+		Integer offset =  getArguments().getInt("datepos", 0);
+		queryUri = queryUri.buildUpon().appendQueryParameter("offset", offset.toString()).build();
 
 		return new CursorLoader(
 				getActivity(),
-				Uri.parse("content://de.janrenz.app.ardtheke.cursorloader.data"),
-				new String[] { "title", "image" , "extId"}, null, null, null);
+				queryUri,
+				new String[] { "title", "image" , "extId"}, 
+				null, 
+				null, 
+				null);
 	}
 
 	/**
@@ -128,7 +136,12 @@ public class HeadlinesFragment extends ListFragment implements
 	}
 
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-		setListShown(true);
+		try {
+			setListShown(true);		
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		setOnHeadlineSelectedListener((OnHeadlineSelectedListener) getActivity());
 		mListAdapter.swapCursor(cursor);
 		myCursor = cursor;
 		

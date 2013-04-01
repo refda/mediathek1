@@ -16,7 +16,7 @@
 
 <!-- BEGIN_INCLUDE(all) -->
 <resources>
-    <item name="main_layout" type="layout">@layout/onepane</item>
+    <item name="main_layout" type="layout">@layout/movielist</item>
     <bool name="has_two_panes">false</bool>
 </resources>
 <!-- END_INCLUDE(all) -->
