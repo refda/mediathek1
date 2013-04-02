@@ -19,7 +19,7 @@
 
         <TextView
             android:id="@+id/headline2"
-            android:layout_width="320dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:text=""
@@ -27,7 +27,7 @@
 
         <TextView
             android:id="@+id/headline1"
-            android:layout_width="320dp"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:text=""
@@ -43,6 +43,7 @@
             <ProgressBar
                 android:id="@+id/laodingProgressBar"
                 android:layout_width="fill_parent"
+                style="?android:attr/progressBarStyleLarge"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
@@ -54,13 +55,24 @@
             android:visibility="invisible" >
 
             <Button
-                android:id="@+id/button1"
+                android:id="@+id/buttonWatch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:background="#1E3E95"
                 android:text="Jetzt ansehen"
+                android:textColor="#FFFFFF" />
+            
+                   <Button
+                android:id="@+id/buttonCopy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                   android:layout_marginTop="15dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="#DDDDDD"
+                android:text="Film Url kopieren"
                 android:textColor="#FFFFFF" />
 
             <LinearLayout
