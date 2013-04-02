@@ -64,16 +64,7 @@
                 android:text="Jetzt ansehen"
                 android:textColor="#FFFFFF" />
             
-                   <Button
-                android:id="@+id/buttonCopy"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                   android:layout_marginTop="15dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="#DDDDDD"
-                android:text="Film Url kopieren"
-                android:textColor="#FFFFFF" />
+        
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -95,6 +86,16 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
             </LinearLayout>
+                       <Button
+                android:id="@+id/buttonCopy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                   android:layout_marginTop="15dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="#DDDDDD"
+                android:text="Film Url kopieren"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
     </LinearLayout>
 
