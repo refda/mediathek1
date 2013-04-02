@@ -93,7 +93,7 @@ public class SlowContentProvider extends ContentProvider {
                     		cursor.addRow(new Object[]{1000+j,t2,t3,json_data2.getString("ImageUrl").toString() , json_data2.getString("VId")});
                     	}
             		} 
-            		if (!json_data.getBoolean("IsGrouped")){
+            		if (!json_data.getBoolean("IsGrouped") && !json_data.getBoolean("IsLive")){
             			
             			cursor.addRow(new Object[]{i,t2,t3,json_data.getString("ImageUrl").toString() , json_data.getString("VId")});
             		}
