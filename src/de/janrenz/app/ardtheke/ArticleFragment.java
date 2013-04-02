@@ -62,7 +62,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
- 
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -76,8 +76,8 @@ import de.janrenz.app.ardtheke.HeadlinesFragment.OnHeadlineSelectedListener;
 /**
  * Fragment that displays a news article.
  */
-public class ArticleFragment extends Fragment{
-	
+public class ArticleFragment extends Fragment {
+
 	View mView = null;
 	// The article we are to display
 	NewsArticle mNewsArticle = null;
@@ -85,18 +85,19 @@ public class ArticleFragment extends Fragment{
 	// The id of our movie
 	String extId = null;
 
-	// The cvideo path 
+	// The cvideo path
 	String videoPath = null;
-	
+
 	List<String[]> videoSources = new ArrayList<String[]>();
+
 	// Parameterless constructor is needed by framework
 	public ArticleFragment() {
-	
+
 		super();
 	}
-	
+
 	OnMovieClickedListener mOnMovieClickedListener = null;
-	
+
 	/**
 	 * Represents a listener that will be notified of selections.
 	 */
@@ -106,17 +107,19 @@ public class ArticleFragment extends Fragment{
 		 * 
 		 * @param index
 		 *            the index of the selected item.
-		 * @param string 
+		 * @param string
 		 */
 		public void onMovieSelected(String url);
 	}
+
 	/**
-	 * Sets up the UI. 
+	 * Sets up the UI.
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		mView = inflater.inflate(R.layout.detail, container, false);;
+		mView = inflater.inflate(R.layout.detail, container, false);
+		;
 		return mView;
 	}
 
@@ -124,24 +127,24 @@ public class ArticleFragment extends Fragment{
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		displayArticle();
 	};
-	
-	public void setOnMovieClickedListener(
-			OnMovieClickedListener listener) {
+
+	public void setOnMovieClickedListener(OnMovieClickedListener listener) {
 		mOnMovieClickedListener = listener;
 	}
-	
-	private Integer getQualityPositionForString (String quality) {
-		 for (int j = 0; j < videoSources.size(); j++) {
-		// for (String[] obj : videoSources) {
-		    	//qualities.add(obj[0]);
-			 String[] arr = videoSources.get(j);
-			  if (arr[0].equals(quality)){
-				  Log.v("QUALITY", quality);
-				  return j;
-		      }
-		 }
+
+	private Integer getQualityPositionForString(String quality) {
+		for (int j = 0; j < videoSources.size(); j++) {
+			// for (String[] obj : videoSources) {
+			// qualities.add(obj[0]);
+			String[] arr = videoSources.get(j);
+			if (arr[0].equals(quality)) {
+				Log.v("QUALITY", quality);
+				return j;
+			}
+		}
 		return 1;
 	}
+
 	/**
 	 * Displays a particular article.
 	 * 
@@ -149,201 +152,230 @@ public class ArticleFragment extends Fragment{
 	 *            the article to display
 	 */
 	public void displayArticle() {
-		 TextView text = (TextView) mView.findViewById(R.id.headline1);
-         text.setText(getArguments().getString("title"));
-		 TextView text2 = (TextView) mView.findViewById(R.id.headline2);
-		 text2.setText(getArguments().getString("subtitle"));
-		new AccessWebServiceTask().execute("http://m-service.daserste.de/appservice/1.4.1/video/" + getArguments().getString("extId"));
+		TextView text = (TextView) mView.findViewById(R.id.headline1);
+		text.setText(getArguments().getString("title"));
+		TextView text2 = (TextView) mView.findViewById(R.id.headline2);
+		text2.setText(getArguments().getString("subtitle"));
+		new AccessWebServiceTask()
+				.execute("http://m-service.daserste.de/appservice/1.4.1/video/"
+						+ getArguments().getString("extId"));
 	}
 
-	private class AccessWebServiceTask extends AsyncTask <String, Void, String> {
+	private class AccessWebServiceTask extends AsyncTask<String, Void, String> {
 		protected String doInBackground(String... urls) {
 			return loadXML(urls[0]);
 		}
-		protected void onPostExecute(String result) { 
-			
+
+		protected void onPostExecute(String result) {
+
 			InputSource inputSrc = new InputSource(new StringReader(result));
 			inputSrc.setEncoding("UTF-8");
-			//Toast.makeText(getActivity().getBaseContext(), result, Toast.LENGTH_LONG).show();
+			// Toast.makeText(getActivity().getBaseContext(), result,
+			// Toast.LENGTH_LONG).show();
 			XPath xpath = XPathFactory.newInstance().newXPath();
-			
+
 			// specify the xpath expression
 			String expression = "//playlist/video/teaserImage/variants/variant/url";
 			// list of nodes queried
 			try {
-				NodeList nodes = (NodeList)xpath.evaluate(expression, inputSrc, XPathConstants.NODESET);
-			    for (int i = 0; i < nodes.getLength(); i++) {
-		            Node node = nodes.item(i);
-		            //
-		            String url = node.getTextContent();
-		            ImageView imageView = (ImageView) mView.findViewById(R.id.thumbnail);
-		            /**
-			           * Set the image
-			           */
-			          DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
-			          .showStubImage(R.drawable.ic_stub)
-			         // .showImageForEmptyUri(R.drawable.ic_empty)
-			          .showImageOnFail(R.drawable.ic_error)
-			         // .resetViewBeforeLoading()
-			          //.delayBeforeLoading(1000)
-			          .cacheInMemory()
-			          //.cacheOnDisc()
-			             .build();
-			          
-			          ImageView image_view =  (ImageView) mView.findViewById(R.id.thumbnail);
-			         
-			          if (image_view != null) {
-			        	  ImageLoader.getInstance().displayImage(url, image_view, loadingOptions);
-			          }
-			    }
+				NodeList nodes = (NodeList) xpath.evaluate(expression,
+						inputSrc, XPathConstants.NODESET);
+				for (int i = 0; i < nodes.getLength(); i++) {
+					Node node = nodes.item(i);
+					//
+					String url = node.getTextContent();
+					ImageView imageView = (ImageView) mView
+							.findViewById(R.id.thumbnail);
+					/**
+					 * Set the image
+					 */
+					DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
+							.showStubImage(R.drawable.ic_stub)
+							// .showImageForEmptyUri(R.drawable.ic_empty)
+							.showImageOnFail(R.drawable.ic_error)
+							// .resetViewBeforeLoading()
+							// .delayBeforeLoading(1000)
+							.cacheInMemory()
+							// .cacheOnDisc()
+							.build();
+
+					ImageView image_view = (ImageView) mView
+							.findViewById(R.id.thumbnail);
+
+					if (image_view != null) {
+						ImageLoader.getInstance().displayImage(url, image_view,
+								loadingOptions);
+					}
+				}
 			} catch (XPathExpressionException e) {
 				e.printStackTrace();
 			}
-			
-		
-			
-			
-			
-			
-			//get the streams
+
+			// get the streams
 			expression = "//playlist/video/assets/asset";
 			inputSrc = new InputSource(new StringReader(result));
 			inputSrc.setEncoding("UTF-8");
 			videoSources = new ArrayList<String[]>();
-			
-			 
-			  
+
 			// list of nodes queried
 			try {
 				String tempUrl = "";
-				NodeList nodes = (NodeList)xpath.evaluate(expression, inputSrc, XPathConstants.NODESET);
-			    for (int i = 0; i < nodes.getLength(); i++) {
-		            Node node = nodes.item(i);
-		            Boolean useThisUrl = false;
-		            String bandwith = null;
-		            String serverPrefix = null;
-		            NodeList nodeChilds = node.getChildNodes();
-		            for (int j = 0; j < nodeChilds.getLength(); j++) {
-		            	Node childNode = nodeChilds.item(j);
-		            	String nodeName =  childNode.getNodeName();
-		            	String nodeValue = childNode.getTextContent();
-						if (nodeName.equals("recommendedBandwidth"))
-						{
-							Log.v("XML", "Bandwith "+nodeValue);
+				NodeList nodes = (NodeList) xpath.evaluate(expression,
+						inputSrc, XPathConstants.NODESET);
+				for (int i = 0; i < nodes.getLength(); i++) {
+					Node node = nodes.item(i);
+					Boolean useThisUrl = false;
+					String bandwith = null;
+					String serverPrefix = null;
+					NodeList nodeChilds = node.getChildNodes();
+					for (int j = 0; j < nodeChilds.getLength(); j++) {
+						Node childNode = nodeChilds.item(j);
+						String nodeName = childNode.getNodeName();
+						String nodeValue = childNode.getTextContent();
+						if (nodeName.equals("recommendedBandwidth")) {
+							Log.v("XML", "Bandwith " + nodeValue);
 							bandwith = nodeValue;
 							break;
-							
-						}else if(nodeName.equals("fileName")){
-							tempUrl = nodeValue;	
-							//Log.v("XML", "**** "+nodeName + " with value " + nodeValue);
-		            
-			            }else if(nodeName.equals("serverPrefix")){
-			            	serverPrefix = nodeValue;	
-							//Log.v("XML", "**** "+nodeName + " with value " + nodeValue);
-		            	}else
-						{
-							//Log.v("XML", "Untreated Nodetype "+nodeName + " with value " + nodeValue);
+
+						} else if (nodeName.equals("fileName")) {
+							tempUrl = nodeValue;
+							// Log.v("XML", "**** "+nodeName + " with value " +
+							// nodeValue);
+
+						} else if (nodeName.equals("serverPrefix")) {
+							serverPrefix = nodeValue;
+							// Log.v("XML", "**** "+nodeName + " with value " +
+							// nodeValue);
+						} else {
+							// Log.v("XML", "Untreated Nodetype "+nodeName +
+							// " with value " + nodeValue);
 						}
-		            }
-		            
-		            //Log.v("XML", useThisUrl.toString());
-		            //if (useThisUrl){
-		            	//Log.v("XML" , "Set url to" + tempUrl);
-		            	videoPath = tempUrl;
-		            	String videoUrl =  serverPrefix + videoPath;
-		            	if (videoUrl.startsWith("http"))
-		            	{
-		            		if (bandwith.equals(""))
-		            		{
-		            			bandwith = "HbbTV";
-		            		}
-		            		videoSources.add( new String[] {bandwith, videoUrl}); 
-		            	}
-		            	
-		            //}
-		           
-			    }
-			    //set qualitySeekBar
-			    /**
-						TextView qualityText = (TextView) mView.findViewById(R.id.qualityText);
-						String newQualityText = videoSources.get(progress)[0];
-						qualityText.setText(newQualityText);
-						videoPath = videoSources.get(1)[1];
-			*/
-					//Spinner population
-			    //default quality
-			    
-			    ArrayList qualities = new ArrayList();
-			    for (String[] obj : videoSources) {
-			    	qualities.add(obj[0]);
-			      }
-			    final Spinner s = (Spinner) mView.findViewById(
-			            R.id.qualitySpinner);
-			    ArrayAdapter<String> mspinnerAdapter = new ArrayAdapter<String>(getActivity(), 
-			    		android.R.layout.simple_spinner_item, qualities);
-			    s.setAdapter(mspinnerAdapter);
-			    SharedPreferences appSettings = getActivity().getSharedPreferences("AppPreferences", getActivity().MODE_PRIVATE);  
-				String defaultQuality = appSettings.getString("Quality", "DSL768");
-				
-				videoPath = videoSources.get(getQualityPositionForString(defaultQuality))[1];
+					}
+
+					// Log.v("XML", useThisUrl.toString());
+					// if (useThisUrl){
+					// Log.v("XML" , "Set url to" + tempUrl);
+					videoPath = tempUrl;
+					String videoUrl = serverPrefix + videoPath;
+					if (videoUrl.startsWith("http")) {
+						if (bandwith.equals("")) {
+							bandwith = "HbbTV";
+						}
+						videoSources.add(new String[] { bandwith, videoUrl });
+					}
+
+					// }
+
+				}
+				// set qualitySeekBar
+				/**
+				 * TextView qualityText = (TextView)
+				 * mView.findViewById(R.id.qualityText); String newQualityText =
+				 * videoSources.get(progress)[0];
+				 * qualityText.setText(newQualityText); videoPath =
+				 * videoSources.get(1)[1];
+				 */
+				// Spinner population
+				// default quality
+
+				ArrayList qualities = new ArrayList();
+				for (String[] obj : videoSources) {
+					qualities.add(obj[0]);
+				}
+				final Spinner s = (Spinner) mView
+						.findViewById(R.id.qualitySpinner);
+				ArrayAdapter<String> mspinnerAdapter = new ArrayAdapter<String>(
+						getActivity(), android.R.layout.simple_spinner_item,
+						qualities);
+				s.setAdapter(mspinnerAdapter);
+				SharedPreferences appSettings = getActivity()
+						.getSharedPreferences("AppPreferences",
+								getActivity().MODE_PRIVATE);
+				String defaultQuality = appSettings.getString("Quality",
+						"DSL768");
+
+				videoPath = videoSources
+						.get(getQualityPositionForString(defaultQuality))[1];
 				s.setSelection(getQualityPositionForString(defaultQuality));
-				
-			    s.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-						@Override
-						public void onItemSelected(AdapterView<?> arg0,
-								View arg1, int arg2, long arg3) {
-							// TODO Auto-generated method stub
-							//Integer item = s.getSelectedItemPosition();
-						
-							videoPath = videoSources.get(arg2)[1];
-							SharedPreferences appSettings = getActivity().getSharedPreferences("AppPreferences", getActivity().MODE_PRIVATE);  
-							SharedPreferences.Editor prefEditor = appSettings.edit();  
-							prefEditor.putString("Quality", videoSources.get(arg2)[0]);    
-							prefEditor.commit();  
+				s.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+					@Override
+					public void onItemSelected(AdapterView<?> arg0, View arg1,
+							int arg2, long arg3) {
+						// TODO Auto-generated method stub
+						// Integer item = s.getSelectedItemPosition();
+
+						videoPath = videoSources.get(arg2)[1];
+						SharedPreferences appSettings = getActivity()
+								.getSharedPreferences("AppPreferences",
+										getActivity().MODE_PRIVATE);
+						SharedPreferences.Editor prefEditor = appSettings
+								.edit();
+						prefEditor.putString("Quality",
+								videoSources.get(arg2)[0]);
+						prefEditor.commit();
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+						// TODO Auto-generated method stub
+
+					}
+				});
+				Button button = (Button) mView.findViewById(R.id.buttonWatch);
+
+				button.setOnClickListener(new View.OnClickListener() {
+
+					public void onClick(View v) {
+						// if (mOnMovieClickedListener != null) {
+
+						if (videoPath != null) {
+							Intent intent = new Intent(Intent.ACTION_VIEW);
+							intent.setDataAndType(Uri.parse(videoPath),
+									"video/mp4");
+							startActivity(intent);
+							Toast.makeText(getActivity(),
+									"Lade Video " + videoPath,
+									Toast.LENGTH_LONG).show();
 						}
 
-						@Override
-						public void onNothingSelected(AdapterView<?> arg0) {
-							// TODO Auto-generated method stub
-							
-						}
-			    });
-			    Button button = (Button) mView.findViewById(R.id.button1);
-		        
-		        button.setOnClickListener(new View.OnClickListener() {
+						// }
+					}
 
-		            public void onClick(View v) {
-		               //if (mOnMovieClickedListener != null) {
-		            	
-		            	 if (v.id == R.id.buttonCopy){
-		            		 ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE); 
-		            		 ClipData clip = ClipData.newPlainText("TVEins" ,  videoPath);
-		            		 clipboard.setPrimaryClip(clip);
-		            		 Toast.makeText(getActivity(), "Url wurde in Zwischenablage kopiert", Toast.LENGTH_LONG).show();
-		            		 
-		            	 }else if (){
-		            		 if (videoPath != null){
-		            			 Intent intent = new Intent(Intent.ACTION_VIEW); 
-		            			 intent.setDataAndType(Uri.parse(videoPath), "video/mp4");
-		            			 startActivity(intent);
-		            			 Toast.makeText(getActivity(), "Lade Video " + videoPath, Toast.LENGTH_LONG).show();
-		            		 }
-		            		 
-		            	 }
-		               //}
-		            }
-		            
-		        });
-		        mView.findViewById(R.id.showAfterLoadItems).setVisibility(View.VISIBLE);
-		        mView.findViewById(R.id.hideAfterLoadItems).setVisibility(View.GONE);
-		           			 
+				});
+				Button buttonCopy = (Button) mView
+						.findViewById(R.id.buttonCopy);
+
+				buttonCopy.setOnClickListener(new View.OnClickListener() {
+
+					public void onClick(View v) {
+						ClipboardManager clipboard = (ClipboardManager) getActivity()
+								.getSystemService(
+										getActivity().CLIPBOARD_SERVICE);
+						ClipData clip = ClipData.newPlainText("TVEins",
+								videoPath);
+						clipboard.setPrimaryClip(clip);
+						Toast.makeText(getActivity(),
+								"Url wurde in Zwischenablage kopiert",
+								Toast.LENGTH_LONG).show();
+					}
+
+				}
+
+				);
+
+				mView.findViewById(R.id.showAfterLoadItems).setVisibility(
+						View.VISIBLE);
+				mView.findViewById(R.id.hideAfterLoadItems).setVisibility(
+						View.GONE);
+
 			} catch (XPathExpressionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 
 	/**
@@ -356,11 +388,11 @@ public class ArticleFragment extends Fragment{
 		final long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
 		final File httpCacheDir = new File(getActivity().getCacheDir(), "http");
 		try {
-		    Class.forName("android.net.http.HttpResponseCache")
-		        .getMethod("install", File.class, long.class)
-		        .invoke(null, httpCacheDir, httpCacheSize);
+			Class.forName("android.net.http.HttpResponseCache")
+					.getMethod("install", File.class, long.class)
+					.invoke(null, httpCacheDir, httpCacheSize);
 		} catch (Exception httpResponseCacheNotAvailable) {
-		    
+
 		}
 		StringBuilder stringBuilder = new StringBuilder();
 		HttpClient httpClient = new DefaultHttpClient();
@@ -373,8 +405,7 @@ public class ArticleFragment extends Fragment{
 				HttpEntity entity = response.getEntity();
 				InputStream inputStream = entity.getContent();
 				BufferedReader reader = new BufferedReader(
-					new InputStreamReader(inputStream)
-				);
+						new InputStreamReader(inputStream));
 				String line;
 				while ((line = reader.readLine()) != null) {
 					stringBuilder.append(line);

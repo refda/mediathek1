@@ -91,7 +91,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="15dp"
-                android:background="#DDDDDD"
+                android:background="#aaaaaa"
                 android:text="Film Url kopieren"
                 android:textColor="#FFFFFF" />
         </LinearLayout>

@@ -98,9 +98,9 @@ public class HeadlinesFragment extends ListFragment implements
         Log.d("TAG", "onViewCreated");
         //...do something
         Bundle args = new Bundle();
-        args.putInt("datepos", getArguments().getInt("datepos", 0));
+        args.putInt("datepos", this.getArguments().getInt("datepos", 0));
         //note that we need a different loader id for each loader
-        getActivity().getSupportLoaderManager().initLoader(getArguments().getInt("datepos", 0)+LOADER_ID, args, this);
+        getActivity().getSupportLoaderManager().initLoader(this.getArguments().getInt("datepos", 0)+LOADER_ID, args, this);
     }
 	
 	@Override
