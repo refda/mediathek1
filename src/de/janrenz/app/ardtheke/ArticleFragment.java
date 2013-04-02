@@ -33,6 +33,8 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -314,13 +316,21 @@ public class ArticleFragment extends Fragment{
 		            public void onClick(View v) {
 		               //if (mOnMovieClickedListener != null) {
 		            	
-		            	 
-		            	   if (videoPath != null){
-		           			Intent intent = new Intent(Intent.ACTION_VIEW); 
-		           			intent.setDataAndType(Uri.parse(videoPath), "video/mp4");
-		           			startActivity(intent);
-		           			Toast.makeText(getActivity(), "Lade Video " + videoPath, Toast.LENGTH_LONG).show();
-		           		}
+		            	 if (v.id == R.id.buttonCopy){
+		            		 ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE); 
+		            		 ClipData clip = ClipData.newPlainText("TVEins" ,  videoPath);
+		            		 clipboard.setPrimaryClip(clip);
+		            		 Toast.makeText(getActivity(), "Url wurde in Zwischenablage kopiert", Toast.LENGTH_LONG).show();
+		            		 
+		            	 }else if (){
+		            		 if (videoPath != null){
+		            			 Intent intent = new Intent(Intent.ACTION_VIEW); 
+		            			 intent.setDataAndType(Uri.parse(videoPath), "video/mp4");
+		            			 startActivity(intent);
+		            			 Toast.makeText(getActivity(), "Lade Video " + videoPath, Toast.LENGTH_LONG).show();
+		            		 }
+		            		 
+		            	 }
 		               //}
 		            }
 		            
