@@ -165,20 +165,36 @@ public class ArticleFragment extends Fragment {
 		}
 
 		protected void onPostExecute(String result) {
-Log.e("DEBUG", result);
+			Log.e("DEBUG", result);
+			
+			//get duration
 			InputSource inputSrc = new InputSource(new StringReader(result));
 			inputSrc.setEncoding("UTF-8");
-			// Toast.makeText(getActivity().getBaseContext(), result,
-			// Toast.LENGTH_LONG).show();
 			XPath xpath = XPathFactory.newInstance().newXPath();
-
-			// specify the xpath expression
-			String expression = "//playlist/video/teaserImage/variants/variant/url";
+			String expression = "//playlist/video/duration";
 			// list of nodes queried
 			try {
 				NodeList nodes = (NodeList) xpath.evaluate(expression,
 						inputSrc, XPathConstants.NODESET);
-				for (int i = 0; i < nodes.getLength(); i++) {
+				
+					Node node = nodes.item(0);
+					//
+					String duration = node.getTextContent();
+					TextView tView = (TextView) mView.findViewById(R.id.durationText);
+					tView.setText(duration);
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
+				//TODO: MAybe we can rewind the StringReader and reuse it
+			inputSrc = new InputSource(new StringReader(result));
+			inputSrc.setEncoding("UTF-8");
+			// specify the xpath expression
+			expression = "//playlist/video/teaserImage/variants/variant/url";
+			// list of nodes queried
+			try {
+				NodeList nodes = (NodeList) xpath.evaluate(expression,
+						inputSrc, XPathConstants.NODESET);
+				for (int i = 0; i < 1; i++) {
 					Node node = nodes.item(i);
 					//
 					String url = node.getTextContent();
@@ -188,11 +204,9 @@ Log.e("DEBUG", result);
 					 * Set the image
 					 */
 					DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
-							.showStubImage(R.drawable.ic_stub)
+							.showStubImage(R.drawable.ic_empty)
 							// .showImageForEmptyUri(R.drawable.ic_empty)
 							.showImageOnFail(R.drawable.ic_error)
-							// .resetViewBeforeLoading()
-							// .delayBeforeLoading(1000)
 							.cacheInMemory()
 							// .cacheOnDisc()
 							.build();
@@ -261,7 +275,7 @@ Log.e("DEBUG", result);
 					// }
 
 				}
-				 
+
 				// Spinner population
 				// default quality
 
