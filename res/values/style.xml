@@ -15,7 +15,7 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-<style name="MediathekStyle" parent="android:Theme.Light">
+<style name="MediathekStyle" parent="Theme.Sherlock.Light.DarkActionBar">
     <item name="actionBarStyle">@style/Widget.MyTheme.ActionBar</item>
     <item name="android:actionBarStyle">@style/Widget.MyTheme.ActionBar</item>
 </style>

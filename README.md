@@ -6,7 +6,6 @@ Offene ToDos:
 * Sortieren der Bandbreiten
 * Caching der HTTP Requests (für >4 done)
 * Cache einmal pro Tag löschen (via Prefernezes und Helperklasse)
-* Logo
 * Tabletversion
 * States
 
