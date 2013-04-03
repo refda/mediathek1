@@ -21,6 +21,9 @@ public class Movie implements Parcelable {
 	 public Movie(Parcel in) {  
 	     readFromParcel(in);  
 	    }  
+	 public Movie() {  
+	     return;
+	    }  
 	 private void readFromParcel(Parcel in) {    
 	        // ...  
 	        title = in.readString();  

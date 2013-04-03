@@ -152,6 +152,8 @@ public class ArticleFragment extends Fragment {
 		text.setText(getArguments().getString("title"));
 		TextView text2 = (TextView) mView.findViewById(R.id.headline2);
 		text2.setText(getArguments().getString("subtitle"));
+		Log.e("DEBUG", "http://m-service.daserste.de/appservice/1.4.1/video/"
+				+ getArguments().getString("extId"));
 		new AccessWebServiceTask()
 				.execute("http://m-service.daserste.de/appservice/1.4.1/video/"
 						+ getArguments().getString("extId"));
@@ -163,7 +165,7 @@ public class ArticleFragment extends Fragment {
 		}
 
 		protected void onPostExecute(String result) {
-
+Log.e("DEBUG", result);
 			InputSource inputSrc = new InputSource(new StringReader(result));
 			inputSrc.setEncoding("UTF-8");
 			// Toast.makeText(getActivity().getBaseContext(), result,
@@ -390,7 +392,7 @@ public class ArticleFragment extends Fragment {
 				HttpEntity entity = response.getEntity();
 				InputStream inputStream = entity.getContent();
 				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(inputStream));
+						new InputStreamReader(inputStream, "UTF-8"));
 				String line;
 				while ((line = reader.readLine()) != null) {
 					stringBuilder.append(line);

@@ -59,7 +59,7 @@ public class ArticleActivity extends SherlockFragmentActivity implements Article
     int mCatIndex, mArtIndex;
     //the external id
     String extId;
-    ArrayList<String> allIds, allTitles, allSubtitles;
+    ArrayList<Movie> allItems;
     MyAdapter mAdapter;
 
     ViewPager mPager;
@@ -78,10 +78,8 @@ public class ArticleActivity extends SherlockFragmentActivity implements Article
         mCatIndex = getIntent().getExtras().getInt("catIndex", 0);
         mArtIndex = getIntent().getExtras().getInt("artIndex", 0);
         extId     = getIntent().getExtras().getString("extId");
-        //!TODO: MAke this multidensional
-        allTitles = getIntent().getExtras().getStringArrayList("allTitles");
-        allSubtitles     = getIntent().getExtras().getStringArrayList("allSubtitles");
-        allIds    = getIntent().getExtras().getStringArrayList("allIds");
+        allItems = getIntent().getExtras().getParcelableArrayList("allItems");
+      
         
         // If we are in two-pane layout mode, this activity is no longer necessary
         if (getResources().getBoolean(R.bool.has_two_panes)) {
@@ -94,8 +92,8 @@ public class ArticleActivity extends SherlockFragmentActivity implements Article
         
         setContentView( R.layout.daylistwrapper );
         mAdapter = new MyAdapter(getSupportFragmentManager());
-        mAdapter.setCount(allIds.size());
-        mAdapter.setAllItems(allIds, allTitles, allSubtitles);
+        mAdapter.setCount(allItems.size());
+        mAdapter.setAllItems(allItems);
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
         //Set the pager with an adapter
@@ -133,17 +131,16 @@ public class ArticleActivity extends SherlockFragmentActivity implements Article
     }
     public static class MyAdapter extends FragmentPagerAdapter {
     	private int mcount = 0;
-    	private ArrayList<String> mallIds, mallTitles, mallSubtitles;
+    	private ArrayList<Movie> mallItems;
         public MyAdapter(FragmentManager fm) {
             super(fm);
         }
         public void setCount( int newCount ) {
         	mcount = newCount;
         }
-        public void setAllItems(ArrayList<String> allIds, ArrayList<String> allTitles, ArrayList<String> allSubtitles ) {
-        	 mallIds = allIds;
-        	 mallTitles = allTitles;
-        	 mallSubtitles = allSubtitles;
+        public void setAllItems(ArrayList<Movie> allItems  ) {
+        	 mallItems = allItems;
+        	
         }
         public String getPageTitle (int position ) {
         	return "Titel" + position;
@@ -160,9 +157,9 @@ public class ArticleActivity extends SherlockFragmentActivity implements Article
         	ArticleFragment f = new ArticleFragment();
         Bundle args = new Bundle();
         	args.putInt("num", position);
-            args.putString("extId", mallIds.get(position));
-            args.putString("title", mallTitles.get(position));
-            args.putString("subtitle", mallSubtitles.get(position));
+            args.putString("extId", mallItems.get(position).getExtId());
+            args.putString("title",mallItems.get(position).getTitle());
+            args.putString("subtitle", mallItems.get(position).getSubtitle());
             f.setArguments(args);
             return f;
         }

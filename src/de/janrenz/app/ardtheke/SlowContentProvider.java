@@ -72,6 +72,7 @@ public class SlowContentProvider extends ContentProvider {
             	// TODO Auto-generated catch block
             	JSONArray jsonArray = new JSONArray(result); 
             	for(int i=0;i<jsonArray.length();i++){
+            		
             		JSONObject json_data = jsonArray.getJSONObject(i);
             		//build the Headline
             		String t2 = android.text.Html.fromHtml(json_data.getString("Title3")).toString();

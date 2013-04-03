@@ -221,7 +221,7 @@ public class NewsReaderActivity extends FragmentActivity
      * @param index the index of the selected headline.
      */
     @Override
-    public void onHeadlineSelected(int index, String extId, ArrayList allIds, ArrayList allTitles, ArrayList allSubtitles) {
+    public void onHeadlineSelected(int index, String extId, ArrayList<Movie> allItems) {
 
         mArtIndex = index;
         if (mIsDualPane) {
@@ -233,9 +233,7 @@ public class NewsReaderActivity extends FragmentActivity
             Intent i = new Intent(this, ArticleActivity.class);
             i.putExtra("artIndex", index );
             i.putExtra("extId", extId );
-            i.putExtra("allIds", allIds );
-            i.putExtra("allTitles", allTitles );
-            i.putExtra("allSubtitles", allSubtitles );
+            i.putExtra("allItems",allItems );
             startActivity(i);
         }
     }

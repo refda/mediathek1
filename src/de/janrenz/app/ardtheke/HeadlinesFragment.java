@@ -52,9 +52,8 @@ public class HeadlinesFragment extends ListFragment implements
 	// The listener we are to notify when a headline is selected
 	OnHeadlineSelectedListener mHeadlineSelectedListener = null;
 	private static  int LOADER_ID = 0x02;
-	private ArrayList<String> mArrayList = new ArrayList<String>();
-	private ArrayList<String> mSubtitles = new ArrayList<String>();
-	private ArrayList<String> mTitles    = new ArrayList<String>();
+	private ArrayList<Movie> mAllItems = new ArrayList<Movie>();
+	
 	/**
 	 * Represents a listener that will be notified of headline selections.
 	 */
@@ -72,7 +71,7 @@ public class HeadlinesFragment extends ListFragment implements
 		 * 
 		 * @param subtitle
 		 */
-		public void onHeadlineSelected(int index, String string, ArrayList all,  ArrayList allTitles, ArrayList allSubtitles);
+		public void onHeadlineSelected(int index, String string, ArrayList<Movie> allItems);
 	}
 
 	/**
@@ -162,9 +161,12 @@ public class HeadlinesFragment extends ListFragment implements
 		
 		for(myCursor.moveToFirst(); !myCursor.isAfterLast(); myCursor.moveToNext()) {
 		    // The Cursor is now set to the right position
-		    mArrayList.add( myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
-		    mTitles.add( myCursor.getString(myCursor.getColumnIndexOrThrow("title")));
-		    mSubtitles.add( myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle")));
+			Movie mMovie = new Movie();
+			mMovie.setTitle(myCursor.getString(myCursor.getColumnIndexOrThrow("title")));
+			mMovie.setSubtitle(myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle")));
+			mMovie.setExtId(myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
+		
+		  mAllItems.add(mMovie);
 		}
 		try {
 			setListShown(true);		
@@ -195,9 +197,7 @@ public class HeadlinesFragment extends ListFragment implements
 			mHeadlineSelectedListener.onHeadlineSelected(
 					position,  
 					myCursor.getString(myCursor.getColumnIndexOrThrow("extId")), 
-					mArrayList,
-					mTitles,
-					mSubtitles
+					mAllItems
 					);
 		}
 	}
