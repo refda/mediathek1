@@ -16,11 +16,13 @@
 
 package de.janrenz.app.mediathek;
 
+import android.content.Intent;
 import android.content.Loader.OnLoadCompleteListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.app.LoaderManager;
@@ -33,6 +35,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import java.util.ArrayList;
 
+import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.MenuItem;
+
 import de.janrenz.app.mediathek.R;
 
 /**
@@ -42,12 +47,12 @@ import de.janrenz.app.mediathek.R;
  * category. When an item is selected, it notifies the configured listener that
  * a headlines was selected.
  */
-public class HeadlinesFragment extends ListFragment implements
+public class HeadlinesFragment extends SherlockListFragment implements
 		OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
 	// The list adapter for the list we are displaying
 	SimpleCursorAdapter mListAdapter;
-
+	private Boolean isLoading = true;
 	private Cursor myCursor;
 	// The listener we are to notify when a headline is selected
 	OnHeadlineSelectedListener mHeadlineSelectedListener = null;
@@ -87,23 +92,42 @@ public class HeadlinesFragment extends ListFragment implements
 		super.onStart();
 		setListAdapter(mListAdapter);
 		getListView().setOnItemClickListener(this);
+		setListShown(false);
 //		loadCategory(0);
 	}
 
 	
+	public void reloadAllVisisble() { 
+		try {
+			Log.d("HEADLINEFRAGMENT", "requery");
+			mListAdapter.notifyDataSetChanged();
+			triggerLoad();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
 	@Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+		this.setEmptyText("Keine Einträge gefunden.");
 		setListShown(false);
         Log.d("TAG", "onViewCreated");
         //...do something
-        Bundle args = new Bundle();
-        args.putInt("datepos", this.getArguments().getInt("datepos", 0));
-        //note that we need a different loader id for each loader
-        getActivity().getSupportLoaderManager().initLoader(this.getArguments().getInt("datepos", 0)+LOADER_ID, args, this);
-    }
+        triggerLoad();
+}
+	private void triggerLoad(){
+		setListShown(false);
+		this.isLoading = true;
+	    Bundle args = new Bundle();
+	    args.putInt("datepos", this.getArguments().getInt("datepos", 0));
+	    //note that we need a different loader id for each loader
+	    getActivity().getSupportLoaderManager().initLoader(this.getArguments().getInt("datepos", 0)+LOADER_ID, args, this);
+
+}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		// mListAdapter = new ArrayAdapter<String>(getActivity(),
 		// R.layout.headline_item,
@@ -114,6 +138,7 @@ public class HeadlinesFragment extends ListFragment implements
 						R.id.thumbnail });
 		// ListView listView = (ListView) findViewById(R.id.list);
 		this.setListAdapter(mListAdapter);
+		
 	}
 
 	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -150,29 +175,45 @@ public class HeadlinesFragment extends ListFragment implements
 	}
 
 	public void onResume() {
-		setListShown(true);
 		super.onResume();
+		Log.v("FRAGMENT", "RESUME");
+		if ( this.isLoading == false ){
+			setListShown(true);
+			Log.v("FRAGMENT", "count= " + this.getListView().getCount() );
+			if (this.getListView().getCount()== 0){
+				//loadAgain
+				Log.v("FRAGMENT", "laodAgain");
+				triggerLoad();
+			}
+		}else{
+			
+		}
 	}
-
+	
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
 		setOnHeadlineSelectedListener((OnHeadlineSelectedListener) getActivity());
-		mListAdapter.swapCursor(cursor);
-		myCursor = cursor;
-		
-		for(myCursor.moveToFirst(); !myCursor.isAfterLast(); myCursor.moveToNext()) {
-		    // The Cursor is now set to the right position
-			Movie mMovie = new Movie();
-			mMovie.setTitle(myCursor.getString(myCursor.getColumnIndexOrThrow("title")));
-			mMovie.setSubtitle(myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle")));
-			mMovie.setExtId(myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
-		
-		  mAllItems.add(mMovie);
+		if (cursor != null && cursor.getCount()>0){
+			mListAdapter.swapCursor(cursor);
+			myCursor = cursor;
+			for(myCursor.moveToFirst(); !myCursor.isAfterLast(); myCursor.moveToNext()) {
+				// The Cursor is now set to the right position
+				Movie mMovie = new Movie();
+				mMovie.setTitle(myCursor.getString(myCursor.getColumnIndexOrThrow("title")));
+				mMovie.setSubtitle(myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle")));
+				mMovie.setExtId(myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
+				
+				mAllItems.add(mMovie);
+			}
+			
+		}else{
+			setListShown(true);		
 		}
 		try {
 			setListShown(true);		
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
+		this.isLoading = false;
 	}
 
 	public void onLoaderReset(Loader<Cursor> cursorLoader) {

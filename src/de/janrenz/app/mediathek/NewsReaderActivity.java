@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.LinePageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
 
@@ -36,6 +39,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.ListFragment;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -66,10 +71,10 @@ import android.widget.SpinnerAdapter;
  * 
  *CompatActionBarNavListener,OnClickListener 
  */
-public class NewsReaderActivity extends FragmentActivity
+public class NewsReaderActivity extends SherlockFragmentActivity
         implements HeadlinesFragment.OnHeadlineSelectedListener
                     {
-
+	public final int MENUUPDATEID = 1;
     // Whether or not we are in dual-pane mode
     boolean mIsDualPane = false;
 
@@ -117,6 +122,7 @@ public class NewsReaderActivity extends FragmentActivity
         restoreSelection(savedInstanceState);
 
         mAdapter = new MyAdapter(getSupportFragmentManager());
+        
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
 
@@ -131,7 +137,6 @@ public class NewsReaderActivity extends FragmentActivity
     public static class MyAdapter extends FragmentPagerAdapter {
     	private int mcount = 7;
     	
-    	//TODO keep an instance of the fragment per id
         public MyAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -196,18 +201,53 @@ public class NewsReaderActivity extends FragmentActivity
      * @param selTab the selected tab or list item.
      */
     public void setUpActionBar(boolean showTabs, int selTab) {
-        if (Build.VERSION.SDK_INT < 11) {
+       // if (Build.VERSION.SDK_INT < 11) {
             // No action bar for you!
             // But do not despair. In this case the layout includes a bar across the
             // top that looks and feels like an action bar, but is made up of regular views.
             return;
-        }
+       // }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        
+    	
+            menu.add(Menu.NONE, MENUUPDATEID, Menu.NONE, "Aktualisieren")
+                .setIcon(R.drawable.ic_menu_refresh)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+            
+           
 
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	
+        switch (item.getItemId()) {
+        case MENUUPDATEID:
+        	//update all loaded fragment
+        	int pCount = mPager.getAdapter().getCount();
+        	for (int i = 0; i < pCount; i++) {
+				((HeadlinesFragment) mAdapter.getItem(i)).reloadAllVisisble();
+			}
+        	return true;
+
+            case android.R.id.home:
+                // This ID represents the Home or Up button. In the case of this
+                // activity, the Up button is shown. Use NavUtils to allow users
+                // to navigate up one level in the application structure. For
+                // more details, see the Navigation pattern on Android Design:
+                //
+                // http://developer.android.com/design/patterns/navigation.html#up-vs-back
+                //
+                NavUtils.navigateUpTo(this, new Intent(this, NewsReaderActivity.class));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public void onStart() {
         super.onStart();
-       // setNewsCategory(0);
     }
 
   

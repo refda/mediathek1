@@ -41,16 +41,20 @@ public class SlowContentProvider extends ContentProvider {
     	while ((line = reader.readLine()) != null) { stringBuilder.append(line);
     	}
     	inputStream.close(); } else {
-    		Log.d("readJSONFeed", "Failed to download file"); }
+    		Log.d("readJSONFeed", "Failed to download file");
+    		return "";
+    		}
     	} catch (Exception e) {
-    		Log.d("readJSONFeed", e.getLocalizedMessage()); }
+    		Log.d("readJSONFeed", e.getLocalizedMessage()); 
+    		return "";	
+    	}
     	return stringBuilder.toString(); 
     }
 	
     @Override
     public Cursor query(Uri uri, String[] strings, String s, String[] strings1, String s1) {
          
-    	
+    	Log.d("CONTENTPROVIDER", uri.toString());
             String queryparam = uri.getQueryParameter("offset");
             if (queryparam == null){
             	queryparam = "0";
@@ -69,6 +73,9 @@ public class SlowContentProvider extends ContentProvider {
             MatrixCursor cursor = new MatrixCursor(new String[]{"_id","title", "subtitle", "image", "extId"});
             try {
             	result = readJSONFeed(url);
+            	if (result == ""){
+            		return cursor;
+            	}
             	// TODO Auto-generated catch block
             	JSONArray jsonArray = new JSONArray(result); 
             	for(int i=0;i<jsonArray.length();i++){
@@ -101,7 +108,7 @@ public class SlowContentProvider extends ContentProvider {
             	}
 		    } catch (JSONException e) {
 		    	e.printStackTrace();
-		    	return null;
+		    	return cursor;
 		    }
             return cursor;
     }
