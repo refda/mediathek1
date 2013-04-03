@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.janrenz.app.ardtheke;
+package de.janrenz.app.mediathek;
 
 import android.app.ActionBar.OnNavigationListener;
 import android.app.ActionBar.Tab;

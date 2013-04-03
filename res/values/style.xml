@@ -14,12 +14,23 @@
      limitations under the License.
 -->
 
-<resources>
-<style name="NewsReaderStyle" parent="android:Theme.Light.NoTitleBar">
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<style name="MediathekStyle" parent="android:Theme.Light">
+    <item name="actionBarStyle">@style/Widget.MyTheme.ActionBar</item>
+    <item name="android:actionBarStyle">@style/Widget.MyTheme.ActionBar</item>
 </style>
 
+<style name="Widget.MyTheme.ActionBar" parent="Widget.Sherlock.ActionBar">
+    <item name="android:background">#1C3144</item>
+    <item name="background">#1C3144</item>
 
-
+     <item name="android:titleTextStyle">@style/MyTheme.ActionBar.TitleTextStyle</item>
+ 
+</style>
+ <style name="MyTheme.ActionBar.TitleTextStyle" parent="TextAppearance.Sherlock.Widget.ActionBar.Title">
+    <item name="android:textColor">#ffffff</item>
+    <item name="android:text">20dp</item>
+  </style>
 <style name="CategoryButtonStyle" parent="@android:style/Widget.Button">
     <item name="android:textColor">#ffffff</item>
 </style>

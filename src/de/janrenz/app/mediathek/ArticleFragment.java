@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.janrenz.app.ardtheke;
+package de.janrenz.app.mediathek;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -67,7 +67,7 @@ import org.xml.sax.InputSource;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import de.janrenz.app.ardtheke.HeadlinesFragment.OnHeadlineSelectedListener;
+import de.janrenz.app.mediathek.HeadlinesFragment.OnHeadlineSelectedListener;
 
 /**
  * Fragment that displays a news article.

@@ -1,4 +1,4 @@
-package de.janrenz.app.ardtheke;
+package de.janrenz.app.mediathek;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

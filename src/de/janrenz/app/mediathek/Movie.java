@@ -1,7 +1,7 @@
 /**
  * This hold our Movies
  */
-package de.janrenz.app.ardtheke;
+package de.janrenz.app.mediathek;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.janrenz.app.ardtheke;
+package de.janrenz.app.mediathek;
 
 import android.content.Loader.OnLoadCompleteListener;
 import android.database.Cursor;
@@ -33,7 +33,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import java.util.ArrayList;
 
-import de.janrenz.app.ardtheke.R;
+import de.janrenz.app.mediathek.R;
 
 /**
  * Fragment that displays the news headlines for a particular news category.
@@ -120,7 +120,7 @@ public class HeadlinesFragment extends ListFragment implements
 		
 		// query code
 		Log.v("CURSOR", "called with i "+i + " and " +getArguments().getInt("datepos", 0));
-		Uri queryUri = Uri.parse("content://de.janrenz.app.ardtheke.cursorloader.data");
+		Uri queryUri = Uri.parse("content://de.janrenz.app.mediathek.cursorloader.data");
 		Integer offset =  getArguments().getInt("datepos", 0);
 		queryUri = queryUri.buildUpon().appendQueryParameter("offset", offset.toString()).build();
 		try {

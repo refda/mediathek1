@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.janrenz.app.ardtheke;
+package de.janrenz.app.mediathek;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.LinePageIndicator;
 
-import de.janrenz.app.ardtheke.R;
+import de.janrenz.app.mediathek.R;
 
 import android.content.Intent;
 import android.content.res.Configuration;

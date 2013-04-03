@@ -1,4 +1,4 @@
-package de.janrenz.app.ardtheke;
+package de.janrenz.app.mediathek;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;

@@ -16,5 +16,5 @@
 
 <resources>
     <string name="hello">Hello World, NewsReaderActivity!</string>
-    <string name="app_name">ARD Theke</string>
+    <string name="app_name">Mediathek1</string>
 </resources>

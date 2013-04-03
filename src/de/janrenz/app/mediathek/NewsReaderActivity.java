@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.janrenz.app.ardtheke;
+package de.janrenz.app.mediathek;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,8 +24,8 @@ import java.util.List;
 import com.viewpagerindicator.LinePageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
 
-import de.janrenz.app.ardtheke.R;
-import de.janrenz.app.ardtheke.ArticleActivity.MyAdapter;
+import de.janrenz.app.mediathek.R;
+import de.janrenz.app.mediathek.ArticleActivity.MyAdapter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;

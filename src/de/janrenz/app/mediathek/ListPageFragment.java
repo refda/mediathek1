@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package de.janrenz.app.ardtheke;
+package de.janrenz.app.mediathek;
 
 import android.content.Loader.OnLoadCompleteListener;
 import android.database.Cursor;
@@ -37,7 +37,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.janrenz.app.ardtheke.R;
+import de.janrenz.app.mediathek.R;
 
 /**
  * Fragment that displays the news headlines for a particular news category.
@@ -108,7 +108,7 @@ public class ListPageFragment extends ListFragment implements
 
 		return new CursorLoader(
 				getActivity(),
-				Uri.parse("content://de.janrenz.app.ardtheke.cursorloader.data"),
+				Uri.parse("content://de.janrenz.app.mediathek.cursorloader.data"),
 				new String[] { "title", "image" , "extId"}, null, null, null);
 	}
 
