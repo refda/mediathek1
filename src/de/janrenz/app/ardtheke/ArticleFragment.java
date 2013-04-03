@@ -267,14 +267,7 @@ public class ArticleFragment extends Fragment {
 					// }
 
 				}
-				// set qualitySeekBar
-				/**
-				 * TextView qualityText = (TextView)
-				 * mView.findViewById(R.id.qualityText); String newQualityText =
-				 * videoSources.get(progress)[0];
-				 * qualityText.setText(newQualityText); videoPath =
-				 * videoSources.get(1)[1];
-				 */
+				 
 				// Spinner population
 				// default quality
 
