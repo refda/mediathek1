@@ -46,14 +46,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,7 +64,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.loopj.android.image.SmartImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -88,7 +84,7 @@ public class ArticleFragment extends Fragment {
 	// The cvideo path
 	String videoPath = null;
 
-	List<String[]> videoSources = new ArrayList<String[]>();
+	ArrayList<String[]> videoSources = new ArrayList<String[]>();
 
 	// Parameterless constructor is needed by framework
 	public ArticleFragment() {
@@ -156,6 +152,8 @@ public class ArticleFragment extends Fragment {
 		text.setText(getArguments().getString("title"));
 		TextView text2 = (TextView) mView.findViewById(R.id.headline2);
 		text2.setText(getArguments().getString("subtitle"));
+		Log.e("DEBUG", "http://m-service.daserste.de/appservice/1.4.1/video/"
+				+ getArguments().getString("extId"));
 		new AccessWebServiceTask()
 				.execute("http://m-service.daserste.de/appservice/1.4.1/video/"
 						+ getArguments().getString("extId"));
@@ -167,7 +165,7 @@ public class ArticleFragment extends Fragment {
 		}
 
 		protected void onPostExecute(String result) {
-
+Log.e("DEBUG", result);
 			InputSource inputSrc = new InputSource(new StringReader(result));
 			inputSrc.setEncoding("UTF-8");
 			// Toast.makeText(getActivity().getBaseContext(), result,
@@ -251,10 +249,6 @@ public class ArticleFragment extends Fragment {
 							// " with value " + nodeValue);
 						}
 					}
-
-					// Log.v("XML", useThisUrl.toString());
-					// if (useThisUrl){
-					// Log.v("XML" , "Set url to" + tempUrl);
 					videoPath = tempUrl;
 					String videoUrl = serverPrefix + videoPath;
 					if (videoUrl.startsWith("http")) {
@@ -267,14 +261,7 @@ public class ArticleFragment extends Fragment {
 					// }
 
 				}
-				// set qualitySeekBar
-				/**
-				 * TextView qualityText = (TextView)
-				 * mView.findViewById(R.id.qualityText); String newQualityText =
-				 * videoSources.get(progress)[0];
-				 * qualityText.setText(newQualityText); videoPath =
-				 * videoSources.get(1)[1];
-				 */
+				 
 				// Spinner population
 				// default quality
 
@@ -405,7 +392,7 @@ public class ArticleFragment extends Fragment {
 				HttpEntity entity = response.getEntity();
 				InputStream inputStream = entity.getContent();
 				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(inputStream));
+						new InputStreamReader(inputStream, "UTF-8"));
 				String line;
 				while ((line = reader.readLine()) != null) {
 					stringBuilder.append(line);
