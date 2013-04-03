@@ -46,14 +46,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,7 +64,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.loopj.android.image.SmartImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -88,7 +84,7 @@ public class ArticleFragment extends Fragment {
 	// The cvideo path
 	String videoPath = null;
 
-	List<String[]> videoSources = new ArrayList<String[]>();
+	ArrayList<String[]> videoSources = new ArrayList<String[]>();
 
 	// Parameterless constructor is needed by framework
 	public ArticleFragment() {
@@ -251,10 +247,6 @@ public class ArticleFragment extends Fragment {
 							// " with value " + nodeValue);
 						}
 					}
-
-					// Log.v("XML", useThisUrl.toString());
-					// if (useThisUrl){
-					// Log.v("XML" , "Set url to" + tempUrl);
 					videoPath = tempUrl;
 					String videoUrl = serverPrefix + videoPath;
 					if (videoUrl.startsWith("http")) {

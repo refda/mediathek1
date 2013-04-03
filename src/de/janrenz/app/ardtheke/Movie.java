@@ -3,15 +3,48 @@
  */
 package de.janrenz.app.ardtheke;
 
-public class Movie {
+import java.util.ArrayList;
+import java.util.List;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Movie implements Parcelable {
 	
 	private String title;
 	private String subtitle;
 	private String extId;
 	private String thumbnail;
 	private String duration;	
-	private String[][] sources;
+	private ArrayList<String[]> sources = new ArrayList<String[]>() ;
 	
+	 public Movie(Parcel in) {  
+	     readFromParcel(in);  
+	    }  
+	 private void readFromParcel(Parcel in) {    
+	        // ...  
+	        title = in.readString();  
+	        subtitle = in.readString();  
+	        extId = in.readString();  
+	        thumbnail = in.readString();  
+	        duration = in.readString();  
+	        //this will be treated sligty differnet
+	        in.readList (sources, String.class.getClassLoader());
+
+	    }  
+	  
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {  
+    
+        public Movie createFromParcel(Parcel in) {  
+            return new Movie(in);  
+        }  
+        
+        public Movie[] newArray(int size) {  
+            return new Movie[size];  
+        }  
+        
+    };
+			
 	public String getTitle() {
 		return title;
 	}
@@ -42,10 +75,25 @@ public class Movie {
 	public void setDuration(String duration) {
 		this.duration = duration;
 	}
-	public String[][] getSources() {
+	public ArrayList<String[]> getSources() {
 		return sources;
 	}
-	public void setSources(String[][] sources) {
+	public void setSources(ArrayList<String[]> sources) {
 		this.sources = sources;
+	}
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+		dest.writeString(title);  
+		dest.writeString(subtitle); 
+		dest.writeString(extId);
+		dest.writeString(duration);
+		dest.writeString(thumbnail);
+		dest.writeList(sources);
 	}
 }
