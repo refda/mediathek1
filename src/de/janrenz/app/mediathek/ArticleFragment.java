@@ -279,14 +279,14 @@ public class ArticleFragment extends Fragment {
 				// Spinner population
 				// default quality
 
-				ArrayList qualities = new ArrayList();
+				ArrayList<String> qualities = new ArrayList<String>();
 				for (String[] obj : videoSources) {
 					qualities.add(obj[0]);
 				}
 				final Spinner s = (Spinner) mView
 						.findViewById(R.id.qualitySpinner);
 				ArrayAdapter<String> mspinnerAdapter = new ArrayAdapter<String>(
-						getActivity(), android.R.layout.simple_spinner_item,
+						getActivity(), android.R.layout.simple_spinner_dropdown_item,
 						qualities);
 				s.setAdapter(mspinnerAdapter);
 				SharedPreferences appSettings = getActivity()
