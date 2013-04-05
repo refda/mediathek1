@@ -37,6 +37,8 @@ import java.util.ArrayList;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.MenuItem;
+import com.squareup.otto.Bus;
+import com.squareup.otto.ThreadEnforcer;
 
 import de.janrenz.app.mediathek.R;
 
@@ -58,7 +60,7 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	OnHeadlineSelectedListener mHeadlineSelectedListener = null;
 	private static  int LOADER_ID = 0x02;
 	private ArrayList<Movie> mAllItems = new ArrayList<Movie>();
-	
+	Bus bus1 = new Bus(ThreadEnforcer.ANY);
 	/**
 	 * Represents a listener that will be notified of headline selections.
 	 */

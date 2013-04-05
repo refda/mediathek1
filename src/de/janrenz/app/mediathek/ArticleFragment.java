@@ -165,9 +165,7 @@ public class ArticleFragment extends Fragment {
 		}
 
 		protected void onPostExecute(String result) {
-			Log.e("DEBUG", result);
-			
-			//get duration
+			// get duration
 			InputSource inputSrc = new InputSource(new StringReader(result));
 			inputSrc.setEncoding("UTF-8");
 			XPath xpath = XPathFactory.newInstance().newXPath();
@@ -176,16 +174,17 @@ public class ArticleFragment extends Fragment {
 			try {
 				NodeList nodes = (NodeList) xpath.evaluate(expression,
 						inputSrc, XPathConstants.NODESET);
-				
-					Node node = nodes.item(0);
-					//
-					String duration = node.getTextContent();
-					TextView tView = (TextView) mView.findViewById(R.id.durationText);
-					tView.setText(duration);
-			}catch (Exception e) {
+
+				Node node = nodes.item(0);
+				//
+				String duration = node.getTextContent();
+				TextView tView = (TextView) mView
+						.findViewById(R.id.durationText);
+				tView.setText(duration);
+			} catch (Exception e) {
 				// TODO: handle exception
 			}
-				//TODO: MAybe we can rewind the StringReader and reuse it
+			// TODO: MAybe we can rewind the StringReader and reuse it
 			inputSrc = new InputSource(new StringReader(result));
 			inputSrc.setEncoding("UTF-8");
 			// specify the xpath expression
@@ -237,7 +236,7 @@ public class ArticleFragment extends Fragment {
 				for (int i = 0; i < nodes.getLength(); i++) {
 					Node node = nodes.item(i);
 					Boolean useThisUrl = false;
-					String bandwith = null;
+					String bandwidth = null;
 					String serverPrefix = null;
 					NodeList nodeChilds = node.getChildNodes();
 					for (int j = 0; j < nodeChilds.getLength(); j++) {
@@ -245,8 +244,8 @@ public class ArticleFragment extends Fragment {
 						String nodeName = childNode.getNodeName();
 						String nodeValue = childNode.getTextContent();
 						if (nodeName.equals("recommendedBandwidth")) {
-							Log.v("XML", "Bandwith " + nodeValue);
-							bandwith = nodeValue;
+							Log.v("XML", "bandwidth " + nodeValue);
+							bandwidth = nodeValue;
 							break;
 
 						} else if (nodeName.equals("fileName")) {
@@ -265,12 +264,16 @@ public class ArticleFragment extends Fragment {
 					}
 					videoPath = tempUrl;
 					String videoUrl = serverPrefix + videoPath;
-					if (videoUrl.startsWith("http")) {
-						if (bandwith.equals("")) {
-							bandwith = "HbbTV";
-						}
-						videoSources.add(new String[] { bandwith, videoUrl });
+					if (bandwidth.equals("")) {
+						bandwidth = "HbbTV";
 					}
+					if (videoUrl.startsWith("http")) {
+						bandwidth = bandwidth + " (MP4)";
+					}else{
+						bandwidth = bandwidth + " (RTMP)";
+					}
+						videoSources.add(new String[] { bandwidth, videoUrl });
+					
 
 					// }
 
@@ -286,7 +289,8 @@ public class ArticleFragment extends Fragment {
 				final Spinner s = (Spinner) mView
 						.findViewById(R.id.qualitySpinner);
 				ArrayAdapter<String> mspinnerAdapter = new ArrayAdapter<String>(
-						getActivity(), android.R.layout.simple_spinner_dropdown_item,
+						getActivity(),
+						android.R.layout.simple_spinner_dropdown_item,
 						qualities);
 				s.setAdapter(mspinnerAdapter);
 				SharedPreferences appSettings = getActivity()
@@ -327,10 +331,8 @@ public class ArticleFragment extends Fragment {
 				Button button = (Button) mView.findViewById(R.id.buttonWatch);
 
 				button.setOnClickListener(new View.OnClickListener() {
-
 					public void onClick(View v) {
 						// if (mOnMovieClickedListener != null) {
-
 						if (videoPath != null) {
 							Intent intent = new Intent(Intent.ACTION_VIEW);
 							intent.setDataAndType(Uri.parse(videoPath),
@@ -341,7 +343,6 @@ public class ArticleFragment extends Fragment {
 									Toast.LENGTH_LONG).show();
 						}
 
-						// }
 					}
 
 				});
@@ -354,7 +355,7 @@ public class ArticleFragment extends Fragment {
 						ClipboardManager clipboard = (ClipboardManager) getActivity()
 								.getSystemService(
 										getActivity().CLIPBOARD_SERVICE);
-						ClipData clip = ClipData.newPlainText("TVEins",
+						ClipData clip = ClipData.newPlainText("Mediathek",
 								videoPath);
 						clipboard.setPrimaryClip(clip);
 						Toast.makeText(getActivity(),
@@ -421,5 +422,4 @@ public class ArticleFragment extends Fragment {
 		String xml = stringBuilder.toString();
 		return xml;
 	}
-
 }
