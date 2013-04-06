@@ -159,7 +159,6 @@ public class ListPageFragment extends ListFragment implements
 					null,
 					myCursor.getString(myCursor.getColumnIndexOrThrow("title")),
 					myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle"))
-					
 					);
 		}
 	}

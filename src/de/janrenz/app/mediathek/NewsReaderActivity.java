@@ -87,7 +87,6 @@ public class NewsReaderActivity extends SherlockFragmentActivity
     // The news category and article index currently being displayed
     int mCatIndex = 0;
     int mArtIndex = 0;
-    NewsCategory mCurrentCat;
 
     // List of category titles
   
@@ -114,11 +113,11 @@ public class NewsReaderActivity extends SherlockFragmentActivity
        //
 
         // Set up the Action Bar (or not, if one is not available)
-        int catIndex = savedInstanceState == null ? 0 : savedInstanceState.getInt("catIndex", 0);
+        //int catIndex = savedInstanceState == null ? 0 : savedInstanceState.getInt("catIndex", 0);
         //setUpActionBar(mIsDualPane, catIndex);
 
         // Set up headlines fragment
-        //mHeadlinesFragment.setSelectable(mIsDualPane);
+        mHeadlinesFragment.setSelectable(mIsDualPane);
         restoreSelection(savedInstanceState);
 
         mAdapter = new MyAdapter(getSupportFragmentManager());
@@ -145,7 +144,6 @@ public class NewsReaderActivity extends SherlockFragmentActivity
         }
        
         public String getPageTitle (int position ) {
-        	//!TODO: get real page title
             Date dt = new Date();
             // z.B. 'Fri Jan 26 19:03:56 GMT+01:00 2001'
           dt.setHours(20);
@@ -172,7 +170,7 @@ public class NewsReaderActivity extends SherlockFragmentActivity
         	HeadlinesFragment f = new HeadlinesFragment();
             Bundle args = new Bundle();
             //this is now the offset
-        	args.putInt("datepos", 6-position);
+        	args.putInt("datepos", 6 - position);
             f.setArguments(args);
             return f;
         }
@@ -182,8 +180,8 @@ public class NewsReaderActivity extends SherlockFragmentActivity
         if (savedInstanceState != null) {
             //setNewsCategory(savedInstanceState.getInt("catIndex", 0));
             if (mIsDualPane) {
-                int artIndex = savedInstanceState.getInt("artIndex", 0);
-                mHeadlinesFragment.setSelection(artIndex);
+                //int artIndex = savedInstanceState.getInt("artIndex", 0);
+                //mHeadlinesFragment.setSelection(artIndex);
                 //!TODO handle this
                 //onHeadlineSelected(artIndex, null, null);
             }
@@ -266,7 +264,7 @@ public class NewsReaderActivity extends SherlockFragmentActivity
         mArtIndex = index;
         if (mIsDualPane) {
             // display it on the article fragment
-            mArticleFragment.displayArticle();
+           // mArticleFragment.displayArticle();
         }
         else {
             // use separate activity

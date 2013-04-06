@@ -76,7 +76,6 @@ public class ArticleFragment extends Fragment {
 
 	View mView = null;
 	// The article we are to display
-	NewsArticle mNewsArticle = null;
 
 	// The id of our movie
 	String extId = null;
@@ -269,10 +268,12 @@ public class ArticleFragment extends Fragment {
 					}
 					if (videoUrl.startsWith("http")) {
 						bandwidth = bandwidth + " (MP4)";
+						if (!videoUrl.equals("")) {
+							videoSources.add(new String[] { bandwidth, videoUrl });
+						}
 					}else{
 						bandwidth = bandwidth + " (RTMP)";
 					}
-						videoSources.add(new String[] { bandwidth, videoUrl });
 					
 
 					// }
@@ -335,8 +336,14 @@ public class ArticleFragment extends Fragment {
 						// if (mOnMovieClickedListener != null) {
 						if (videoPath != null) {
 							Intent intent = new Intent(Intent.ACTION_VIEW);
+							String mime = "video/mp4";
+							if (videoPath.startsWith("http")) {
+								
+							}else{
+								mime = "video/rtmp";
+							}
 							intent.setDataAndType(Uri.parse(videoPath),
-									"video/mp4");
+									mime);
 							startActivity(intent);
 							Toast.makeText(getActivity(),
 									"Lade Video " + videoPath,

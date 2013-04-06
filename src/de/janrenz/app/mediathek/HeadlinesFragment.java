@@ -121,6 +121,9 @@ public class HeadlinesFragment extends SherlockListFragment implements
 		setListShown(false);
 		this.isLoading = true;
 	    Bundle args = new Bundle();
+	    Log.v("DEBUG", "1"+this);
+	    Log.v("DEBUG", "1"+this.getArguments());
+	    Log.v("DEBUG", "1"+this.getArguments().getInt("datepos", 0));
 	    args.putInt("datepos", this.getArguments().getInt("datepos", 0));
 	    //note that we need a different loader id for each loader
 	    getActivity().getSupportLoaderManager().initLoader(this.getArguments().getInt("datepos", 0)+LOADER_ID, args, this);

@@ -59,6 +59,11 @@ public class SlowContentProvider extends ContentProvider {
             if (queryparam == null){
             	queryparam = "0";
             }
+            String queryparamReload = uri.getQueryParameter("reload");
+            String queryExtReload = "";
+            if (queryparamReload != null){
+            	queryExtReload = "&reload=" + Math.random();
+            }
             Integer offset = Integer.parseInt(queryparam);
             Date dt = new Date();
               // z.B. 'Fri Jan 26 19:03:56 GMT+01:00 2001'
@@ -82,7 +87,7 @@ public class SlowContentProvider extends ContentProvider {
             		
             		JSONObject json_data = jsonArray.getJSONObject(i);
             		//build the Headline
-            		String t2 = android.text.Html.fromHtml(json_data.getString("Title3")).toString();
+            		String t2 = Math.random() +android.text.Html.fromHtml(json_data.getString("Title3")).toString();
             		String t3 = android.text.Html.fromHtml(json_data.getString("Title2")).toString();
             		//Handle grouped views, like tatort
             		if (json_data.getBoolean("IsGrouped")){
