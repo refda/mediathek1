@@ -54,13 +54,12 @@ import android.widget.Toast;
  * in that case the news article will be displayed by the {@link NewsReaderActivity} and this
  * Activity therefore becomes unnecessary.
  */
-public class ArticleActivity extends SherlockFragmentActivity implements ArticleFragment.OnMovieClickedListener {
+public class ArticleActivity extends SherlockFragmentActivity {
     // The news category index and the article index for the article we are to display
     int mCatIndex, mArtIndex;
     //the external id
     String extId;
     ArrayList<Movie> allItems;
-    MyAdapter mAdapter;
 
     ViewPager mPager;
     /**
@@ -74,7 +73,7 @@ public class ArticleActivity extends SherlockFragmentActivity implements Article
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+        setContentView(R.layout.detailactivity);
         mCatIndex = getIntent().getExtras().getInt("catIndex", 0);
         mArtIndex = getIntent().getExtras().getInt("artIndex", 0);
         extId     = getIntent().getExtras().getString("extId");
@@ -83,27 +82,47 @@ public class ArticleActivity extends SherlockFragmentActivity implements Article
         
         // If we are in two-pane layout mode, this activity is no longer necessary
         if (getResources().getBoolean(R.bool.has_two_panes)) {
+        	Log.v("DEBUG", "We are in two panes mpde, no need to go any further here");
             finish();
             return;
         }
         
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        // Check that the activity is using the layout version with
+        // the fragment_container FrameLayout
+        if (findViewById(R.id.detail_fragment_container) != null) {
+
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (savedInstanceState != null) {
+                return;
+            }
+            
+      Log.v("ÜÜÜÜÜ", "*****");
+      Log.v("ÜÜÜÜÜ", "*****" + getSupportFragmentManager());
+      Log.v("ÜÜÜÜÜ", "*****");
+            // During initial setup, plug in the details fragment.
+            Fragment details = new ArticlePagerFragment();
+            Bundle args = getIntent().getExtras();
+            int test = args.getInt("pos", 7);
+            details.setArguments(args);
+            getSupportFragmentManager().beginTransaction().add(R.id.detail_fragment_container, details).commit();
+            //getFragmentManager().beginTransaction().add(android.R.id.content, details).commit();
+        }
         
-        setContentView( R.layout.daylistwrapper );
-        mAdapter = new MyAdapter(getSupportFragmentManager());
-        mAdapter.setCount(allItems.size());
-        mAdapter.setAllItems(allItems);
-        mPager = (ViewPager)findViewById(R.id.pager);
-        mPager.setAdapter(mAdapter);
-        //Set the pager with an adapter
-        //Bind the title indicator to the adapter
-        LinePageIndicator titleIndicator = (LinePageIndicator)findViewById(R.id.pageindicator);
-        titleIndicator.setViewPager(mPager);
-        mPager.setCurrentItem(mArtIndex);
+        
+        setContentView( R.layout.detailactivity );
+          
+      
     }
     
-    @Override
+
+
+
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         
             menu.add("Text")
@@ -129,48 +148,7 @@ public class ArticleActivity extends SherlockFragmentActivity implements Article
         }
         return super.onOptionsItemSelected(item);
     }
-    public static class MyAdapter extends FragmentPagerAdapter {
-    	private int mcount = 0;
-    	private ArrayList<Movie> mallItems;
-        public MyAdapter(FragmentManager fm) {
-            super(fm);
-        }
-        public void setCount( int newCount ) {
-        	mcount = newCount;
-        }
-        public void setAllItems(ArrayList<Movie> allItems  ) {
-        	 mallItems = allItems;
-        	
-        }
-        public String getPageTitle (int position ) {
-        	return "Titel" + position;
-        }
-        
-        @Override
-        public int getCount() {
-        	return mcount;
-           
-        }
 
-        @Override
-        public Fragment getItem(int position) {
-        	ArticleFragment f = new ArticleFragment();
-        Bundle args = new Bundle();
-        	args.putInt("num", position);
-            args.putString("extId", mallItems.get(position).getExtId());
-            args.putString("title",mallItems.get(position).getTitle());
-            args.putString("subtitle", mallItems.get(position).getSubtitle());
-            f.setArguments(args);
-            return f;
-        }
-    }
     
-    /**
-     * Not used anymore, we treat this oin the fragment
-     */
-	@Override
-	public void onMovieSelected(String url) {
-		// TODO Auto-generated method stub
-		Log.v("THIS", url);
-	}
+   
 }

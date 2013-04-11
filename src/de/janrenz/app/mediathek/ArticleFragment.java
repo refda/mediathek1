@@ -67,7 +67,6 @@ import org.xml.sax.InputSource;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import de.janrenz.app.mediathek.HeadlinesFragment.OnHeadlineSelectedListener;
 
 /**
  * Fragment that displays a news article.
@@ -114,13 +113,17 @@ public class ArticleFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		mView = inflater.inflate(R.layout.detail, container, false);
-		;
 		return mView;
 	}
 
 	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		displayArticle();
+	 public void onActivityCreated(Bundle savedInstanceState) {
+		 super.onActivityCreated(savedInstanceState);
+		try {
+			displayArticle();			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	};
 
 	public void setOnMovieClickedListener(OnMovieClickedListener listener) {
@@ -194,7 +197,6 @@ public class ArticleFragment extends Fragment {
 						inputSrc, XPathConstants.NODESET);
 				for (int i = 0; i < 1; i++) {
 					Node node = nodes.item(i);
-					//
 					String url = node.getTextContent();
 					ImageView imageView = (ImageView) mView
 							.findViewById(R.id.thumbnail);
@@ -429,4 +431,5 @@ public class ArticleFragment extends Fragment {
 		String xml = stringBuilder.toString();
 		return xml;
 	}
+
 }

@@ -87,7 +87,7 @@ public class SlowContentProvider extends ContentProvider {
             		
             		JSONObject json_data = jsonArray.getJSONObject(i);
             		//build the Headline
-            		String t2 = Math.random() +android.text.Html.fromHtml(json_data.getString("Title3")).toString();
+            		String t2 = android.text.Html.fromHtml(json_data.getString("Title3")).toString();
             		String t3 = android.text.Html.fromHtml(json_data.getString("Title2")).toString();
             		//Handle grouped views, like tatort
             		if (json_data.getBoolean("IsGrouped")){
