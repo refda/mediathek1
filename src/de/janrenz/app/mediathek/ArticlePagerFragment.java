@@ -87,7 +87,6 @@ public class ArticlePagerFragment extends Fragment {
 
 	@Override
 	public void onResume() {
-		Log.v("Fragment", "RESUME");
 		super.onResume();
 		BusProvider.getInstance().register(this);
 	}
@@ -100,7 +99,6 @@ public class ArticlePagerFragment extends Fragment {
 
 	@Subscribe
 	public void onMovieSelected(MovieSelectedEvent event) {
-		Log.v("___", "Ü***"+ mAdapter);
 		if (mAdapter != null)
 		{
 			mAdapter.setAllItems(event.mList);

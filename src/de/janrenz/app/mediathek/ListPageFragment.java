@@ -152,7 +152,6 @@ public class ListPageFragment extends ListFragment implements
 			long id) {
 		if (null != mHeadlineSelectedListener) {
 			myCursor.moveToPosition(position);
-			Log.v ("DEBUG ", myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
 			mHeadlineSelectedListener.onHeadlineSelected(
 					position,
 					myCursor.getString(myCursor.getColumnIndexOrThrow("extId")),

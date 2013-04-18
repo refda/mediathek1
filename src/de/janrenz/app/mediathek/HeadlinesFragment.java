@@ -80,7 +80,6 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	
 	public void reloadAllVisisble() { 
 		try {
-			Log.d("HEADLINEFRAGMENT", "requery");
 			mListAdapter.notifyDataSetChanged();
 			triggerLoad();
 		} catch (Exception e) {
@@ -92,8 +91,6 @@ public class HeadlinesFragment extends SherlockListFragment implements
     public void onViewCreated(View view, Bundle savedInstanceState) {
 		this.setEmptyText("Keine Einträge gefunden.");
 		setListShown(false);
-        Log.d("TAG", "onViewCreated");
-        //...do something
         triggerLoad();
 }
 	private void triggerLoad(){
@@ -125,7 +122,6 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 		
 		// query code
-		Log.v("CURSOR", "called with i "+i + " and " +getArguments().getInt("datepos", 0));
 		Uri queryUri = Uri.parse("content://de.janrenz.app.mediathek.cursorloader.data");
 		Integer offset =  getArguments().getInt("datepos", 0);
 		queryUri = queryUri.buildUpon().appendQueryParameter("offset", offset.toString()).build();
@@ -147,16 +143,10 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	@Override
 	public void onResume() {
 		super.onResume();
-	
 		BusProvider.getInstance().register(this);
-		
-		Log.v("FRAGMENT", "RESUME");
 		if ( this.isLoading == false ){
 			setListShown(true);
-			Log.v("FRAGMENT", "count= " + this.getListView().getCount() );
 			if (this.getListView().getCount()== 0){
-				//loadAgain
-				Log.v("FRAGMENT", "laodAgain");
 				triggerLoad();
 			}
 		}else{

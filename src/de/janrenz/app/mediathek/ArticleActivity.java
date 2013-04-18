@@ -72,8 +72,6 @@ public class ArticleActivity extends SherlockFragmentActivity {
 		// If we are in two-pane layout mode, this activity is no longer
 		// necessary
 		if (getResources().getBoolean(R.bool.has_two_panes)) {
-			Log.v("DEBUG",
-					"We are in two panes mpde, no need to go any further here");
 			finish();
 			return;
 		}

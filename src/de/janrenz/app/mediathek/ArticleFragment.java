@@ -120,7 +120,6 @@ public class ArticleFragment extends Fragment {
 			Bundle savedInstanceState) {
 		mView = inflater.inflate(R.layout.detail, container, false);
 		try {
-			Log.e("displayArticle", "*****");
 			displayArticle();
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -137,8 +136,6 @@ public class ArticleFragment extends Fragment {
 
 	@Override
 	public void onResume() {
-		Log.v("FragmentArticle", "RESUME");
-		// !TODO: CHECK if we have the same id
 		super.onResume();
 
 		BusProvider.getInstance().register(this);
@@ -146,7 +143,6 @@ public class ArticleFragment extends Fragment {
 
 	@Override
 	public void onPause() {
-		Log.v("FragmentArticle", "Pause");
 		super.onPause();
 		BusProvider.getInstance().unregister(this);
 	}
@@ -163,11 +159,8 @@ public class ArticleFragment extends Fragment {
 
 	private Integer getQualityPositionForString(String quality) {
 		for (int j = 0; j < videoSources.size(); j++) {
-			// for (String[] obj : videoSources) {
-			// qualities.add(obj[0]);
 			String[] arr = videoSources.get(j);
 			if (arr[0].equals(quality)) {
-				Log.v("QUALITY", quality);
 				return j;
 			}
 		}
@@ -185,8 +178,6 @@ public class ArticleFragment extends Fragment {
 		text.setText(getArguments().getString("title"));
 		TextView text2 = (TextView) mView.findViewById(R.id.headline2);
 		text2.setText(getArguments().getString("subtitle"));
-		Log.e("DEBUG", "http://m-service.daserste.de/appservice/1.4.1/video/"
-				+ getArguments().getString("extId"));
 		new AccessWebServiceTask()
 				.execute("http://m-service.daserste.de/appservice/1.4.1/video/"
 						+ getArguments().getString("extId"));
@@ -198,7 +189,6 @@ public class ArticleFragment extends Fragment {
 		}
 
 		protected void onPostExecute(String result) {
-			Log.e("RESULT", result);
 
 			// get duration
 			InputSource inputSrc = new InputSource(new StringReader(result));
@@ -277,22 +267,14 @@ public class ArticleFragment extends Fragment {
 						String nodeName = childNode.getNodeName();
 						String nodeValue = childNode.getTextContent();
 						if (nodeName.equals("recommendedBandwidth")) {
-							Log.v("XML", "bandwidth " + nodeValue);
 							bandwidth = nodeValue;
 							break;
 
 						} else if (nodeName.equals("fileName")) {
 							tempUrl = nodeValue;
-							// Log.v("XML", "**** "+nodeName + " with value " +
-							// nodeValue);
-
 						} else if (nodeName.equals("serverPrefix")) {
 							serverPrefix = nodeValue;
-							// Log.v("XML", "**** "+nodeName + " with value " +
-							// nodeValue);
 						} else {
-							// Log.v("XML", "Untreated Nodetype "+nodeName +
-							// " with value " + nodeValue);
 						}
 					}
 					videoPath = tempUrl;

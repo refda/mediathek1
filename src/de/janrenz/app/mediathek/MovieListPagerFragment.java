@@ -82,7 +82,6 @@ public class MovieListPagerFragment extends SherlockFragment {
 	 @Override
 	public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
-	        //Log.v("ÜÜÜ", "111"+savedInstanceState.containsKey(STATE_CURRENT_POSITION));
 	    }
 	 
 	 @Override 
