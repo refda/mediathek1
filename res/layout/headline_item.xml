@@ -53,6 +53,7 @@
             android:padding="0dp"
             android:textColor="#1C3144"
             android:textSize="13sp" />
+        
     </LinearLayout>
 
 </RelativeLayout> <!-- END_INCLUDE(all) -->

@@ -96,8 +96,8 @@ public class ListPageFragment extends ListFragment implements
 		// mHeadlinesList);
 		mListAdapter = new RemoteImageCursorAdapter(getActivity(),
 				R.layout.headline_item, null,
-				new String[] { "title", "image" }, new int[] { R.id.text_view,
-						R.id.thumbnail });
+				new String[] { "title", "image",}, new int[] { R.id.text_view,
+						R.id.thumbnail});
 		// ListView listView = (ListView) findViewById(R.id.list);
 		this.setListAdapter(mListAdapter);
 		getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null,

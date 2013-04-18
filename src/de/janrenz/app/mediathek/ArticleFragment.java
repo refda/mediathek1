@@ -67,8 +67,6 @@ import org.xml.sax.InputSource;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import de.janrenz.app.mediathek.HeadlinesFragment.OnHeadlineSelectedListener;
-
 /**
  * Fragment that displays a news article.
  */
@@ -87,8 +85,15 @@ public class ArticleFragment extends Fragment {
 
 	// Parameterless constructor is needed by framework
 	public ArticleFragment() {
-
 		super();
+	}
+
+	public void setExtId(String id) {
+		extId = id;
+	}
+
+	public String getExtId() {
+		return extId;
 	}
 
 	OnMovieClickedListener mOnMovieClickedListener = null;
@@ -114,13 +119,42 @@ public class ArticleFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		mView = inflater.inflate(R.layout.detail, container, false);
-		;
+		try {
+			Log.e("displayArticle", "*****");
+			displayArticle();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		return mView;
 	}
 
 	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		displayArticle();
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		return;
+	}
+
+	@Override
+	public void onResume() {
+		Log.v("FragmentArticle", "RESUME");
+		// !TODO: CHECK if we have the same id
+		super.onResume();
+
+		BusProvider.getInstance().register(this);
+	}
+
+	@Override
+	public void onPause() {
+		Log.v("FragmentArticle", "Pause");
+		super.onPause();
+		BusProvider.getInstance().unregister(this);
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
 	};
 
 	public void setOnMovieClickedListener(OnMovieClickedListener listener) {
@@ -164,6 +198,8 @@ public class ArticleFragment extends Fragment {
 		}
 
 		protected void onPostExecute(String result) {
+			Log.e("RESULT", result);
+
 			// get duration
 			InputSource inputSrc = new InputSource(new StringReader(result));
 			inputSrc.setEncoding("UTF-8");
@@ -173,15 +209,14 @@ public class ArticleFragment extends Fragment {
 			try {
 				NodeList nodes = (NodeList) xpath.evaluate(expression,
 						inputSrc, XPathConstants.NODESET);
-
 				Node node = nodes.item(0);
-				//
 				String duration = node.getTextContent();
 				TextView tView = (TextView) mView
 						.findViewById(R.id.durationText);
 				tView.setText(duration);
 			} catch (Exception e) {
 				// TODO: handle exception
+				Log.e("onPostExecute", "failed: " + e.getMessage());
 			}
 			// TODO: MAybe we can rewind the StringReader and reuse it
 			inputSrc = new InputSource(new StringReader(result));
@@ -192,9 +227,9 @@ public class ArticleFragment extends Fragment {
 			try {
 				NodeList nodes = (NodeList) xpath.evaluate(expression,
 						inputSrc, XPathConstants.NODESET);
-				for (int i = 0; i < 1; i++) {
+				for (int i = 0; i < Math.max(nodes.getLength(), 1); i++) {
 					Node node = nodes.item(i);
-					//
+
 					String url = node.getTextContent();
 					ImageView imageView = (ImageView) mView
 							.findViewById(R.id.thumbnail);
@@ -234,7 +269,6 @@ public class ArticleFragment extends Fragment {
 						inputSrc, XPathConstants.NODESET);
 				for (int i = 0; i < nodes.getLength(); i++) {
 					Node node = nodes.item(i);
-					Boolean useThisUrl = false;
 					String bandwidth = null;
 					String serverPrefix = null;
 					NodeList nodeChilds = node.getChildNodes();
@@ -269,12 +303,12 @@ public class ArticleFragment extends Fragment {
 					if (videoUrl.startsWith("http")) {
 						bandwidth = bandwidth + " (MP4)";
 						if (!videoUrl.equals("")) {
-							videoSources.add(new String[] { bandwidth, videoUrl });
+							videoSources
+									.add(new String[] { bandwidth, videoUrl });
 						}
-					}else{
+					} else {
 						bandwidth = bandwidth + " (RTMP)";
 					}
-					
 
 					// }
 
@@ -289,6 +323,10 @@ public class ArticleFragment extends Fragment {
 				}
 				final Spinner s = (Spinner) mView
 						.findViewById(R.id.qualitySpinner);
+				if (s == null || getActivity() == null) {
+					//this might be a background taskfinsihed while the ui is long gone
+					return;
+				}
 				ArrayAdapter<String> mspinnerAdapter = new ArrayAdapter<String>(
 						getActivity(),
 						android.R.layout.simple_spinner_dropdown_item,
@@ -338,12 +376,11 @@ public class ArticleFragment extends Fragment {
 							Intent intent = new Intent(Intent.ACTION_VIEW);
 							String mime = "video/mp4";
 							if (videoPath.startsWith("http")) {
-								
-							}else{
+
+							} else {
 								mime = "video/rtmp";
 							}
-							intent.setDataAndType(Uri.parse(videoPath),
-									mime);
+							intent.setDataAndType(Uri.parse(videoPath), mime);
 							startActivity(intent);
 							Toast.makeText(getActivity(),
 									"Lade Video " + videoPath,
@@ -395,7 +432,13 @@ public class ArticleFragment extends Fragment {
 	 */
 	String loadXML(String URL) {
 		final long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
-		final File httpCacheDir = new File(getActivity().getCacheDir(), "http");
+		File httpCacheDir = null;
+		try {
+			httpCacheDir = new File(getActivity().getCacheDir(), "http");
+		} catch (Exception e) {
+			// TODO: handle exception
+			return "";
+		}
 		try {
 			Class.forName("android.net.http.HttpResponseCache")
 					.getMethod("install", File.class, long.class)
@@ -429,4 +472,5 @@ public class ArticleFragment extends Fragment {
 		String xml = stringBuilder.toString();
 		return xml;
 	}
+
 }

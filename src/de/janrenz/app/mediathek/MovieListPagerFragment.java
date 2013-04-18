@@ -158,12 +158,10 @@ public class MovieListPagerFragment extends SherlockFragment {
 
 		@Override
 		public Fragment getItem(int position) {
-			Log.v("****", "getItem");
 			HeadlinesFragment f = new HeadlinesFragment();
 			Bundle args = new Bundle();
 			// this is now the offset
-			args.putInt("datepos", 6 - position);
-			
+			args.putInt("datepos", 6 - position);	
 			f.setArguments(args);
 			return f;
 		}

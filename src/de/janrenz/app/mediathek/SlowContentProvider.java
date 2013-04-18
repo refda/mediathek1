@@ -72,6 +72,8 @@ public class SlowContentProvider extends ContentProvider {
             dt.setSeconds(0);
             
             Long curtime = dt.getTime()/1000 - ((24*60*60)*offset);
+            //String url= "http://m-service.daserste.de/appservice/1.4.1/video/list/" + curtime + "?func=getBroadcastList&unixTimestamp=" + curtime;
+            
             String url= "http://m-service.daserste.de/appservice/1.4.1/video/list/" + curtime + "?func=getVideoList&unixTimestamp=" + curtime;
           
             String result = "";
@@ -87,8 +89,10 @@ public class SlowContentProvider extends ContentProvider {
             		
             		JSONObject json_data = jsonArray.getJSONObject(i);
             		//build the Headline
-            		String t2 = Math.random() +android.text.Html.fromHtml(json_data.getString("Title3")).toString();
+            		String t2 = android.text.Html.fromHtml(json_data.getString("Title3")).toString();
             		String t3 = android.text.Html.fromHtml(json_data.getString("Title2")).toString();
+            		
+            		
             		//Handle grouped views, like tatort
             		if (json_data.getBoolean("IsGrouped")){
             			String mtime = json_data.getString("BTime").toString();
@@ -103,12 +107,18 @@ public class SlowContentProvider extends ContentProvider {
                     		JSONObject json_data2 = jsonArray2.getJSONObject(j);
                     		 t2 = android.text.Html.fromHtml(json_data2.getString("Title3")).toString();
                     		 t3 = android.text.Html.fromHtml(json_data2.getString("Title2")).toString();
-                    		cursor.addRow(new Object[]{1000+j,t2,t3,json_data2.getString("ImageUrl").toString() , json_data2.getString("VId")});
+                    		 
+                    		 //only add movei if it has a vid
+                    		 if ( android.text.Html.fromHtml(json_data2.getString("VId")).toString() != "" ) {
+                    			 
+                    			 cursor.addRow(new Object[]{1000+j,t2,t3,json_data2.getString("ImageUrl").toString() , json_data2.getString("VId")});
+                    		 }
                     	}
             		} 
             		if (!json_data.getBoolean("IsGrouped") && !json_data.getBoolean("IsLive")){
-            			
-            			cursor.addRow(new Object[]{i,t2,t3,json_data.getString("ImageUrl").toString() , json_data.getString("VId")});
+            			 if ( android.text.Html.fromHtml(json_data.getString("VId")).toString() != "" ) {
+            			      cursor.addRow(new Object[]{i,t2,t3,json_data.getString("ImageUrl").toString() , json_data.getString("VId")});
+            			 }
             		}
             	}
 		    } catch (JSONException e) {
