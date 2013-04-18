@@ -28,6 +28,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +39,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,7 +68,7 @@ public class ArticlePagerFragment extends Fragment {
 
 	MyAdapter mAdapter;
 	ViewPager mPager;
-
+	
 	// Parameterless constructor is needed by framework
 	public ArticlePagerFragment() {
 		super();
@@ -85,8 +87,8 @@ public class ArticlePagerFragment extends Fragment {
 
 	@Override
 	public void onResume() {
-		super.onResume();
 		Log.v("Fragment", "RESUME");
+		super.onResume();
 		BusProvider.getInstance().register(this);
 	}
 
@@ -98,14 +100,13 @@ public class ArticlePagerFragment extends Fragment {
 
 	@Subscribe
 	public void onMovieSelected(MovieSelectedEvent event) {
-		Log.v("___", "Ü***");
+		Log.v("___", "Ü***"+ mAdapter);
 		if (mAdapter != null)
 		{
-			
-		mAdapter.setAllItems(event.mList);
-		mAdapter.setCount(event.mList.size());
-		mPager.setCurrentItem(event.pos);
-		mAdapter.notifyDataSetChanged();
+			mAdapter.setAllItems(event.mList);
+			mPager.setCurrentItem(event.pos);
+			mAdapter.notifyDataSetChanged();
+			//reset the adapter to clear all pages.. we might only need to this this if this is a different page
 		}
 	}
 
@@ -148,10 +149,11 @@ public class ArticlePagerFragment extends Fragment {
 		return v;
 	}
 
-	public static class MyAdapter extends FragmentPagerAdapter {
+	public static class MyAdapter extends FragmentStatePagerAdapter {
 		private int mcount = 0;
 		private ArrayList<Movie> mallItems;
-
+		private ArrayList<String> extIds; 
+		
 		public MyAdapter(FragmentManager fm) {
 			super(fm);
 		}
@@ -162,7 +164,12 @@ public class ArticlePagerFragment extends Fragment {
 
 		public void setAllItems(ArrayList<Movie> allItems) {
 			mallItems = allItems;
-
+			extIds = new ArrayList<String>();
+			for (Movie movie : allItems) {
+				extIds.add( movie.getExtId());
+			}
+			this.setCount(allItems.size());
+			this.notifyDataSetChanged();
 		}
 
 		public String getPageTitle(int position) {
@@ -184,8 +191,23 @@ public class ArticlePagerFragment extends Fragment {
 			args.putString("title", mallItems.get(position).getTitle());
 			args.putString("subtitle", mallItems.get(position).getSubtitle());
 			f.setArguments(args);
+			//we need to have this availbe from the outside as well
+			f.setExtId(mallItems.get(position).getExtId());
 			return f;
 		}
+		
+		//http://stackoverflow.com/questions/10849552/android-viewpager-cant-update-dynamically
+		public int getItemPosition(Object item) {
+			ArticleFragment fragment = (ArticleFragment)item;
+	        String title = fragment.getExtId();
+	        int position = extIds.indexOf(title);
+
+	        if (position >= 0) {
+	            return position;
+	        } else {
+	            return POSITION_NONE;
+	        }
+	    }
 	}
 
 }

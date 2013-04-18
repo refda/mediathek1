@@ -33,7 +33,7 @@
                  >
                  
         <activity android:name="de.janrenz.app.mediathek.NewsReaderActivity" android:label="@string/app_name" 
-              android:theme="@style/MediathekStyle"
+              android:theme="@style/Theme.Sherlock.Light.DarkActionBar"
               >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity android:name="de.janrenz.app.mediathek.ArticleActivity"
-                  android:theme="@style/MediathekStyle" />
+                  android:theme="@style/Theme.Sherlock.Light.DarkActionBar" />
  <provider android:name="de.janrenz.app.mediathek.SlowContentProvider" android:exported="false"
                   android:authorities="de.janrenz.app.mediathek.cursorloader.data"
                 />

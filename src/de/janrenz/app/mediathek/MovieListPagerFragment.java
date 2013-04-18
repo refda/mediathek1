@@ -65,6 +65,13 @@ public class MovieListPagerFragment extends SherlockFragment {
 	Bus bus1 = new Bus(ThreadEnforcer.ANY);
     MyAdapter mAdapter;
     ViewPager mPager;
+    
+    /**
+	 * The serialization (saved instance state) Bundle key representing the
+	 * activated item position. Only used on tablets.
+	 */
+	private static final String STATE_CURRENT_POSITION = "current_position";
+
 	/**
 	 * Default constructor required by framework.
 	 */
@@ -75,7 +82,7 @@ public class MovieListPagerFragment extends SherlockFragment {
 	 @Override
 	public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
- 
+	        //Log.v("ÜÜÜ", "111"+savedInstanceState.containsKey(STATE_CURRENT_POSITION));
 	    }
 	 
 	 @Override 
@@ -88,18 +95,33 @@ public class MovieListPagerFragment extends SherlockFragment {
 	        //Bind the title indicator to the adapter
 	        TitlePageIndicator titleIndicator = (TitlePageIndicator)getActivity().findViewById(R.id.movielistpageindicator);
 	        titleIndicator.setViewPager(mPager);
-	        mPager.setCurrentItem(6);
+	        if (savedInstanceState != null
+					&& savedInstanceState.containsKey(STATE_CURRENT_POSITION)) {
+				mPager.setCurrentItem(savedInstanceState.getInt(STATE_CURRENT_POSITION));
+			}else
+			{
+				mPager.setCurrentItem(6);				
+			}
 	 }
-	 
+		@Override
+		public void onSaveInstanceState(Bundle outState) {
+			if (mPager != null) {
+				// Serialize and persist the activated item position.
+				outState.putInt(STATE_CURRENT_POSITION, mPager.getCurrentItem());
+			}
+			super.onSaveInstanceState(outState);
+		}
+		
+		
+	
 	 @Override
 	    public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	        Bundle savedInstanceState)
 	    {
-		 
-		     View v =  inflater.inflate(R.layout.movielist, container, false);
-		    
+		    View v =  inflater.inflate(R.layout.movielist, container, false);
 	        return v;
 	    }
+	 
 	public static class MyAdapter extends FragmentPagerAdapter {
 		private int mcount = 7;
 
@@ -141,6 +163,7 @@ public class MovieListPagerFragment extends SherlockFragment {
 			Bundle args = new Bundle();
 			// this is now the offset
 			args.putInt("datepos", 6 - position);
+			
 			f.setArguments(args);
 			return f;
 		}

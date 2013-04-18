@@ -38,8 +38,6 @@ import java.util.ArrayList;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.MenuItem;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Produce;
-import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 
 import de.janrenz.app.mediathek.R;
@@ -59,8 +57,29 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	private Boolean isLoading = true;
 	private Cursor myCursor;
 	// The listener we are to notify when a headline is selected
+	OnHeadlineSelectedListener mHeadlineSelectedListener = null;
 	private static  int LOADER_ID = 0x02;
 	private ArrayList<Movie> mAllItems = new ArrayList<Movie>();
+	Bus bus1 = new Bus(ThreadEnforcer.ANY);
+	/**
+	 * Represents a listener that will be notified of headline selections.
+	 */
+	public interface OnHeadlineSelectedListener {
+		/**
+		 * Called when a given headline is selected.
+		 * 
+		 * @param index
+		 *            the index of the selected headline.
+		 * @param string 
+		 * 
+		 * @param allids
+		 * 
+		 * @param title
+		 * 
+		 * @param subtitle
+		 */
+		public void onHeadlineSelected(int index, String string, ArrayList<Movie> allItems);
+	}
 
 	/**
 	 * Default constructor required by framework.
@@ -71,10 +90,12 @@ public class HeadlinesFragment extends SherlockListFragment implements
 
 	@Override
 	public void onStart() {
+		
 		super.onStart();
 		setListAdapter(mListAdapter);
 		getListView().setOnItemClickListener(this);
 		setListShown(false);
+//		loadCategory(0);
 	}
 
 	
@@ -100,6 +121,9 @@ public class HeadlinesFragment extends SherlockListFragment implements
 		setListShown(false);
 		this.isLoading = true;
 	    Bundle args = new Bundle();
+	    Log.v("DEBUG", "1"+this);
+	    Log.v("DEBUG", "1"+this.getArguments());
+	    Log.v("DEBUG", "1"+this.getArguments().getInt("datepos", 0));
 	    args.putInt("datepos", this.getArguments().getInt("datepos", 0));
 	    //note that we need a different loader id for each loader
 	    getActivity().getSupportLoaderManager().initLoader(this.getArguments().getInt("datepos", 0)+LOADER_ID, args, this);
@@ -133,7 +157,7 @@ public class HeadlinesFragment extends SherlockListFragment implements
 			
 			setListShown(false);
 		} catch (Exception e) {
-			// 
+			// TODO: handle exception
 		}
 		return new CursorLoader(
 				getActivity(),
@@ -144,12 +168,19 @@ public class HeadlinesFragment extends SherlockListFragment implements
 				null);
 	}
 
-	@Override
+	/**
+	 * Sets the listener that should be notified of headline selection events.
+	 * 
+	 * @param listener
+	 *            the listener to notify.
+	 */
+	public void setOnHeadlineSelectedListener(
+			OnHeadlineSelectedListener listener) {
+		mHeadlineSelectedListener = listener;
+	}
+
 	public void onResume() {
 		super.onResume();
-	
-		BusProvider.getInstance().register(this);
-		
 		Log.v("FRAGMENT", "RESUME");
 		if ( this.isLoading == false ){
 			setListShown(true);
@@ -163,17 +194,9 @@ public class HeadlinesFragment extends SherlockListFragment implements
 			
 		}
 	}
-	@Override
-	public void onPause() {
-		super.onPause();
-		BusProvider.getInstance().unregister(this);
-	}
 	
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-		
-		
-		
-		
+		setOnHeadlineSelectedListener((OnHeadlineSelectedListener) getActivity());
 		if (cursor != null && cursor.getCount()>0){
 			mListAdapter.swapCursor(cursor);
 			myCursor = cursor;
@@ -183,8 +206,12 @@ public class HeadlinesFragment extends SherlockListFragment implements
 				mMovie.setTitle(myCursor.getString(myCursor.getColumnIndexOrThrow("title")));
 				mMovie.setSubtitle(myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle")));
 				mMovie.setExtId(myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
+				
 				mAllItems.add(mMovie);
 			}
+			
+		}else{
+			setListShown(true);		
 		}
 		try {
 			setListShown(true);		
@@ -200,7 +227,6 @@ public class HeadlinesFragment extends SherlockListFragment implements
 		myCursor = null;
 	}
 
-	 
 	
 	/**
 	 * Handles a click on a headline.
@@ -211,21 +237,15 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		
+		if (null != mHeadlineSelectedListener) {
 			myCursor.moveToPosition(position);
-			String cExtId = myCursor.getString(myCursor.getColumnIndexOrThrow("extId"));
-			if (getResources().getBoolean(R.bool.has_two_panes)) {
-	            // display it on the article fragment
-				 BusProvider.getInstance().post(new MovieSelectedEvent(position, cExtId, mAllItems));
-	        }
-	        else {
-	            // use separate activity
-	            Intent i = new Intent(getActivity(), ArticleActivity.class);
-	            i.putExtra("pos", position );
-	            i.putExtra("movies",mAllItems );
-	            startActivity(i);
-	        }
-		
+			//Log.v ("DEBUG ", myCursor.getString(myCursor.getColumnIndexOrThrow("title")));
+			mHeadlineSelectedListener.onHeadlineSelected(
+					position,  
+					myCursor.getString(myCursor.getColumnIndexOrThrow("extId")), 
+					mAllItems
+					);
+		}
 	}
 
 	/**
