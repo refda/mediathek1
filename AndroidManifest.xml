@@ -32,7 +32,7 @@
                  android:logo="@drawable/ic_launcher" android:theme="@style/MediathekStyle" android:name="BaseApplication"
                  >
                  
-        <activity android:name="de.janrenz.app.mediathek.NewsReaderActivity" android:label="@string/app_name" 
+        <activity android:name="de.janrenz.app.mediathek.MediathekActivity" android:label="@string/app_name" 
               android:theme="@style/MediathekStyle"
               >
             <intent-filter>

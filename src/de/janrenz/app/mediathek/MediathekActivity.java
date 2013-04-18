@@ -42,7 +42,7 @@ import android.widget.TextView;
  * } on the right side. When the user selects a headline on the
  * left, the corresponding article is shown on the right.
  */
-public class NewsReaderActivity extends SherlockFragmentActivity {
+public class MediathekActivity extends SherlockFragmentActivity {
 	public final int MENUINFOID = 1;
 	// Whether or not we are in dual-pane mode
 	boolean mIsDualPane = false;
@@ -171,7 +171,7 @@ public class NewsReaderActivity extends SherlockFragmentActivity {
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			NavUtils.navigateUpTo(this, new Intent(this,
-					NewsReaderActivity.class));
+					MediathekActivity.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

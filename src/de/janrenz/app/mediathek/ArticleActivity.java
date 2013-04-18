@@ -38,7 +38,7 @@ import android.util.Log;
  * two-pane layout, in which case this separate activity is shown in order to
  * display the news article. This activity kills itself if the display is
  * reconfigured into a shape that allows a two-pane layout, since in that case
- * the news article will be displayed by the {@link NewsReaderActivity} and this
+ * the news article will be displayed by the {@link MediathekActivity} and this
  * Activity therefore becomes unnecessary.
  */
 public class ArticleActivity extends SherlockFragmentActivity {
@@ -125,7 +125,7 @@ public class ArticleActivity extends SherlockFragmentActivity {
 			//
 
 			NavUtils.navigateUpTo(this, new Intent(this,
-					NewsReaderActivity.class));
+					MediathekActivity.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
