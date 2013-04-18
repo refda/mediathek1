@@ -42,7 +42,7 @@
         </activity>
         <activity android:name="de.janrenz.app.mediathek.ArticleActivity"
                   android:theme="@style/MediathekStyle" />
- <provider android:name="de.janrenz.app.mediathek.SlowContentProvider" android:exported="false"
+ <provider android:name="de.janrenz.app.mediathek.ArdMediathekProvider" android:exported="false"
                   android:authorities="de.janrenz.app.mediathek.cursorloader.data"
                 />
         </application>

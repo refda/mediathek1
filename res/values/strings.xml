@@ -24,12 +24,11 @@
         <p>Mediathek 1 ist Open Source, der Quelltext ist frei verfügbar unter https://github.com/jprberlin/mediathek1. Wer möchte kann dort auch Fehler reporten oder Verbesserungen und Erweiterungen am Programmcode zur Verfügung stellen (Pull Request).</p>
         <p>Mediathek 1 ist kein offizielles Angebot der ARD. Bitte beachten Sie die Nutzungshinweise und Bedingungen der ARD Mediathek unter http://m.daserste.de</p>
         <p>Danke an Sasche Huth für Tipps zum Einstieg in die Android Entwicklung.<p/>
-        <p><strong>Benutze Bibliotheken:</strong><br />
+        <p><strong>Verwendete Bibliotheken:</strong><br />
         - Android Smart Image View<br />
         - Square Event Bus<br />
         - Action Bar Sherlock<br />
-        - Android-ViewPagerIndicator<br />
-        
+        - Android-ViewPagerIndicator</p>    
         ]]>
     </string>
     

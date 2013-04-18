@@ -23,9 +23,9 @@ import android.database.MatrixCursor;
 import android.net.Uri;
 import android.util.Log;
 
-public class SlowContentProvider extends ContentProvider {
+public class ArdMediathekProvider extends ContentProvider {
 
-	public static final String TAG = SlowContentProvider.class.getSimpleName();
+	public static final String TAG = ArdMediathekProvider.class.getSimpleName();
 
 	@Override
 	public boolean onCreate() {
