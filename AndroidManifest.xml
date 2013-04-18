@@ -18,7 +18,7 @@
       package="de.janrenz.app.mediathek"
       android:versionCode="1"
       android:versionName="0.1">
-    <uses-sdk android:minSdkVersion="11" android:targetSdkVersion="17" />
+    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="17" />
     
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     

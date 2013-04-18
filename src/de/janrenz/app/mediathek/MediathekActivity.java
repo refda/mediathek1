@@ -8,6 +8,8 @@ import java.io.IOException;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+
+import de.cketti.library.changelog.ChangeLog;
 import de.janrenz.app.mediathek.R;
 
 import android.app.Dialog;
@@ -86,6 +88,10 @@ public class MediathekActivity extends SherlockFragmentActivity {
 		// Set up headlines fragment
 
 		// restoreSelection(savedInstanceState);
+		ChangeLog cl = new ChangeLog(this);
+		if (cl.isFirstRun()) {
+		    cl.getLogDialog().show();
+		}
 
 	}
 
