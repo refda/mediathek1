@@ -12,7 +12,9 @@ import com.actionbarsherlock.view.MenuItem;
 import de.cketti.library.changelog.ChangeLog;
 import de.janrenz.app.mediathek.R;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
@@ -20,9 +22,11 @@ import android.os.Environment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -62,7 +66,7 @@ public class MediathekActivity extends SherlockFragmentActivity {
 	// List of category titles
 
 	ViewPager mPager;
-
+	ChangeLog cl;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -88,7 +92,7 @@ public class MediathekActivity extends SherlockFragmentActivity {
 		// Set up headlines fragment
 
 		// restoreSelection(savedInstanceState);
-		ChangeLog cl = new ChangeLog(this);
+		cl = new ChangeLog(this);
 		if (cl.isFirstRun()) {
 		    cl.getLogDialog().show();
 		}
@@ -141,29 +145,57 @@ public class MediathekActivity extends SherlockFragmentActivity {
 								| MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return super.onCreateOptionsMenu(menu);
 	}
+	  protected AlertDialog getInfoDialog() {
+	        TextView tv = new TextView(this);
+	        //wv.setBackgroundColor(0); // transparent
+	        tv.setPadding(15, 15, 15, 15);
+	        tv.setMovementMethod(new ScrollingMovementMethod());
+	        tv.setScrollBarStyle(1);
+	        tv.setText(Html.fromHtml(getString(R.string.infotext)));
+	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        
+	        builder.setTitle("Mediathek 1")         
+	                .setView(tv)
+	                .setCancelable(false)
+	                // OK button
+	                .setPositiveButton(
+	                        this.getResources().getString(R.string.changelog_ok_button),
+	                        new DialogInterface.OnClickListener() {
+	                            @Override
+	                            public void onClick(DialogInterface dialog, int which) {
+	                               dialog.dismiss();
+	                            }
+	                        });
 
+	   
+            // Show "More…" button if we're only displaying a partial change log.
+            builder.setNegativeButton(R.string.info_popup_changelog,
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                    		   if (cl != null ) cl.getFullLogDialog().show();
+                    		
+                        }
+                    });
+	        
+
+	        return builder.create();
+	    }
+	  
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		switch (item.getItemId()) {
 		case MENUINFOID:
 			// custom dialog
-						final Dialog dialog = new Dialog(this);
-						dialog.setContentView(R.layout.info);
-						dialog.setTitle("Mediathek 1");
+			
+						final AlertDialog dialog = this.getInfoDialog();
+					
+						
 			 
 						// set the custom dialog components - text, image and button
 						
-						TextView textView = (TextView) dialog.findViewById(R.id.textView1);
-						textView.setText(Html.fromHtml(getString(R.string.infotext)));
-						Button dialogButton = (Button) dialog.findViewById(R.id.dialogButtonOK);
-						// if button is clicked, close the custom dialog
-						dialogButton.setOnClickListener(new OnClickListener() {
-							@Override
-							public void onClick(View v) {
-								dialog.dismiss();
-							}
-						});
+
 			 
 						dialog.show();
 			return true;
