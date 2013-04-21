@@ -17,7 +17,9 @@
 <resources>
     <string name="hello">Hello World, NewsReaderActivity!</string>
     <string name="app_name">Mediathek 1</string>
-     <string name="ok">OK</string>
+    <string name="ok">OK</string>
+    <string name="info_popup_changelog">Changelog</string>
+    <string name="changelog">Changelog</string>
     <string name="infotext">
         <![CDATA[
         <p>Mediathek 1 ist eine alternative native Oberfläche für die Inhalte der ARD Mediathek. Mediathek 1 entstand als Android-Lernprojekt und um für mich selbst eine bessere Oberfläche zu den Inhalten der ARD Mediathek zur Verfügung zu haben.<p>

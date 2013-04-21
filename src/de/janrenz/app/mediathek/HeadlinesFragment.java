@@ -61,7 +61,7 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	// The listener we are to notify when a headline is selected
 	private static  int LOADER_ID = 0x02;
 	private ArrayList<Movie> mAllItems = new ArrayList<Movie>();
-
+    private int scrollPos;
 	/**
 	 * Default constructor required by framework.
 	 */
@@ -91,6 +91,10 @@ public class HeadlinesFragment extends SherlockListFragment implements
     public void onViewCreated(View view, Bundle savedInstanceState) {
 		this.setEmptyText("Keine Einträge gefunden.");
 		setListShown(false);
+		if (getResources().getBoolean(R.bool.has_two_panes)) {
+			this.getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+			//this.getListView().setDrawSelectorOnTop(true);
+		}
         triggerLoad();
 }
 	private void triggerLoad(){
@@ -105,7 +109,7 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
+		setRetainInstance(true);
 		super.onCreate(savedInstanceState);
 		// mListAdapter = new ArrayAdapter<String>(getActivity(),
 		// R.layout.headline_item,
@@ -201,10 +205,11 @@ public class HeadlinesFragment extends SherlockListFragment implements
 		
 			myCursor.moveToPosition(position);
 			String cExtId = myCursor.getString(myCursor.getColumnIndexOrThrow("extId"));
-			this.setSelection(position);
 			if (getResources().getBoolean(R.bool.has_two_panes)) {
 	            // display it on the article fragment
 				 BusProvider.getInstance().post(new MovieSelectedEvent(position, cExtId, mAllItems));
+				 //this.getListView().setSelection(position);
+			
 	        }
 	        else {
 	            // use separate activity

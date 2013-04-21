@@ -84,7 +84,6 @@ public class MediathekActivity extends SherlockFragmentActivity {
 		View articleView = findViewById(R.id.article);
 		mIsDualPane = articleView != null
 				&& articleView.getVisibility() == View.VISIBLE;
-		// Set up the Action Bar (or not, if one is not available)
 		// int catIndex = savedInstanceState == null ? 0 :
 		// savedInstanceState.getInt("catIndex", 0);
 		// setUpActionBar(mIsDualPane, catIndex);
@@ -102,10 +101,9 @@ public class MediathekActivity extends SherlockFragmentActivity {
 	/** Restore category/article selection from saved state. */
 	void restoreSelection(Bundle savedInstanceState) {
 		if (savedInstanceState != null) {
-			// setNewsCategory(savedInstanceState.getInt("catIndex", 0));
 			if (mIsDualPane) {
 				// int artIndex = savedInstanceState.getInt("artIndex", 0);
-				// mHeadlinesFragment.setSelection(artIndex);
+				
 				// !TODO handle this
 				// onHeadlineSelected(artIndex, null, null);
 			}
@@ -126,13 +124,7 @@ public class MediathekActivity extends SherlockFragmentActivity {
 	 *            the selected tab or list item.
 	 */
 	public void setUpActionBar(boolean showTabs, int selTab) {
-		// if (Build.VERSION.SDK_INT < 11) {
-		// No action bar for you!
-		// But do not despair. In this case the layout includes a bar across the
-		// top that looks and feels like an action bar, but is made up of
-		// regular views.
 		return;
-		// }
 	}
 
 	@Override
@@ -166,15 +158,12 @@ public class MediathekActivity extends SherlockFragmentActivity {
 	                               dialog.dismiss();
 	                            }
 	                        });
-
-	   
             // Show "More…" button if we're only displaying a partial change log.
             builder.setNegativeButton(R.string.info_popup_changelog,
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
-                    		   if (cl != null ) cl.getFullLogDialog().show();
-                    		
+                    		   if (cl != null ) cl.getFullLogDialog().show();	
                         }
                     });
 	        
@@ -187,16 +176,9 @@ public class MediathekActivity extends SherlockFragmentActivity {
 
 		switch (item.getItemId()) {
 		case MENUINFOID:
-			// custom dialog
-			
+			// custom dialog	
 						final AlertDialog dialog = this.getInfoDialog();
-					
-						
-			 
 						// set the custom dialog components - text, image and button
-						
-
-			 
 						dialog.show();
 			return true;
 
