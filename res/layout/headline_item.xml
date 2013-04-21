@@ -54,6 +54,14 @@
             android:textColor="#1C3144"
             android:textSize="13sp" />
         
+          <TextView
+            android:id="@+id/text_view_sub2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="0dp"
+            android:textColor="#1C3144"
+            android:textSize="12sp" />
+        
     </LinearLayout>
 
 </RelativeLayout> <!-- END_INCLUDE(all) -->

@@ -2,6 +2,7 @@ package de.janrenz.app.mediathek;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Date;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -37,40 +38,49 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	          return v;
 	    }
 	 
-	    @Override
+	    @SuppressWarnings("deprecation")
+		@Override
 	    public void bindView(View v, Context context, Cursor c) {
 	    	  String title = c.getString(c.getColumnIndexOrThrow("title"));
 	    	  String subtitle = c.getString(c.getColumnIndexOrThrow("subtitle"));
 	    	  String imagePath = c.getString(c.getColumnIndexOrThrow("image"));
-
+	    	  String startTime = c.getString(c.getColumnIndexOrThrow("startTime"));
+	    	  String startTimeAsTimestamp = c.getString(c.getColumnIndex("startTimeAsTimestamp"));
 	          /**
-	           * Next set the title of the entry.
+	           * Next set the text of the entry.
 	           */
 	          
 	          TextView title_text = (TextView) v.findViewById(R.id.text_view);
 	          if (title_text != null) {
 	              title_text.setText(title);
 	          }
-	          /**
-	           * Next set the title of the entry.
-	           */
 	          
 	          TextView subtitle_text = (TextView) v.findViewById(R.id.text_view_sub);
 	          if (subtitle_text != null) {
 	        	  subtitle_text.setText(subtitle);
+	          }
+	          TextView subtitle2_text = (TextView) v.findViewById(R.id.text_view_sub2);
+	          if (subtitle2_text != null) {
+	        	  Date dt = new Date();
+	      		// z.B. 'Fri Jan 26 19:03:56 GMT+01:00 2001'
+	        	  dt.setTime(Integer.parseInt(startTimeAsTimestamp)*1000);
+	      		dt.setHours(0);
+	      		dt.setMinutes(0);
+	      		dt.setSeconds(0);
+	        	  subtitle2_text.setText("ARD > " + startTime + " Uhr");
 	          }
 	          /**
 	           * Set the image
 	           */
 	          DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
 	          .showStubImage(R.drawable.ic_stub)
-	         // .showImageForEmptyUri(R.drawable.ic_empty)
+	          // .showImageForEmptyUri(R.drawable.ic_empty)
 	          .showImageOnFail(R.drawable.ic_error)
-	         // .resetViewBeforeLoading()
+	          // .resetViewBeforeLoading()
 	          //.delayBeforeLoading(1000)
 	          .cacheInMemory()
 	          //.cacheOnDisc()
-	             .build();
+	          .build();
 	          ImageView image_view =  (ImageView) v.findViewById(R.id.thumbnail);
 	         
 	          if (image_view != null) {

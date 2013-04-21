@@ -16,6 +16,7 @@ public class Movie implements Parcelable {
 	private String extId;
 	private String thumbnail;
 	private String duration;	
+	private String starttime;
 	private ArrayList<String[]> sources = new ArrayList<String[]>() ;
 	
 	 public Movie(Parcel in) {  
@@ -31,6 +32,7 @@ public class Movie implements Parcelable {
 	        extId = in.readString();  
 	        thumbnail = in.readString();  
 	        duration = in.readString();  
+	        starttime = in.readString();  
 	        //this will be treated sligty differnet
 	        in.readList (sources, String.class.getClassLoader());
 
@@ -84,6 +86,12 @@ public class Movie implements Parcelable {
 	public void setSources(ArrayList<String[]> sources) {
 		this.sources = sources;
 	}
+	public String getStarttime() {
+		return starttime;
+	}
+	public void setStarttime(String starttime) {
+		this.starttime = starttime;
+	}
 	@Override
 	public int describeContents() {
 		// TODO Auto-generated method stub
@@ -97,6 +105,7 @@ public class Movie implements Parcelable {
 		dest.writeString(extId);
 		dest.writeString(duration);
 		dest.writeString(thumbnail);
+		dest.writeString(getStarttime());
 		dest.writeList(sources);
 	}
 }

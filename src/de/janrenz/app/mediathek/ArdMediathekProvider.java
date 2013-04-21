@@ -90,7 +90,7 @@ public class ArdMediathekProvider extends ContentProvider {
 
 		String result = "";
 		MatrixCursor cursor = new MatrixCursor(new String[] { "_id", "title",
-				"subtitle", "image", "extId" });
+				"subtitle", "image", "extId", "startTime", "startTimeAsTimestamp" });
 		try {
 			result = readJSONFeed(url);
 			if (result == "") {
@@ -136,7 +136,10 @@ public class ArdMediathekProvider extends ContentProvider {
 									t2,
 									t3,
 									json_data2.getString("ImageUrl").toString(),
-									json_data2.getString("VId") });
+									json_data2.getString("VId"),
+									json_data2.getString("BTimeF").toString(),
+									json_data2.getString("BTime").toString()
+									});
 						}
 					}
 				}
@@ -146,7 +149,9 @@ public class ArdMediathekProvider extends ContentProvider {
 							.toString() != "") {
 						cursor.addRow(new Object[] { i, t2, t3,
 								json_data.getString("ImageUrl").toString(),
-								json_data.getString("VId") });
+								json_data.getString("VId"),
+								json_data.getString("BTimeF").toString(),
+								json_data.getString("BTime").toString()});
 					}
 				}
 			}

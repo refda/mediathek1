@@ -1,6 +1,4 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -61,7 +59,7 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	// The listener we are to notify when a headline is selected
 	private static  int LOADER_ID = 0x02;
 	private ArrayList<Movie> mAllItems = new ArrayList<Movie>();
-    private int scrollPos;
+	
 	/**
 	 * Default constructor required by framework.
 	 */
@@ -111,9 +109,6 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	public void onCreate(Bundle savedInstanceState) {
 		setRetainInstance(true);
 		super.onCreate(savedInstanceState);
-		// mListAdapter = new ArrayAdapter<String>(getActivity(),
-		// R.layout.headline_item,
-		// mHeadlinesList);
 		mListAdapter = new RemoteImageCursorAdapter(getActivity(),
 				R.layout.headline_item, null,
 				new String[] { "title", "image" }, new int[] { R.id.text_view,
@@ -138,7 +133,7 @@ public class HeadlinesFragment extends SherlockListFragment implements
 		return new CursorLoader(
 				getActivity(),
 				queryUri,
-				new String[] { "title", "image" , "extId"}, 
+				new String[] { "title", "image" , "extId", "startTime"}, 
 				null, 
 				null, 
 				null);
@@ -174,6 +169,7 @@ public class HeadlinesFragment extends SherlockListFragment implements
 				mMovie.setTitle(myCursor.getString(myCursor.getColumnIndexOrThrow("title")));
 				mMovie.setSubtitle(myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle")));
 				mMovie.setExtId(myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
+				mMovie.setStarttime(myCursor.getString(myCursor.getColumnIndexOrThrow("startTime")));
 				mAllItems.add(mMovie);
 			}
 		}
