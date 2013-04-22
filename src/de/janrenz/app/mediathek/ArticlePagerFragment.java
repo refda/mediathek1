@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,13 +48,19 @@ public class ArticlePagerFragment extends Fragment {
 		super.onPause();
 		BusProvider.getInstance().unregister(this);
 	}
-
+	
+	//events are used if we are running in table mode
 	@Subscribe
 	public void onMovieSelected(MovieSelectedEvent event) {
 		if (mAdapter != null) {
 			mAdapter.setAllItems(event.mList);
 			mPager.setCurrentItem(event.pos);
 			mAdapter.notifyDataSetChanged();
+			
+			LinePageIndicator titleIndicator = (LinePageIndicator) getActivity()
+					.findViewById(R.id.detailpageindicator);
+			titleIndicator.setViewPager((ViewPager) getActivity().findViewById(R.id.singlepager));
+			titleIndicator.setCurrentItem(event.pos);
 		}
 	}
 
@@ -79,11 +86,13 @@ public class ArticlePagerFragment extends Fragment {
 				// Bind the title indicator to the adapter
 				LinePageIndicator titleIndicator = (LinePageIndicator) getActivity()
 						.findViewById(R.id.detailpageindicator);
-				titleIndicator.setViewPager(mPager);
+				titleIndicator.setViewPager((ViewPager) getActivity().findViewById(R.id.singlepager));
+				titleIndicator.setCurrentItem(getArguments().getInt("pos", 0));
 			}
 
 		} catch (Exception e) {
 			// TODO: handle exception
+			Log.e("ArticelPager", "mAdapter is null");
 		}
 	}
 
