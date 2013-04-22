@@ -6,6 +6,7 @@ import java.util.Date;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -73,11 +74,10 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	           * Set the image
 	           */
 	          DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
-	          .showStubImage(R.drawable.ic_stub)
+	          //.showStubImage(R.drawable.ic_stub)
 	          // .showImageForEmptyUri(R.drawable.ic_empty)
 	          .showImageOnFail(R.drawable.ic_error)
-	          // .resetViewBeforeLoading()
-	          //.delayBeforeLoading(1000)
+
 	          .cacheInMemory()
 	          //.cacheOnDisc()
 	          .build();
