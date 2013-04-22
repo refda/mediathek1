@@ -80,6 +80,10 @@ public class Movie implements Parcelable {
 	public void setDuration(String duration) {
 		this.duration = duration;
 	}
+	//
+	public String getSenderinfo(){
+		return "ARD > " + this.getStarttime() + " Uhr";
+	}
 	public ArrayList<String[]> getSources() {
 		return sources;
 	}

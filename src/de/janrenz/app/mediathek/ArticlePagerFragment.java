@@ -136,6 +136,7 @@ public class ArticlePagerFragment extends Fragment {
 			args.putString("extId", mallItems.get(position).getExtId());
 			args.putString("title", mallItems.get(position).getTitle());
 			args.putString("subtitle", mallItems.get(position).getSubtitle());
+			args.putString("senderinfo", mallItems.get(position).getSenderinfo());
 			f.setArguments(args);
 			// we need to have this availbe from the outside as well
 			f.setExtId(mallItems.get(position).getExtId());

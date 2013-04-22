@@ -5,6 +5,6 @@
     </release>
       <release version="0.2" versioncode="1">
         <change>Unterstützung für Android-Version ab 2.2 hinzugefügt</change>
-        <change>Anzeige der Austrahlungsuhrzeit zu Listenansicht hinzugefügt</change>
+        <change>Anzeige von Sender und Uhrzeit zu Listenansicht und Detailansicht hinzugefügt</change>
     </release>
 </changelog>

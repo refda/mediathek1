@@ -32,6 +32,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -39,6 +40,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -174,10 +176,14 @@ public class ArticleFragment extends Fragment {
 	 *            the article to display
 	 */
 	public void displayArticle() {
+		//display the information we already got, then fetch the detil information 
 		TextView text = (TextView) mView.findViewById(R.id.headline1);
 		text.setText(getArguments().getString("title"));
 		TextView text2 = (TextView) mView.findViewById(R.id.headline2);
 		text2.setText(getArguments().getString("subtitle"));
+		TextView text3 = (TextView) mView.findViewById(R.id.senderinfo);
+		text3.setText(getArguments().getString("senderinfo"));
+		
 		new AccessWebServiceTask()
 				.execute("http://m-service.daserste.de/appservice/1.4.1/video/"
 						+ getArguments().getString("extId"));
@@ -374,24 +380,30 @@ public class ArticleFragment extends Fragment {
 				});
 				Button buttonCopy = (Button) mView
 						.findViewById(R.id.buttonCopy);
+				
+				if ( android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB){
+					
+					buttonCopy.setOnClickListener(new View.OnClickListener() {
+						
+						@TargetApi(Build.VERSION_CODES.HONEYCOMB) public void onClick(View v) {
+							ClipboardManager clipboard = (ClipboardManager) getActivity()
+									.getSystemService(
+											getActivity().CLIPBOARD_SERVICE);
+							ClipData clip = ClipData.newPlainText("Mediathek",
+									videoPath);
+							clipboard.setPrimaryClip(clip);
+							Toast.makeText(getActivity(),
+									"Url wurde in Zwischenablage kopiert",
+									Toast.LENGTH_LONG).show();
+						}
+						
+					});
+				    
+				}else{
+					buttonCopy.setVisibility(0);
+				} 
 
-				buttonCopy.setOnClickListener(new View.OnClickListener() {
-
-					public void onClick(View v) {
-						ClipboardManager clipboard = (ClipboardManager) getActivity()
-								.getSystemService(
-										getActivity().CLIPBOARD_SERVICE);
-						ClipData clip = ClipData.newPlainText("Mediathek",
-								videoPath);
-						clipboard.setPrimaryClip(clip);
-						Toast.makeText(getActivity(),
-								"Url wurde in Zwischenablage kopiert",
-								Toast.LENGTH_LONG).show();
-					}
-
-				}
-
-				);
+				
 
 				mView.findViewById(R.id.showAfterLoadItems).setVisibility(
 						View.VISIBLE);
