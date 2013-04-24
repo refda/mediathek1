@@ -6,7 +6,7 @@
         <change>Kleinere Layoutverbesserungen</change>
     </release>
      <release version="0.3" versioncode="3">
-        <change>Es gibt nun ein Aktualisieren button. Dies ist z.B. hilfreich wenn man vergessen hatte das WLAN anzuschalten und die Filmliste nicht geladen werden konnte.</change>
+        <change>Es gibt nun ein Aktualisierenbutton. Dies ist z.B. hilfreich wenn man vergessen hatte das WLAN anzuschalten und die Filmliste nicht geladen werden konnte.</change>
         <change>Fehler beim Laden von Beiträgen ohne Bild behoben</change>
     </release>
 </changelog>

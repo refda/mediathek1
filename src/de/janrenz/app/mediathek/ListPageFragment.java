@@ -92,6 +92,7 @@ public class ListPageFragment extends ListFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		// mListAdapter = new ArrayAdapter<String>(getActivity(),
 		// R.layout.headline_item,
 		// mHeadlinesList);

@@ -100,6 +100,7 @@ public class ArticlePagerFragment extends Fragment {
 	// mPager.setCurrentItem(0);
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
 		// check if there is an activity with all the data we need
 		View v = inflater.inflate(R.layout.detailpager, container, false);
 		return v;
