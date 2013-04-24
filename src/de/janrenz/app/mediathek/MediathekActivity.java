@@ -50,6 +50,7 @@ import android.widget.TextView;
  */
 public class MediathekActivity extends SherlockFragmentActivity {
 	public final int MENUINFOID = 1;
+	public final int MENUUPDATEID = 2;
 	// Whether or not we are in dual-pane mode
 	boolean mIsDualPane = false;
 
@@ -91,10 +92,13 @@ public class MediathekActivity extends SherlockFragmentActivity {
 		// Set up headlines fragment
 
 		// restoreSelection(savedInstanceState);
+		
 		cl = new ChangeLog(this);
-		if (cl.isFirstRun()) {
-		    cl.getLogDialog().show();
-		}
+		//only show changelog if there are breaking changes
+		//if (cl.isFirstRun()) {
+		//    cl.getLogDialog().show();
+		//}
+		
 
 	}
 
@@ -109,7 +113,16 @@ public class MediathekActivity extends SherlockFragmentActivity {
 			}
 		}
 	}
-
+	@Override
+	public void onResume() {
+		super.onResume();
+		BusProvider.getInstance().register(this);
+	}
+	@Override
+	public void onPause() {
+		super.onPause();
+		BusProvider.getInstance().unregister(this);
+	}
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		restoreSelection(savedInstanceState);
@@ -135,6 +148,12 @@ public class MediathekActivity extends SherlockFragmentActivity {
 				.setShowAsAction(
 						MenuItem.SHOW_AS_ACTION_IF_ROOM
 								| MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		menu.add(Menu.NONE, MENUUPDATEID, Menu.NONE, "Aktualisieren")
+		.setIcon(R.drawable.ic_menu_refresh)
+		.setShowAsAction(
+				MenuItem.SHOW_AS_ACTION_IF_ROOM
+						| MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		
 		return super.onCreateOptionsMenu(menu);
 	}
 	  protected AlertDialog getInfoDialog() {
@@ -173,15 +192,17 @@ public class MediathekActivity extends SherlockFragmentActivity {
 	  
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-
 		switch (item.getItemId()) {
 		case MENUINFOID:
 			// custom dialog	
-						final AlertDialog dialog = this.getInfoDialog();
-						// set the custom dialog components - text, image and button
-						dialog.show();
+			final AlertDialog dialog = this.getInfoDialog();
+			// set the custom dialog components - text, image and button
+			dialog.show();
 			return true;
-
+		case MENUUPDATEID:
+			//send update event to everyone who cares
+			BusProvider.getInstance().post(new UpdatePressedEvent());
+			return true;
 		case android.R.id.home:
 			// This ID represents the Home or Up button. In the case of this
 			// activity, the Up button is shown. Use NavUtils to allow users
@@ -190,14 +211,11 @@ public class MediathekActivity extends SherlockFragmentActivity {
 			//
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
-			NavUtils.navigateUpTo(this, new Intent(this,
-					MediathekActivity.class));
+			NavUtils.navigateUpTo(this, new Intent(this, MediathekActivity.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-	
 
 	@Override
 	public void onStart() {

@@ -48,7 +48,7 @@ public class ArticlePagerFragment extends Fragment {
 		super.onPause();
 		BusProvider.getInstance().unregister(this);
 	}
-	
+
 	//events are used if we are running in table mode
 	@Subscribe
 	public void onMovieSelected(MovieSelectedEvent event) {

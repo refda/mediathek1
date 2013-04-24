@@ -50,6 +50,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.MenuItem;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 import com.viewpagerindicator.LinePageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
@@ -62,7 +63,6 @@ public class MovieListPagerFragment extends SherlockFragment {
 	// The list adapter for the list we are displaying
 
 	private static int LOADER_ID = 0x02;
-	Bus bus1 = new Bus(ThreadEnforcer.ANY);
     MyAdapter mAdapter;
     ViewPager mPager;
     
@@ -83,7 +83,7 @@ public class MovieListPagerFragment extends SherlockFragment {
 	public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	    }
-	 
+		
 	 @Override 
 	 public void onActivityCreated(Bundle savedInstanceState) {
 		 super.onActivityCreated(savedInstanceState);
@@ -126,21 +126,28 @@ public class MovieListPagerFragment extends SherlockFragment {
 
 		public MyAdapter(FragmentManager fm) {
 			super(fm);
+			BusProvider.getInstance().register(this);
 		}
 
 		public void setCount(int newCount) {
 			mcount = newCount;
+			
 		}
-
+		@Subscribe public void updatePressed(UpdatePressedEvent event) {
+			//be sure to do BusProvider.getInstance().register(this);
+			notifyDataSetChanged();
+			
+		}
+		
 		public String getPageTitle(int position) {
+			if (position == (mcount - 1)) {
+				return "Heute";
+			}
 			Date dt = new Date();
 			// z.B. 'Fri Jan 26 19:03:56 GMT+01:00 2001'
 			dt.setHours(20);
 			dt.setMinutes(0);
 			dt.setSeconds(0);
-			if (position == (mcount - 1)) {
-				return "Heute";
-			}
 
 			Long fragmentTime = dt.getTime()
 					- ((24 * 60 * 60 * 1000) * (mcount - position - 1));

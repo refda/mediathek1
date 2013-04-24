@@ -16,7 +16,6 @@
 
 package de.janrenz.app.mediathek;
 
-import android.content.Loader.OnLoadCompleteListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,7 +27,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -36,6 +34,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.squareup.otto.Subscribe;
 
 import de.janrenz.app.mediathek.R;
 
@@ -82,8 +82,10 @@ public class ListPageFragment extends ListFragment implements
 
 	@Override
 	public void onStart() {
-		setListShown(false);
+		Log.v("ListPagefragent", "onStart");
 		super.onStart();
+		setListShown(false);
+		
 		setListAdapter(mListAdapter);
 		getListView().setOnItemClickListener(this);
 	}
@@ -102,10 +104,11 @@ public class ListPageFragment extends ListFragment implements
 		this.setListAdapter(mListAdapter);
 		getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null,
 				this);
+		BusProvider.getInstance().register(this);
 	}
 
 	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-
+Log.v("cursor", "new cursor");
 		return new CursorLoader(
 				getActivity(),
 				Uri.parse("content://de.janrenz.app.mediathek.cursorloader.data"),
@@ -122,16 +125,35 @@ public class ListPageFragment extends ListFragment implements
 			OnHeadlineSelectedListener listener) {
 		mHeadlineSelectedListener = listener;
 	}
+	
+	
 
+	@Override
 	public void onResume() {
 		setListShown(true);
+		Log.v("ListPageFragment","resume");
+		BusProvider.getInstance().register(this);
 		super.onResume();
 	}
+	@Override
+	public void onPause() {
+		super.onPause();
+		BusProvider.getInstance().unregister(this);
+	}
 
+	@Subscribe public void updatePressed(UpdatePressedEvent event) {
+		//be sure to do BusProvider.getInstance().register(this); before
+		Log.v("ListPageFragment", "update requested");
+		setListShown(false);
+		if (myCursor != null) {
+			getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
+		}
+	}
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
 		setListShown(true);
 		mListAdapter.swapCursor(cursor);
 		myCursor = cursor;
+		
 	}
 
 	public void onLoaderReset(Loader<Cursor> cursorLoader) {

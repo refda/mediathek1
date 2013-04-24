@@ -3,9 +3,12 @@
     <release version="0.1" versioncode="1">
         <change>Erster Release</change>
     </release>
-      <release version="0.2" versioncode="1">
+      <release version="0.2" versioncode="2">
         <change>Unterstützung für Android-Version ab 2.2 hinzugefügt</change>
         <change>Anzeige von Sender und Uhrzeit zu Listenansicht und Detailansicht hinzugefügt</change>
         <change>Kleinere Layoutverbesserungen</change>
+    </release>
+     <release version="0.3" versioncode="3">
+        <change>Fehler beim Laden von Beiträgen ohne Bild behoben</change>
     </release>
 </changelog>

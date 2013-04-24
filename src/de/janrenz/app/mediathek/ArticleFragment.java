@@ -212,7 +212,8 @@ public class ArticleFragment extends Fragment {
 				tView.setText(duration);
 			} catch (Exception e) {
 				// TODO: handle exception
-				Log.e("onPostExecute", "failed: " + e.getMessage());
+				Log.e("onPostExecute", "failed 1: "  + e.getMessage() + result);
+				return;
 			}
 			// TODO: MAybe we can rewind the StringReader and reuse it
 			inputSrc = new InputSource(new StringReader(result));
@@ -225,10 +226,13 @@ public class ArticleFragment extends Fragment {
 						inputSrc, XPathConstants.NODESET);
 				for (int i = 0; i < Math.max(nodes.getLength(), 1); i++) {
 					Node node = nodes.item(i);
-
-					String url = node.getTextContent();
-					ImageView imageView = (ImageView) mView
-							.findViewById(R.id.thumbnail);
+					String url = "";
+					try {
+						url = node.getTextContent();
+					} catch (Exception e) {
+						Log.e("onPostExecute", "failed, no image found ");
+						//return;
+					}
 					/**
 					 * Set the image
 					 */
@@ -239,7 +243,6 @@ public class ArticleFragment extends Fragment {
 							.cacheInMemory()
 							// .cacheOnDisc()
 							.build();
-
 					ImageView image_view = (ImageView) mView
 							.findViewById(R.id.thumbnail);
 
@@ -256,6 +259,7 @@ public class ArticleFragment extends Fragment {
 			expression = "//playlist/video/assets/asset";
 			inputSrc = new InputSource(new StringReader(result));
 			inputSrc.setEncoding("UTF-8");
+		
 			videoSources = new ArrayList<String[]>();
 
 			// list of nodes queried
