@@ -66,7 +66,7 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	public HeadlinesFragment() {
 		super();
 	}
-
+	
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -79,7 +79,7 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	public void reloadAllVisisble() { 
 		try {
 			mListAdapter.notifyDataSetChanged();
-			triggerLoad();
+			triggerLoad(true);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -93,15 +93,24 @@ public class HeadlinesFragment extends SherlockListFragment implements
 			this.getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 			//this.getListView().setDrawSelectorOnTop(true);
 		}
-        triggerLoad();
+        triggerLoad(false);
 }
-	private void triggerLoad(){
+	private void triggerLoad(Boolean forceReload ){
 		setListShown(false);
 		this.isLoading = true;
 	    Bundle args = new Bundle();
 	    args.putInt("datepos", this.getArguments().getInt("datepos", 0));
 	    //note that we need a different loader id for each loader
-	    getActivity().getSupportLoaderManager().initLoader(this.getArguments().getInt("datepos", 0)+LOADER_ID, args, this);
+	    int loaderId = LOADER_ID + this.getArguments().getInt("datepos", 0);
+	    if (mAllItems != null && mAllItems.size()>0){
+	    	loaderId = mAllItems.get(this.getArguments().getInt("datepos", 0)).getStarttimestamp();	
+	    }
+	    //different loader id per day by using the timestamp of the firstmobve
+	    if (forceReload){  	
+	    	getActivity().getSupportLoaderManager().restartLoader(loaderId, args, this);
+	    }else{
+	    	getActivity().getSupportLoaderManager().initLoader(loaderId, args, this);
+	    }
 
 }
 	
@@ -122,10 +131,11 @@ public class HeadlinesFragment extends SherlockListFragment implements
 		
 		// query code
 		Uri queryUri = Uri.parse("content://de.janrenz.app.mediathek.cursorloader.data");
-		Integer offset =  getArguments().getInt("datepos", 0);
-		queryUri = queryUri.buildUpon().appendQueryParameter("offset", offset.toString()).build();
-		try {
-			
+		Integer timestamp =  getArguments().getInt("dateint", 0);
+		queryUri = queryUri.buildUpon().appendQueryParameter("timestamp", timestamp.toString()).build();
+		
+		//queryUri = queryUri.buildUpon().appendQueryParameter("reload", "1").build();
+		try {			
 			setListShown(false);
 		} catch (Exception e) {
 			// 
@@ -133,11 +143,12 @@ public class HeadlinesFragment extends SherlockListFragment implements
 		return new CursorLoader(
 				getActivity(),
 				queryUri,
-				new String[] { "title", "image" , "extId", "startTime"}, 
+				new String[] { "title", "image" , "extId", "startTime", "startTimeAsTimestamp"}, 
 				null, 
 				null, 
 				null);
 	}
+	
 
 	@Override
 	public void onResume() {
@@ -146,7 +157,7 @@ public class HeadlinesFragment extends SherlockListFragment implements
 		if ( this.isLoading == false ){
 			setListShown(true);
 			if (this.getListView().getCount()== 0){
-				triggerLoad();
+				triggerLoad(false);
 			}
 		}else{
 			
@@ -156,6 +167,10 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	public void onPause() {
 		super.onPause();
 		BusProvider.getInstance().unregister(this);
+	}
+	@Subscribe public void updatePressed(UpdatePressedEvent event) {
+		//be sure to do BusProvider.getInstance().register(this);
+		reloadAllVisisble();
 	}
 	
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
@@ -170,6 +185,7 @@ public class HeadlinesFragment extends SherlockListFragment implements
 				mMovie.setSubtitle(myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle")));
 				mMovie.setExtId(myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
 				mMovie.setStarttime(myCursor.getString(myCursor.getColumnIndexOrThrow("startTime")));
+				mMovie.setStarttimestamp(myCursor.getInt(myCursor.getColumnIndexOrThrow("startTimeAsTimestamp")));
 				mAllItems.add(mMovie);
 			}
 		}

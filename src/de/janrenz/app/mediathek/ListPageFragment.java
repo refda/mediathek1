@@ -35,7 +35,6 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.squareup.otto.Subscribe;
 
 import de.janrenz.app.mediathek.R;
 
@@ -68,9 +67,10 @@ public class ListPageFragment extends ListFragment implements
 		 * 
 		 * @param index
 		 *            the index of the selected headline.
-		 * @param string 
+		 * @param string
 		 */
-		public void onHeadlineSelected(int index, String string, ArrayList all, String title, String subtitle);
+		public void onHeadlineSelected(int index, String string, ArrayList<?> all,
+				String title, String subtitle);
 	}
 
 	/**
@@ -82,10 +82,9 @@ public class ListPageFragment extends ListFragment implements
 
 	@Override
 	public void onStart() {
-		Log.v("ListPagefragent", "onStart");
 		super.onStart();
 		setListShown(false);
-		
+
 		setListAdapter(mListAdapter);
 		getListView().setOnItemClickListener(this);
 	}
@@ -98,8 +97,8 @@ public class ListPageFragment extends ListFragment implements
 		// mHeadlinesList);
 		mListAdapter = new RemoteImageCursorAdapter(getActivity(),
 				R.layout.headline_item, null,
-				new String[] { "title", "image",}, new int[] { R.id.text_view,
-						R.id.thumbnail});
+				new String[] { "title", "image", }, new int[] { R.id.text_view,
+						R.id.thumbnail });
 		// ListView listView = (ListView) findViewById(R.id.list);
 		this.setListAdapter(mListAdapter);
 		getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null,
@@ -108,11 +107,10 @@ public class ListPageFragment extends ListFragment implements
 	}
 
 	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-Log.v("cursor", "new cursor");
 		return new CursorLoader(
 				getActivity(),
 				Uri.parse("content://de.janrenz.app.mediathek.cursorloader.data"),
-				new String[] { "title", "image" , "extId"}, null, null, null);
+				new String[] { "title", "image", "extId" }, null, null, null);
 	}
 
 	/**
@@ -125,35 +123,26 @@ Log.v("cursor", "new cursor");
 			OnHeadlineSelectedListener listener) {
 		mHeadlineSelectedListener = listener;
 	}
-	
-	
 
 	@Override
 	public void onResume() {
 		setListShown(true);
-		Log.v("ListPageFragment","resume");
 		BusProvider.getInstance().register(this);
 		super.onResume();
 	}
+
 	@Override
 	public void onPause() {
 		super.onPause();
 		BusProvider.getInstance().unregister(this);
 	}
 
-	@Subscribe public void updatePressed(UpdatePressedEvent event) {
-		//be sure to do BusProvider.getInstance().register(this); before
-		Log.v("ListPageFragment", "update requested");
-		setListShown(false);
-		if (myCursor != null) {
-			getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-		}
-	}
+
+
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
 		setListShown(true);
 		mListAdapter.swapCursor(cursor);
 		myCursor = cursor;
-		
 	}
 
 	public void onLoaderReset(Loader<Cursor> cursorLoader) {
@@ -161,7 +150,6 @@ Log.v("cursor", "new cursor");
 		mListAdapter.swapCursor(null);
 		myCursor = null;
 	}
-
 
 	/**
 	 * Handles a click on a headline.
@@ -174,13 +162,13 @@ Log.v("cursor", "new cursor");
 			long id) {
 		if (null != mHeadlineSelectedListener) {
 			myCursor.moveToPosition(position);
-			mHeadlineSelectedListener.onHeadlineSelected(
-					position,
-					myCursor.getString(myCursor.getColumnIndexOrThrow("extId")),
-					null,
-					myCursor.getString(myCursor.getColumnIndexOrThrow("title")),
-					myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle"))
-					);
+			mHeadlineSelectedListener
+					.onHeadlineSelected(position, myCursor.getString(myCursor
+							.getColumnIndexOrThrow("extId")), null,
+							myCursor.getString(myCursor
+									.getColumnIndexOrThrow("title")), myCursor
+									.getString(myCursor
+											.getColumnIndexOrThrow("subtitle")));
 		}
 	}
 

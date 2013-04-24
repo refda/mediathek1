@@ -29,8 +29,10 @@ public class ArdMediathekProvider extends ContentProvider {
 
 	@Override
 	public boolean onCreate() {
+		
 		return true;
 	}
+	
 
 	public String readJSONFeed(String URL) {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -64,7 +66,8 @@ public class ArdMediathekProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] strings, String s, String[] strings1,
 			String s1) {
-		String queryparam = uri.getQueryParameter("offset");
+
+		String queryparam = uri.getQueryParameter("timestamp");
 		if (queryparam == null) {
 			queryparam = "0";
 		}
@@ -73,26 +76,20 @@ public class ArdMediathekProvider extends ContentProvider {
 		if (queryparamReload != null) {
 			queryExtReload = "&reload=" + Math.random();
 		}
-		Integer offset = Integer.parseInt(queryparam);
-		Date dt = new Date();
-		// z.B. 'Fri Jan 26 19:03:56 GMT+01:00 2001'
-		dt.setHours(0);
-		dt.setMinutes(0);
-		dt.setSeconds(0);
-
-		Long curtime = dt.getTime() / 1000 - ((24 * 60 * 60) * offset);
+		Integer timestamp = Integer.parseInt(queryparam);
+	
 		// String url=
 		// "http://m-service.daserste.de/appservice/1.4.1/video/list/" + curtime
 		// + "?func=getBroadcastList&unixTimestamp=" + curtime;
 
 		String url = "http://m-service.daserste.de/appservice/1.4.1/video/list/"
-				+ curtime + "?func=getVideoList&unixTimestamp=" + curtime;
+				+ timestamp + "?func=getVideoList&unixTimestamp=" + timestamp;
 
 		String result = "";
 		MatrixCursor cursor = new MatrixCursor(new String[] { "_id", "title",
 				"subtitle", "image", "extId", "startTime", "startTimeAsTimestamp" });
+		result = readJSONFeed(url);
 		try {
-			result = readJSONFeed(url);
 			if (result == "") {
 				return cursor;
 			}
@@ -127,7 +124,7 @@ public class ArdMediathekProvider extends ContentProvider {
 						t3 = android.text.Html.fromHtml(
 								json_data2.getString("Title2")).toString();
 
-						// only add movei if it has a vid
+						// only add movie if it has a video
 						if (android.text.Html.fromHtml(
 								json_data2.getString("VId")).toString() != "") {
 

@@ -16,43 +16,20 @@
 
 package de.janrenz.app.mediathek;
 
-import android.content.Intent;
-import android.content.Loader.OnLoadCompleteListener;
-import android.database.Cursor;
-import android.net.Uri;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.ListFragment;
-import android.support.v4.app.NavUtils;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.app.LoaderManager;
-
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.app.SherlockListFragment;
-import com.actionbarsherlock.view.MenuItem;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
-import com.squareup.otto.ThreadEnforcer;
-import com.viewpagerindicator.LinePageIndicator;
 import com.viewpagerindicator.TitlePageIndicator;
 
 import de.janrenz.app.mediathek.R;
@@ -62,8 +39,7 @@ public class MovieListPagerFragment extends SherlockFragment {
 
 	// The list adapter for the list we are displaying
 
-	private static int LOADER_ID = 0x02;
-    MyAdapter mAdapter;
+	MyAdapter mAdapter;
     ViewPager mPager;
     
     /**
@@ -83,7 +59,28 @@ public class MovieListPagerFragment extends SherlockFragment {
 	public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	    }
-		
+	 @Override
+		public void onResume() {
+			super.onResume();
+			BusProvider.getInstance().register(this);
+			
+		}
+		@Override
+		public void onPause() {
+			super.onPause();
+			BusProvider.getInstance().unregister(this);
+		}
+		@Subscribe public void updatePressed(UpdatePressedEvent event) {
+			//be sure to do BusProvider.getInstance().register(this);
+			if (mAdapter != null ) {
+				mAdapter.notifyDataSetChanged();
+			}
+			if (mPager != null) {
+				mPager.forceLayout();
+				//mPager.setCurrentItem(mAdapter.getCount()-1);
+			}
+			
+		}
 	 @Override 
 	 public void onActivityCreated(Bundle savedInstanceState) {
 		 super.onActivityCreated(savedInstanceState);
@@ -126,35 +123,36 @@ public class MovieListPagerFragment extends SherlockFragment {
 
 		public MyAdapter(FragmentManager fm) {
 			super(fm);
-			BusProvider.getInstance().register(this);
+			
 		}
 
 		public void setCount(int newCount) {
 			mcount = newCount;
 			
 		}
-		@Subscribe public void updatePressed(UpdatePressedEvent event) {
-			//be sure to do BusProvider.getInstance().register(this);
-			notifyDataSetChanged();
-			
-		}
 		
-		public String getPageTitle(int position) {
+		
+		public String getPageTitle(int position ) {
 			if (position == (mcount - 1)) {
 				return "Heute";
+			}else{
+				return this.getDateString(position);
 			}
+			
+
+		}
+		@SuppressLint("SimpleDateFormat") @SuppressWarnings("deprecation")
+		private String getDateString(int position){
 			Date dt = new Date();
 			// z.B. 'Fri Jan 26 19:03:56 GMT+01:00 2001'
-			dt.setHours(20);
+			dt.setHours(0);
 			dt.setMinutes(0);
 			dt.setSeconds(0);
-
 			Long fragmentTime = dt.getTime()
 					- ((24 * 60 * 60 * 1000) * (mcount - position - 1));
-			Date cdt = new Date(fragmentTime);
+			new Date(fragmentTime);
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EE dd.MM");
 			return simpleDateFormat.format(fragmentTime);
-
 		}
 
 		@Override
@@ -166,8 +164,17 @@ public class MovieListPagerFragment extends SherlockFragment {
 		public Fragment getItem(int position) {
 			HeadlinesFragment f = new HeadlinesFragment();
 			Bundle args = new Bundle();
+				int offset = 6 - position;
 			// this is now the offset
-			args.putInt("datepos", 6 - position);	
+			args.putInt("datepos", offset);	
+			Date dt = new Date();
+			// z.B. 'Fri Jan 26 19:03:56 GMT+01:00 2001'
+			dt.setHours(0);
+			dt.setMinutes(0);
+			dt.setSeconds(0);
+			Long curtime = dt.getTime() / 1000 - ((24 * 60 * 60) * offset);
+			int datestamp = (int) (curtime * 1 );
+			args.putInt("dateint", datestamp);
 			f.setArguments(args);
 			return f;
 		}
