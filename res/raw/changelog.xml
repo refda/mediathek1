@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <changelog>
-    <release version="0.1" versioncode="1">
-        <change>Erster Release</change>
-    </release>
       <release version="0.2" versioncode="2">
         <change>Unterstützung für Android-Version ab 2.2 hinzugefügt</change>
         <change>Anzeige von Sender und Uhrzeit zu Listenansicht und Detailansicht hinzugefügt</change>
         <change>Kleinere Layoutverbesserungen</change>
     </release>
      <release version="0.3" versioncode="3">
+        <change>Es gibt nun ein Aktualisieren button. Dies ist z.B. hilfreich wenn man vergessen hatte das WLAN anzuschalten und die Filmliste nicht geladen werden konnte.</change>
         <change>Fehler beim Laden von Beiträgen ohne Bild behoben</change>
     </release>
 </changelog>

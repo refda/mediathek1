@@ -4,7 +4,6 @@
 package de.janrenz.app.mediathek;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -17,6 +16,7 @@ public class Movie implements Parcelable {
 	private String thumbnail;
 	private String duration;	
 	private String starttime;
+	private int starttimestamp;
 	private ArrayList<String[]> sources = new ArrayList<String[]>() ;
 	
 	 public Movie(Parcel in) {  
@@ -33,6 +33,7 @@ public class Movie implements Parcelable {
 	        thumbnail = in.readString();  
 	        duration = in.readString();  
 	        starttime = in.readString();  
+	        starttimestamp = in.readInt();  
 	        //this will be treated sligty differnet
 	        in.readList (sources, String.class.getClassLoader());
 
@@ -110,6 +111,13 @@ public class Movie implements Parcelable {
 		dest.writeString(duration);
 		dest.writeString(thumbnail);
 		dest.writeString(getStarttime());
+		dest.writeInt(getStarttimestamp());
 		dest.writeList(sources);
+	}
+	public int getStarttimestamp() {
+		return starttimestamp;
+	}
+	public void setStarttimestamp(int i) {
+		this.starttimestamp = i;
 	}
 }
