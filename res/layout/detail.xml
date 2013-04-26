@@ -15,7 +15,7 @@
             android:layout_width="fill_parent"
             android:layout_height="150dp"
             android:background="#EEEEEE"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop" /> 
 
         <TextView
             android:id="@+id/headline2"
@@ -80,13 +80,14 @@
                         android:id="@+id/qualityText"
                         android:layout_width="96dp"
                         android:layout_height="wrap_content"
-                        android:text="Qualität:"
+                        android:text="@string/qualitaet"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     <Spinner
                         android:id="@+id/qualitySpinner"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:spinnerMode="dropdown"
                         android:layout_weight="1" />
                 </TableRow>
 
@@ -98,7 +99,7 @@
                     <TextView
                         android:layout_width="96dp"
                         android:layout_height="match_parent"
-                        android:text="Dauer:"
+                        android:text="@string/dauer_"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     <TextView
@@ -118,7 +119,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:background="#235fa0"
-                android:text="Jetzt ansehen"
+                android:text="@string/jetzt_ansehen"
                 android:textColor="#FFFFFF" />
 
             <Button

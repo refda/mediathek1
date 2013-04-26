@@ -1,13 +1,9 @@
 package de.janrenz.app.mediathek;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.Date;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -21,7 +17,6 @@ import android.widget.TextView;
 public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Filterable {
 		 
 	    private Context context;
-	 
 	    private int layout;
 	 
 	    private LayoutInflater mLayoutInflater;

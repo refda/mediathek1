@@ -21,10 +21,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -33,17 +30,17 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +63,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import com.actionbarsherlock.internal.widget.IcsAdapterView;
+import com.actionbarsherlock.internal.widget.IcsSpinner;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -261,7 +260,8 @@ public class ArticleFragment extends Fragment {
 			inputSrc.setEncoding("UTF-8");
 		
 			videoSources = new ArrayList<String[]>();
-
+			Boolean canHandleRtmp = canDisplayRtmp(getActivity());
+	
 			// list of nodes queried
 			try {
 				String tempUrl = "";
@@ -298,7 +298,7 @@ public class ArticleFragment extends Fragment {
 							videoSources
 									.add(new String[] { bandwidth, videoUrl });
 						}
-					} else {
+					} else if (canHandleRtmp){
 						bandwidth = bandwidth + " (RTMP)";
 					}
 
@@ -353,11 +353,17 @@ public class ArticleFragment extends Fragment {
 						prefEditor.commit();
 					}
 
+					
+			
+
 					@Override
 					public void onNothingSelected(AdapterView<?> arg0) {
 						// TODO Auto-generated method stub
-
+						
 					}
+
+					
+					
 				});
 				Button button = (Button) mView.findViewById(R.id.buttonWatch);
 
@@ -421,7 +427,24 @@ public class ArticleFragment extends Fragment {
 		}
 
 	}
-
+	/**
+	 * Check if the supplied context can handle a certain format
+	 * http://stackoverflow.com/questions/2784847/how-do-i-determine-if-android-can-handle-pdf
+	 *
+	 * @param context
+	 * @return
+	 */
+	public static boolean canDisplayRtmp(Context context) {
+	    PackageManager packageManager = context.getPackageManager();
+	    Intent testIntent = new Intent(Intent.ACTION_VIEW);
+	    testIntent.setType("video/rtmp");
+	    //testIntent.setData(Uri.parse("rtmp://mystream"));
+	    if (packageManager.queryIntentActivities(testIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0) {
+	        return true;
+	    } else {
+	        return false;
+	    }
+	}
 	/**
 	 * Loads article data into the webview.
 	 * 

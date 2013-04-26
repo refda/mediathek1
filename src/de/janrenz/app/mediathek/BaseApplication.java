@@ -13,7 +13,6 @@ public class BaseApplication extends Application {
         ImageLoaderConfiguration loadingOptions = new ImageLoaderConfiguration.Builder(getApplicationContext())
            .build();
         // Create global configuration and initialize ImageLoader with this configuration
-
         ImageLoader.getInstance().init(loadingOptions);
     }
 }

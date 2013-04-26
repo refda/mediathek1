@@ -1,10 +1,5 @@
 package de.janrenz.app.mediathek;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -13,22 +8,14 @@ import de.cketti.library.changelog.ChangeLog;
 import de.janrenz.app.mediathek.R;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -158,7 +145,7 @@ public class MediathekActivity extends SherlockFragmentActivity {
 	}
 	  protected AlertDialog getInfoDialog() {
 	        TextView tv = new TextView(this);
-	        //wv.setBackgroundColor(0); // transparent
+	        //tv.setBackgroundColor(getResources().getColor(R.color.abs__bright_foreground_holo_dark)); 
 	        tv.setPadding(15, 15, 15, 15);
 	        tv.setMovementMethod(new ScrollingMovementMethod());
 	        tv.setScrollBarStyle(1);
@@ -167,6 +154,7 @@ public class MediathekActivity extends SherlockFragmentActivity {
 	        
 	        builder.setTitle("Mediathek 1")         
 	                .setView(tv)
+	                .setInverseBackgroundForced(true)//needded for old android version
 	                .setCancelable(false)
 	                // OK button
 	                .setPositiveButton(
