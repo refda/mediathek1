@@ -25,17 +25,14 @@ import android.support.v4.content.Loader;
 import android.support.v4.app.LoaderManager;
 
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import android.widget.ListView;
-
 import java.util.ArrayList;
 import java.util.List;
 
-
+import com.squareup.otto.Subscribe;
 import de.janrenz.app.mediathek.R;
 
 /**
@@ -84,7 +81,7 @@ public class ListPageFragment extends ListFragment implements
 	public void onStart() {
 		super.onStart();
 		setListShown(false);
-
+		BusProvider.getInstance().register(this);
 		setListAdapter(mListAdapter);
 		getListView().setOnItemClickListener(this);
 	}
@@ -92,7 +89,6 @@ public class ListPageFragment extends ListFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		// mListAdapter = new ArrayAdapter<String>(getActivity(),
 		// R.layout.headline_item,
 		// mHeadlinesList);
@@ -138,18 +134,24 @@ public class ListPageFragment extends ListFragment implements
 		BusProvider.getInstance().unregister(this);
 	}
 
-
-
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
 		setListShown(true);
 		mListAdapter.swapCursor(cursor);
 		myCursor = cursor;
+
 	}
 
 	public void onLoaderReset(Loader<Cursor> cursorLoader) {
 		setListShown(true);
 		mListAdapter.swapCursor(null);
 		myCursor = null;
+	}
+	
+	@Subscribe
+	public void onMovieSelected(MovieFocusedEvent event) {
+		if (mListAdapter != null && getArguments().getInt("dateint", 0) == event.dayTimestamp) {
+			getListView().setSelection(event.pos);
+		}
 	}
 
 	/**
@@ -173,17 +175,5 @@ public class ListPageFragment extends ListFragment implements
 		}
 	}
 
-	/**
-	 * Sets choice mode for the list
-	 * 
-	 * @param selectable
-	 *            whether list is to be selectable.
-	 */
-	public void setSelectable(boolean selectable) {
-		if (selectable) {
-			getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-		} else {
-			getListView().setChoiceMode(ListView.CHOICE_MODE_NONE);
-		}
-	}
+	
 }

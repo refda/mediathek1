@@ -9,4 +9,10 @@
         <change>Es gibt nun ein Aktualisierenbutton. Dies ist z.B. hilfreich wenn man vergessen hatte das WLAN anzuschalten und die Filmliste nicht geladen werden konnte.</change>
         <change>Fehler beim Laden von Beiträgen ohne Bild behoben</change>
     </release>
+    <release version="0.4" versioncode="4">
+       <change>Blättert man im Tabletmodus durch die Beiträge, wird die Listenansicht dementsprechend gescrollt.</change>
+       <change>Aktualisierung funktiniert nun auch, wenn inzwischen ein neuer Tag ist.</change>
+       <change>Es erscheint nun eine Fehlermeldung wenn das Gerät die Filmurl nicht öffnen kann, bspw. weil kein passender Player installiert ist.</change>
+       <change>Layout(farb)probleme unter Android 2.x behoben</change>
+    </release>
 </changelog>

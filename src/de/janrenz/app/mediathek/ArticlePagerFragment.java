@@ -6,9 +6,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import com.squareup.otto.Subscribe;
 import com.viewpagerindicator.LinePageIndicator;
@@ -16,11 +19,12 @@ import com.viewpagerindicator.LinePageIndicator;
 /**
  * Fragment that displays a news article.
  */
-public class ArticlePagerFragment extends Fragment {
+public class ArticlePagerFragment extends Fragment implements OnPageChangeListener, OnTouchListener{
 
 	MyAdapter mAdapter;
 	ViewPager mPager;
-
+	int dayTimestamp;
+	Boolean sendFocusEvent = false;
 	// Parameterless constructor is needed by framework
 	public ArticlePagerFragment() {
 		super();
@@ -52,15 +56,24 @@ public class ArticlePagerFragment extends Fragment {
 	//events are used if we are running in table mode
 	@Subscribe
 	public void onMovieSelected(MovieSelectedEvent event) {
+		this.sendFocusEvent = false;
+		this.dayTimestamp = event.dayTimestamp;
 		if (mAdapter != null) {
 			mAdapter.setAllItems(event.mList);
-			mPager.setCurrentItem(event.pos);
+			
 			mAdapter.notifyDataSetChanged();
+			mPager.setCurrentItem(event.pos);
 			
 			LinePageIndicator titleIndicator = (LinePageIndicator) getActivity()
 					.findViewById(R.id.detailpageindicator);
 			titleIndicator.setViewPager((ViewPager) getActivity().findViewById(R.id.singlepager));
 			titleIndicator.setCurrentItem(event.pos);
+		}
+	
+		if (mPager != null) {
+			mPager.setOnPageChangeListener(this);
+			mPager.setOnTouchListener(this);
+		}else{
 		}
 	}
 
@@ -71,22 +84,17 @@ public class ArticlePagerFragment extends Fragment {
 		mPager = (ViewPager) getActivity().findViewById(R.id.singlepager);
 		mPager.setAdapter(mAdapter);
 		try {
-			if (mAdapter != null
-					&& getArguments().getParcelableArrayList("movies") != null) {
-				ArrayList<Movie> movies = getArguments()
-						.getParcelableArrayList("movies");
+			if (mAdapter != null && getArguments().getParcelableArrayList("movies") != null) {
+				ArrayList<Movie> movies = getArguments().getParcelableArrayList("movies");
 				mAdapter.setCount(movies.size());
 				mAdapter.setAllItems(movies);
-				mPager = (ViewPager) getActivity().findViewById(
-						R.id.singlepager);
-				if (mPager != null) {
-					mPager.setCurrentItem(getArguments().getInt("pos", 0));
-				}
+				mPager = (ViewPager) getActivity().findViewById( R.id.singlepager );
+				mPager.setCurrentItem( getArguments().getInt("pos", 0) );
 				// Set the pager with an adapter
 				// Bind the title indicator to the adapter
 				LinePageIndicator titleIndicator = (LinePageIndicator) getActivity()
 						.findViewById(R.id.detailpageindicator);
-				titleIndicator.setViewPager((ViewPager) getActivity().findViewById(R.id.singlepager));
+				titleIndicator.setViewPager((ViewPager) getActivity().findViewById( R.id.singlepager ));
 				titleIndicator.setCurrentItem(getArguments().getInt("pos", 0));
 			}
 
@@ -94,8 +102,15 @@ public class ArticlePagerFragment extends Fragment {
 			// TODO: handle exception
 			Log.e("ArticelPager", "mAdapter is null");
 		}
+		
+		
 	}
-
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		setRetainInstance(true);
+		super.onCreate(savedInstanceState);
+		
+	}
 	@Override
 	// mPager.setCurrentItem(0);
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -140,6 +155,7 @@ public class ArticlePagerFragment extends Fragment {
 
 		@Override
 		public Fragment getItem(int position) {
+			
 			ArticleFragment f = new ArticleFragment();
 			Bundle args = new Bundle();
 			args.putInt("num", position);
@@ -148,7 +164,7 @@ public class ArticlePagerFragment extends Fragment {
 			args.putString("subtitle", mallItems.get(position).getSubtitle());
 			args.putString("senderinfo", mallItems.get(position).getSenderinfo());
 			f.setArguments(args);
-			// we need to have this availbe from the outside as well
+			// we need to have this accessible from the outside as well
 			f.setExtId(mallItems.get(position).getExtId());
 			return f;
 		}
@@ -166,4 +182,30 @@ public class ArticlePagerFragment extends Fragment {
 			}
 		}
 	}
+
+	@Override
+	public void onPageScrollStateChanged(int pos) {
+		
+	}
+
+	@Override
+	public void onPageScrolled(int pos, float arg1, int arg2) {
+	}
+
+	@Override
+	public void onPageSelected(int pos) {
+		if (this.sendFocusEvent){
+			BusProvider.getInstance().post(new MovieFocusedEvent(pos,this.dayTimestamp ));			
+		}
+		LinePageIndicator titleIndicator = (LinePageIndicator) getActivity()
+				.findViewById(R.id.detailpageindicator);
+		titleIndicator.setCurrentItem(pos);
+	}
+
+	@Override
+	public boolean onTouch(View v, MotionEvent event) {
+		this.sendFocusEvent = true;
+		return false;
+	}
+
 }

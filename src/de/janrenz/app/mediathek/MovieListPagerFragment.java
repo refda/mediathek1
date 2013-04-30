@@ -20,7 +20,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,15 +34,14 @@ import com.viewpagerindicator.TitlePageIndicator;
 
 import de.janrenz.app.mediathek.R;
 
-
 public class MovieListPagerFragment extends SherlockFragment {
 
 	// The list adapter for the list we are displaying
 
 	MyAdapter mAdapter;
-    ViewPager mPager;
-    
-    /**
+	ViewPager mPager;
+	public static final int DISPLAYEDPAGES = 7;
+	/**
 	 * The serialization (saved instance state) Bundle key representing the
 	 * activated item position. Only used on tablets.
 	 */
@@ -55,94 +54,100 @@ public class MovieListPagerFragment extends SherlockFragment {
 		super();
 	}
 
-	 @Override
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
-	        super.onCreate(savedInstanceState);
-	    }
-	 @Override
-		public void onResume() {
-			super.onResume();
-			BusProvider.getInstance().register(this);
-			
-		}
-		@Override
-		public void onPause() {
-			super.onPause();
-			BusProvider.getInstance().unregister(this);
-		}
-		@Subscribe public void updatePressed(UpdatePressedEvent event) {
-			//be sure to do BusProvider.getInstance().register(this);
-			if (mAdapter != null ) {
-				mAdapter.notifyDataSetChanged();
-			}
-			if (mPager != null) {
-				mPager.forceLayout();
-				//mPager.setCurrentItem(mAdapter.getCount()-1);
-			}
-			
-		}
-	 @Override 
-	 public void onActivityCreated(Bundle savedInstanceState) {
-		 super.onActivityCreated(savedInstanceState);
-		 mAdapter = new MyAdapter(getFragmentManager());
-	        mPager = (ViewPager)getActivity().findViewById(R.id.pager);
-	        mPager.setAdapter(mAdapter);
-	        //Set the pager with an adapter
-	        //Bind the title indicator to the adapter
-	        TitlePageIndicator titleIndicator = (TitlePageIndicator)getActivity().findViewById(R.id.movielistpageindicator);
-	        titleIndicator.setViewPager(mPager);
-	        if (savedInstanceState != null
-					&& savedInstanceState.containsKey(STATE_CURRENT_POSITION)) {
-				mPager.setCurrentItem(savedInstanceState.getInt(STATE_CURRENT_POSITION));
-			}else
-			{
-				mPager.setCurrentItem(6);				
-			}
-	 }
-		@Override
-		public void onSaveInstanceState(Bundle outState) {
-			if (mPager != null) {
-				// Serialize and persist the activated item position.
-				outState.putInt(STATE_CURRENT_POSITION, mPager.getCurrentItem());
-			}
-			super.onSaveInstanceState(outState);
-		}
-		
-		
-	
-	 @Override
-	    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	        Bundle savedInstanceState)
-	    {
-		    View v =  inflater.inflate(R.layout.movielist, container, false);
-	        return v;
-	    }
-	 
-	public static class MyAdapter extends FragmentPagerAdapter {
-		private int mcount = 7;
+		super.onCreate(savedInstanceState);
+	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		BusProvider.getInstance().register(this);
+
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		BusProvider.getInstance().unregister(this);
+	}
+
+	@Subscribe
+	public void updatePressed(UpdatePressedEvent event) {
+		// be sure to do BusProvider.getInstance().register(this);
+
+		if (mAdapter != null && mPager != null) {
+			mAdapter = new MyAdapter(getFragmentManager());
+			mAdapter.notifyDataSetChanged();
+			mPager = (ViewPager) getActivity().findViewById(R.id.pager);
+			mPager.setAdapter(mAdapter);
+			mPager.setCurrentItem(DISPLAYEDPAGES - 1);
+		} else {
+
+		}
+
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		mAdapter = new MyAdapter(getFragmentManager());
+		mPager = (ViewPager) getActivity().findViewById(R.id.pager);
+		mPager.setAdapter(mAdapter);
+		// Set the pager with an adapter
+		// Bind the title indicator to the adapter
+		TitlePageIndicator titleIndicator = (TitlePageIndicator) getActivity()
+				.findViewById(R.id.movielistpageindicator);
+		titleIndicator.setViewPager(mPager);
+		if ( savedInstanceState != null && savedInstanceState.containsKey(STATE_CURRENT_POSITION) ) {
+			mPager.setCurrentItem(savedInstanceState.getInt(STATE_CURRENT_POSITION));	
+			//
+		} else {
+			mPager.setCurrentItem(6);
+		}
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		if (mPager != null) {
+			// Serialize and persist the activated item position.
+			outState.putInt(STATE_CURRENT_POSITION, mPager.getCurrentItem());
+		}
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View v = inflater.inflate(R.layout.movielist, container, false);
+		return v;
+	}
+
+	public static class MyAdapter extends FragmentStatePagerAdapter {
+		private int mcount = DISPLAYEDPAGES;
+		private Boolean triggeredLoadOnce = false;
 		public MyAdapter(FragmentManager fm) {
 			super(fm);
-			
+
 		}
 
 		public void setCount(int newCount) {
 			mcount = newCount;
-			
-		}
-		
-		
-		public String getPageTitle(int position ) {
-			if (position == (mcount - 1)) {
-				return "Heute";
-			}else{
-				return this.getDateString(position);
-			}
-			
 
 		}
-		@SuppressLint("SimpleDateFormat") @SuppressWarnings("deprecation")
-		private String getDateString(int position){
+
+		public String getPageTitle(int position) {
+			if (position == (mcount - 1)) {
+				return this.getDateString(position) + " (heute)";
+			} else {
+				return this.getDateString(position);
+			}
+
+		}
+
+		@SuppressLint("SimpleDateFormat")
+		@SuppressWarnings("deprecation")
+		private String getDateString(int position) {
 			Date dt = new Date();
 			// z.B. 'Fri Jan 26 19:03:56 GMT+01:00 2001'
 			dt.setHours(0);
@@ -160,24 +165,30 @@ public class MovieListPagerFragment extends SherlockFragment {
 			return mcount;
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		public Fragment getItem(int position) {
 			HeadlinesFragment f = new HeadlinesFragment();
 			Bundle args = new Bundle();
-				int offset = 6 - position;
+			int offset = 6 - position;
+			if (offset == 0 && triggeredLoadOnce == false){
+				//the last item selects
+				f.setSelectMovieAfterLoad(true);
+				 triggeredLoadOnce = true;
+			}
 			// this is now the offset
-			args.putInt("datepos", offset);	
 			Date dt = new Date();
-			// z.B. 'Fri Jan 26 19:03:56 GMT+01:00 2001'
 			dt.setHours(0);
 			dt.setMinutes(0);
 			dt.setSeconds(0);
 			Long curtime = dt.getTime() / 1000 - ((24 * 60 * 60) * offset);
-			int datestamp = (int) (curtime * 1 );
+			int datestamp = (int) (curtime * 1);
 			args.putInt("dateint", datestamp);
+			args.putInt("initialOffset", offset);
 			f.setArguments(args);
+			f.setDateint(datestamp);
 			return f;
 		}
 	}
-
+	
 }

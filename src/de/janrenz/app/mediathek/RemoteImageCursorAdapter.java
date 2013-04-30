@@ -33,7 +33,9 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	    	  View v = mLayoutInflater.inflate(R.layout.headline_item, parent, false);
 	          return v;
 	    }
+	    
 	 
+	    
 	    @SuppressWarnings("deprecation")
 		@Override
 	    public void bindView(View v, Context context, Cursor c) {
@@ -63,7 +65,7 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	      		dt.setHours(0);
 	      		dt.setMinutes(0);
 	      		dt.setSeconds(0);
-	        	  subtitle2_text.setText("ARD > " + startTime + " Uhr");
+	        	subtitle2_text.setText("ARD > " + startTime + " Uhr");
 	          }
 	          /**
 	           * Set the image
@@ -72,7 +74,6 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	          //.showStubImage(R.drawable.ic_stub)
 	          // .showImageForEmptyUri(R.drawable.ic_empty)
 	          .showImageOnFail(R.drawable.ic_error)
-
 	          .cacheInMemory()
 	          //.cacheOnDisc()
 	          .build();

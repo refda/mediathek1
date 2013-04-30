@@ -30,9 +30,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -41,6 +43,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -260,7 +263,7 @@ public class ArticleFragment extends Fragment {
 			inputSrc.setEncoding("UTF-8");
 		
 			videoSources = new ArrayList<String[]>();
-			Boolean canHandleRtmp = canDisplayRtmp(getActivity());
+			Boolean canHandleRtmp = true;//canDisplayRtmp(getActivity());
 	
 			// list of nodes queried
 			try {
@@ -379,10 +382,36 @@ public class ArticleFragment extends Fragment {
 								mime = "video/rtmp";
 							}
 							intent.setDataAndType(Uri.parse(videoPath), mime);
-							startActivity(intent);
-							Toast.makeText(getActivity(),
-									"Lade Video " + videoPath,
-									Toast.LENGTH_LONG).show();
+							try {
+								startActivity(intent);								
+							} catch (Exception e) {
+								
+								// Kein passender IntentHandler gefunden
+								 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+							        
+							        builder.setTitle("Fehler")         
+							                .setMessage("Auf diesem Smartphone kann die URL "+ videoPath +" mit dem Dateityp "+ mime + " nicht geöffnet werden. Bitte lade Dir ein passenden Player herunter.")
+							                .setInverseBackgroundForced(true)//needded for old android version
+							                .setCancelable(true)
+							                // OK button
+							                .setPositiveButton(
+							                       getActivity().getResources().getString(R.string.changelog_ok_button),
+							                        new DialogInterface.OnClickListener() {
+							                            @Override
+							                            public void onClick(DialogInterface dialog, int which) {
+							                               dialog.dismiss();
+							                            }
+							                        });
+						            // Show "More…" button if we're only displaying a partial change log.
+						     
+							        
+
+							       AlertDialog dialog = builder.create();
+							       dialog.show();
+							}
+							//Toast.makeText(getActivity(),
+							//		"Lade Video " + videoPath,
+							//		Toast.LENGTH_LONG).show();
 						}
 
 					}

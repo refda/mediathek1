@@ -25,6 +25,7 @@
         <p>Mediathek 1 ist eine alternative native Oberfläche für die Inhalte der ARD Mediathek. Mediathek 1 entstand als Android-Lernprojekt und um für mich selbst eine bessere Oberfläche zu den Inhalten der ARD Mediathek zur Verfügung zu haben.<p>
         <p>Mediathek 1 ist Open Source, der Quelltext ist frei verfügbar unter https://github.com/jprberlin/mediathek1. Wer möchte kann dort auch Fehler reporten oder Verbesserungen und Erweiterungen am Programmcode zur Verfügung stellen (Pull Request).</p>
         <p>Mediathek 1 ist kein offizielles Angebot der ARD. Bitte beachten Sie die Nutzungshinweise und Bedingungen der ARD Mediathek unter http://m.daserste.de</p>
+        <p>Tipp: Wählen Sie die Qualität so gut wie möglich, aber eben auhc nicht schneller als der Internetanschluss über den zu surfen. Wenn die Filme beim Abspielen stocken, so versuchen Sie eine geringere Qualitöt auszuwählen. Achten Sie darauf das Filme viel Datenvolumen verbrauchen und hierdurch ggf. Kosten entstehen können. </p>
         <p>Danke an Sasche Huth für Tipps zum Einstieg in die Android Entwicklung.<p/>
         <p><strong>Verwendete Bibliotheken:</strong><br />
         - Android Smart Image View<br />
