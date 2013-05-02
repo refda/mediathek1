@@ -16,6 +16,7 @@ public class Movie implements Parcelable {
 	private String thumbnail;
 	private String duration;	
 	private String starttime;
+	private Boolean isLife;
 	private int starttimestamp;
 	private ArrayList<String[]> sources = new ArrayList<String[]>() ;
 	
@@ -34,6 +35,12 @@ public class Movie implements Parcelable {
 	        duration = in.readString();  
 	        starttime = in.readString();  
 	        starttimestamp = in.readInt();  
+	         int isLifeInt =in.readInt();
+	         if (isLifeInt == 1){
+	        	 isLife = true;
+	         }else{
+	        	 isLife = false;
+	         }
 	        //this will be treated sligty differnet
 	        in.readList (sources, String.class.getClassLoader());
 
@@ -112,12 +119,27 @@ public class Movie implements Parcelable {
 		dest.writeString(thumbnail);
 		dest.writeString(getStarttime());
 		dest.writeInt(getStarttimestamp());
+		dest.writeInt(getIsLifeAsInt());
 		dest.writeList(sources);
+	}
+	private int getIsLifeAsInt() {
+		// TODO Auto-generated method stub
+		if (this.getIsLife()){
+			return 1;
+		}else{
+			return 0;			
+		}
 	}
 	public int getStarttimestamp() {
 		return starttimestamp;
 	}
 	public void setStarttimestamp(int i) {
 		this.starttimestamp = i;
+	}
+	public Boolean getIsLife() {
+		return isLife;
+	}
+	public void setIsLife(Boolean isLife) {
+		this.isLife = isLife;
 	}
 }
