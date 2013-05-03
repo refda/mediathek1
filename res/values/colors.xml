@@ -19,4 +19,5 @@
 
 <resources>
     <color name="pressed_mediathek">#CCFFFFFF</color>
+    <color name="highlight_live_list">#FFFF0000</color>
 </resources>

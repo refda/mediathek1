@@ -39,15 +39,20 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	    @SuppressWarnings("deprecation")
 		@Override
 	    public void bindView(View v, Context context, Cursor c) {
+	    	
 	    	  String title = c.getString(c.getColumnIndexOrThrow("title"));
 	    	  String subtitle = c.getString(c.getColumnIndexOrThrow("subtitle"));
 	    	  String imagePath = c.getString(c.getColumnIndexOrThrow("image"));
 	    	  String startTime = c.getString(c.getColumnIndexOrThrow("startTime"));
 	    	  String startTimeAsTimestamp = c.getString(c.getColumnIndex("startTimeAsTimestamp"));
+	    	  String isLive = c.getString(c.getColumnIndex("isLive"));
 	          /**
 	           * Next set the text of the entry.
 	           */
-	          
+	    	  
+	          if (isLive.equalsIgnoreCase("true")){
+	        	  v.setBackgroundColor(   context.getResources().getColor(R.color.highlight_live_list));
+	          }
 	          TextView title_text = (TextView) v.findViewById(R.id.text_view);
 	          if (title_text != null) {
 	              title_text.setText(title);

@@ -147,7 +147,7 @@ public class HeadlinesFragment extends SherlockListFragment implements
 		return new CursorLoader(
 				getActivity(),
 				queryUri,
-				new String[] { "title", "image" , "extId", "startTime", "startTimeAsTimestamp"}, 
+				new String[] { "title", "image" , "extId", "startTime", "startTimeAsTimestamp", "isLive"}, 
 				null, 
 				null, 
 				null);
@@ -213,6 +213,8 @@ public class HeadlinesFragment extends SherlockListFragment implements
 				mMovie.setExtId(myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
 				mMovie.setStarttime(myCursor.getString(myCursor.getColumnIndexOrThrow("startTime")));
 				mMovie.setStarttimestamp(myCursor.getInt(myCursor.getColumnIndexOrThrow("startTimeAsTimestamp")));
+				mMovie.setIsLive(myCursor.getString(myCursor.getColumnIndexOrThrow("isLive")));
+				
 				mAllItems.add(mMovie);
 			}	
 		}
@@ -262,7 +264,11 @@ public class HeadlinesFragment extends SherlockListFragment implements
 			String cExtId = myCursor.getString(myCursor.getColumnIndexOrThrow("extId"));
 			if (getResources().getBoolean(R.bool.has_two_panes)) {
 	            // display it on the article fragment
-				 BusProvider.getInstance().post(new MovieSelectedEvent(position, cExtId, getArguments().getInt("dateint", 0), mAllItems));
+				try {
+					BusProvider.getInstance().post(new MovieSelectedEvent(position, cExtId, getArguments().getInt("dateint", 0), mAllItems));					
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
 				 //this.getListView().setSelection(position);
 			
 	        }

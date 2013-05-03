@@ -85,7 +85,7 @@ public class ArdMediathekProvider extends ContentProvider {
 
 		String result = "";
 		MatrixCursor cursor = new MatrixCursor(new String[] { "_id", "title",
-				"subtitle", "image", "extId", "startTime", "startTimeAsTimestamp" });
+				"subtitle", "image", "extId", "startTime", "startTimeAsTimestamp", "isLive" });
 		result = readJSONFeed(url);
 		try {
 			if (result == "") {
@@ -133,20 +133,21 @@ public class ArdMediathekProvider extends ContentProvider {
 									json_data2.getString("ImageUrl").toString(),
 									json_data2.getString("VId"),
 									json_data2.getString("BTimeF").toString(),
-									json_data2.getString("BTime").toString()
+									json_data2.getString("BTime").toString(),
+									json_data2.getString("IsLive")
 									});
 						}
 					}
 				}
-				if (!json_data.getBoolean("IsGrouped")
-						&& !json_data.getBoolean("IsLive")) {
+				if (!json_data.getBoolean("IsGrouped")) {
 					if (android.text.Html.fromHtml(json_data.getString("VId"))
 							.toString() != "") {
 						cursor.addRow(new Object[] { i, t2, t3,
 								json_data.getString("ImageUrl").toString(),
 								json_data.getString("VId"),
 								json_data.getString("BTimeF").toString(),
-								json_data.getString("BTime").toString()});
+								json_data.getString("BTime").toString(),
+								json_data.getString("IsLive")});
 					}
 				}
 			}

@@ -16,7 +16,7 @@ public class Movie implements Parcelable {
 	private String thumbnail;
 	private String duration;	
 	private String starttime;
-	private Boolean isLife;
+	private Boolean isLive;
 	private int starttimestamp;
 	private ArrayList<String[]> sources = new ArrayList<String[]>() ;
 	
@@ -35,11 +35,11 @@ public class Movie implements Parcelable {
 	        duration = in.readString();  
 	        starttime = in.readString();  
 	        starttimestamp = in.readInt();  
-	         int isLifeInt =in.readInt();
-	         if (isLifeInt == 1){
-	        	 isLife = true;
+	         int isLiveInt =in.readInt();
+	         if (isLiveInt == 1){
+	        	 isLive = true;
 	         }else{
-	        	 isLife = false;
+	        	 isLive = false;
 	         }
 	        //this will be treated sligty differnet
 	        in.readList (sources, String.class.getClassLoader());
@@ -119,12 +119,12 @@ public class Movie implements Parcelable {
 		dest.writeString(thumbnail);
 		dest.writeString(getStarttime());
 		dest.writeInt(getStarttimestamp());
-		dest.writeInt(getIsLifeAsInt());
+		dest.writeInt(getIsLiveAsInt());
 		dest.writeList(sources);
 	}
-	private int getIsLifeAsInt() {
+	private int getIsLiveAsInt() {
 		// TODO Auto-generated method stub
-		if (this.getIsLife()){
+		if (this.getIsLive()){
 			return 1;
 		}else{
 			return 0;			
@@ -136,10 +136,20 @@ public class Movie implements Parcelable {
 	public void setStarttimestamp(int i) {
 		this.starttimestamp = i;
 	}
-	public Boolean getIsLife() {
-		return isLife;
+	public Boolean getIsLive() {
+		return isLive;
 	}
-	public void setIsLife(Boolean isLife) {
-		this.isLife = isLife;
+	public void setIsLive(Boolean isLive) {
+		this.isLive = isLive;
+	}
+	public void setIsLive(int isLive) {
+		this.setIsLive(isLive==1);
+	}
+	public void setIsLive(String isLive) {
+		if (isLive.equalsIgnoreCase("true")){
+			this.setIsLive(true);
+		}else{
+			this.setIsLive(false);
+		}
 	}
 }
