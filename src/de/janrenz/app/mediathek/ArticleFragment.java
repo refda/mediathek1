@@ -440,13 +440,14 @@ public class ArticleFragment extends Fragment {
 					});
 				    
 				}else{
-					buttonCopy.setVisibility(0);
+					buttonCopy.setVisibility(View.GONE);
 				} 
 				//set invisble on app settings
 				SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 				Boolean hideCopyButtonSetting = sharedPref.getBoolean(SettingsActivity.HIDE_COPYBUTTON, false);
 				if (hideCopyButtonSetting == true){
-					buttonCopy.setVisibility(0);
+					Log.v("DEBUG", hideCopyButtonSetting.toString());
+					buttonCopy.setVisibility(View.GONE);
 				}
 
 				mView.findViewById(R.id.showAfterLoadItems).setVisibility(
