@@ -42,6 +42,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 
 import android.util.Log;
@@ -441,8 +442,12 @@ public class ArticleFragment extends Fragment {
 				}else{
 					buttonCopy.setVisibility(0);
 				} 
-
-				
+				//set invisble on app settings
+				SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+				Boolean hideCopyButtonSetting = sharedPref.getBoolean(SettingsActivity.HIDE_COPYBUTTON, false);
+				if (hideCopyButtonSetting == true){
+					buttonCopy.setVisibility(0);
+				}
 
 				mView.findViewById(R.id.showAfterLoadItems).setVisibility(
 						View.VISIBLE);

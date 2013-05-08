@@ -37,5 +37,9 @@
     <string name="qualitaet">Qualität:</string>
     <string name="dauer_">Dauer:</string>
     <string name="jetzt_ansehen">Jetzt ansehen</string>
+    <string name="pref_hide_copyurl_button">Verstecke "Film-Url Kopieren" Button</string>
+    <string name="pref_hide_copyurl_button_summ">Ermöglicht eine kompaktere Darstellung</string>
+      <string name="pref_display_title">Darstellung</string>
+
     
 </resources>

@@ -38,6 +38,7 @@ import android.widget.TextView;
 public class MediathekActivity extends SherlockFragmentActivity {
 	public final int MENUINFOID = 1;
 	public final int MENUUPDATEID = 2;
+	public final int MENUSETTINGSID = 3;
 	// Whether or not we are in dual-pane mode
 	boolean mIsDualPane = false;
 
@@ -141,6 +142,12 @@ public class MediathekActivity extends SherlockFragmentActivity {
 				MenuItem.SHOW_AS_ACTION_IF_ROOM
 						| MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		
+		menu.add(Menu.NONE, MENUSETTINGSID, Menu.NONE, "Settings")
+		.setIcon(R.drawable.ic_action_settings)
+		.setShowAsAction(
+				MenuItem.SHOW_AS_ACTION_IF_ROOM
+						| MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		
 		return super.onCreateOptionsMenu(menu);
 	}
 	  protected AlertDialog getInfoDialog() {
@@ -190,6 +197,12 @@ public class MediathekActivity extends SherlockFragmentActivity {
 		case MENUUPDATEID:
 			//send update event to everyone who cares
 			BusProvider.getInstance().post(new UpdatePressedEvent());
+			return true;
+		case MENUSETTINGSID:
+			
+			  Intent i = new Intent(this, SettingsActivity.class);
+	            //i.putExtra("pos", position );
+	            startActivity(i);
 			return true;
 		case android.R.id.home:
 			// This ID represents the Home or Up button. In the case of this
