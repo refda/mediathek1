@@ -179,7 +179,7 @@ public class ArticleFragment extends Fragment {
 	 *            the article to display
 	 */
 	public void displayArticle() {
-		//display the information we already got, then fetch the detil information 
+		//display the information we already got, then fetch the detail information 
 		TextView text = (TextView) mView.findViewById(R.id.headline1);
 		text.setText(getArguments().getString("title"));
 		TextView text2 = (TextView) mView.findViewById(R.id.headline2);

@@ -52,6 +52,8 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	    	  
 	          if (isLive.equalsIgnoreCase("true")){
 	        	  v.setBackgroundColor(   context.getResources().getColor(R.color.highlight_live_list));
+	          }else{
+	        	  v.setBackgroundColor(   context.getResources().getColor(R.color.list_background));
 	          }
 	          TextView title_text = (TextView) v.findViewById(R.id.text_view);
 	          if (title_text != null) {
@@ -76,7 +78,7 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	           * Set the image
 	           */
 	          DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
-	          //.showStubImage(R.drawable.ic_stub)
+	          .showStubImage(R.drawable.abs__item_background_holo_light)
 	          // .showImageForEmptyUri(R.drawable.ic_empty)
 	          .showImageOnFail(R.drawable.ic_error)
 	          .cacheInMemory()

@@ -40,6 +40,7 @@
     <string name="pref_hide_copyurl_button">Verstecke "Film-Url Kopieren" Button</string>
     <string name="pref_hide_copyurl_button_summ">Ermöglicht eine kompaktere Darstellung</string>
       <string name="pref_display_title">Darstellung</string>
+      <string name="teaserbild">Teaserbild</string>
 
     
 </resources>

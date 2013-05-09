@@ -131,22 +131,23 @@ public class MediathekActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		//lets add some menu stuff
-		menu.add(Menu.NONE, MENUINFOID, Menu.NONE, "Info")
-				.setIcon(R.drawable.action_about)
-				.setShowAsAction(
-						MenuItem.SHOW_AS_ACTION_IF_ROOM
-								| MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		
 		menu.add(Menu.NONE, MENUUPDATEID, Menu.NONE, "Aktualisieren")
 		.setIcon(R.drawable.ic_menu_refresh)
 		.setShowAsAction(
 				MenuItem.SHOW_AS_ACTION_IF_ROOM
 						| MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		
-		menu.add(Menu.NONE, MENUSETTINGSID, Menu.NONE, "Settings")
+		menu.add(Menu.NONE, MENUSETTINGSID, Menu.NONE, "Einstellungen")
 		.setIcon(R.drawable.ic_action_settings)
 		.setShowAsAction(
-				MenuItem.SHOW_AS_ACTION_IF_ROOM
-						| MenuItem.SHOW_AS_ACTION_IF_ROOM);
+				MenuItem.SHOW_AS_ACTION_NEVER
+						| MenuItem.SHOW_AS_ACTION_NEVER);
+		menu.add(Menu.NONE, MENUINFOID, Menu.NONE, "Info")
+		.setIcon(R.drawable.action_about)
+		.setShowAsAction(
+				MenuItem.SHOW_AS_ACTION_NEVER
+						| MenuItem.SHOW_AS_ACTION_NEVER);
 		
 		return super.onCreateOptionsMenu(menu);
 	}

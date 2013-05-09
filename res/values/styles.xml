@@ -65,6 +65,10 @@
         <item name="dropDownListViewStyle">@style/DropDownListView.Mediathek</item>
     </style>
     
+    <style name="Theme.Mediathek.TransparentBackground">
+          <item name="android:background">@color/semitransparentGrey</item>
+        
+    </style>
  
      
 

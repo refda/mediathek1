@@ -19,5 +19,8 @@
 
 <resources>
     <color name="pressed_mediathek">#CCFFFFFF</color>
-    <color name="highlight_live_list">#FFFF0000</color>
+    <color name="highlight_live_list">#FFD2F0FA</color>
+    <color name="list_background">#FFFFFFFF</color>
+      <color name="white">#FFFFFFFF</color>
+    <color name="semitransparentGrey">#88000000</color>
 </resources>

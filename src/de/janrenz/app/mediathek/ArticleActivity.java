@@ -42,6 +42,7 @@ import android.util.Log;
  * Activity therefore becomes unnecessary.
  */
 public class ArticleActivity extends SherlockFragmentActivity {
+	private static final int MENUSHAREID = 1;
 	// The news category index and the article index for the article we are to
 	// display
 	int mCatIndex, mArtIndex;
@@ -104,14 +105,16 @@ public class ArticleActivity extends SherlockFragmentActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		/**
-		 * menu.add("Text") .setIcon(R.drawable.abs__ic_menu_share_holo_dark)
-		 * .setShowAsAction( MenuItem.SHOW_AS_ACTION_IF_ROOM |
-		 * MenuItem.SHOW_AS_ACTION_WITH_TEXT);
-		 */
+		//lets add some menu stuff
+		menu.add(Menu.NONE, MENUSHAREID, Menu.NONE, "Teilen")
+				.setIcon(R.drawable.action_about)
+				.setShowAsAction(
+						MenuItem.SHOW_AS_ACTION_IF_ROOM
+								| MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	
+		
 		return super.onCreateOptionsMenu(menu);
 	}
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
