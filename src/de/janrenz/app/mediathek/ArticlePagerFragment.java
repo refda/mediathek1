@@ -1,6 +1,9 @@
 package de.janrenz.app.mediathek;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -125,7 +128,8 @@ public class ArticlePagerFragment extends Fragment implements OnPageChangeListen
 		private int mcount = 0;
 		private ArrayList<Movie> mallItems;
 		private ArrayList<String> extIds;
-
+		private Map<Integer, ArticleFragment> mPageReferenceMap = new HashMap<Integer, ArticleFragment>();
+		
 		public MyAdapter(FragmentManager fm) {
 			super(fm);
 		}
@@ -166,6 +170,7 @@ public class ArticlePagerFragment extends Fragment implements OnPageChangeListen
 			f.setArguments(args);
 			// we need to have this accessible from the outside as well
 			f.setExtId(mallItems.get(position).getExtId());
+			mPageReferenceMap.put(Integer.valueOf(position), f);
 			return f;
 		}
 
@@ -181,8 +186,35 @@ public class ArticlePagerFragment extends Fragment implements OnPageChangeListen
 				return POSITION_NONE;
 			}
 		}
+		public ArticleFragment getFragment(int key) {
+			
+			return mPageReferenceMap.get(key);
+		}
+		
+		@Override
+		public void destroyItem(View container, int position, Object object) {
+		
+			super.destroyItem(container, position, object);
+			
+			mPageReferenceMap.remove(Integer.valueOf(position));
+		}
 	}
-
+	@Subscribe
+	public void onShareActionSelected(ShareActionSelectedEvent event) {
+		//only if we are the current displayed fragment
+		//this
+		try {
+			int currentItem = this.mPager.getCurrentItem();
+			MyAdapter adapter = ((MyAdapter)mPager.getAdapter());
+			ArticleFragment fragment = adapter.getFragment(currentItem);
+			fragment.shareMovieUrl();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	
+	}
+	
 	@Override
 	public void onPageScrollStateChanged(int pos) {
 		

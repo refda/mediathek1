@@ -71,6 +71,7 @@ import com.actionbarsherlock.internal.widget.IcsAdapterView;
 import com.actionbarsherlock.internal.widget.IcsSpinner;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.otto.Subscribe;
 
 /**
  * Fragment that displays a news article.
@@ -135,7 +136,7 @@ public class ArticleFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		BusProvider.getInstance().register(this);
 		return;
 	}
 
@@ -161,7 +162,21 @@ public class ArticleFragment extends Fragment {
 	public void setOnMovieClickedListener(OnMovieClickedListener listener) {
 		mOnMovieClickedListener = listener;
 	}
-
+	
+	public Boolean shareMovieUrl(){
+		if (videoPath != null){
+			Intent sendIntent = new Intent();
+			sendIntent.setAction(Intent.ACTION_SEND);
+			sendIntent.putExtra(Intent.EXTRA_TEXT, videoPath);
+			sendIntent.setType("video/mp4");
+			startActivity(sendIntent);
+			return true;
+		}else{
+			return false;
+			//nothing to show here, maybe show toast
+		}
+	}
+	
 	private Integer getQualityPositionForString(String quality) {
 		for (int j = 0; j < videoSources.size(); j++) {
 			String[] arr = videoSources.get(j);

@@ -64,6 +64,7 @@ public class ArticleActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		BusProvider.getInstance().register(this);
 		setContentView(R.layout.detailactivity);
 		mCatIndex = getIntent().getExtras().getInt("catIndex", 0);
 		mArtIndex = getIntent().getExtras().getInt("artIndex", 0);
@@ -107,7 +108,7 @@ public class ArticleActivity extends SherlockFragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		//lets add some menu stuff
 		menu.add(Menu.NONE, MENUSHAREID, Menu.NONE, "Teilen")
-				.setIcon(R.drawable.action_about)
+				.setIcon(R.drawable.menu_social_share)
 				.setShowAsAction(
 						MenuItem.SHOW_AS_ACTION_IF_ROOM
 								| MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -122,8 +123,28 @@ public class ArticleActivity extends SherlockFragmentActivity {
 			NavUtils.navigateUpTo(this, new Intent(this,
 					MediathekActivity.class));
 			return true;
-		}
-		return super.onOptionsItemSelected(item);
+		
+	case MENUSHAREID:
+		BusProvider.getInstance().post(new ShareActionSelectedEvent());	
+		
+		
+		return true;
+	
+}
+	return super.onOptionsItemSelected(item);
+
+	}
+	
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		BusProvider.getInstance().register(this);
 	}
 
-}
+	@Override
+	public void onPause() {
+		super.onPause();
+		BusProvider.getInstance().unregister(this);
+	}
+	}
