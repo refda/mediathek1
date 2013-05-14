@@ -22,12 +22,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -80,6 +74,8 @@ import com.actionbarsherlock.internal.widget.IcsSpinner;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.otto.Subscribe;
+import com.turbomanage.httpclient.BasicHttpClient;
+import com.turbomanage.httpclient.HttpResponse;
 
 /**
  * Fragment that displays a news article.
@@ -483,6 +479,17 @@ public class LiveFragment extends ArticleFragment implements LoaderManager.Loade
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+	//this is a non cached lib
+	String loadXML(String URL) {
+		try {
+			 BasicHttpClient httpClient = new BasicHttpClient(URL);
+		     HttpResponse httpResponse = httpClient.get("", null);
+		     return httpResponse.getBodyAsString();
+		} catch (Exception e) {
+			Log.e("readXMLFeed", e.getLocalizedMessage());
+			return "";
+		}
 	}
 
 }
