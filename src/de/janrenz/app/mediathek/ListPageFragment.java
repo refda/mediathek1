@@ -51,6 +51,8 @@ public class ListPageFragment extends ListFragment implements
 	SimpleCursorAdapter mListAdapter;
 
 	private Cursor myCursor;
+	
+
 	// The listener we are to notify when a headline is selected
 	OnHeadlineSelectedListener mHeadlineSelectedListener = null;
 	private static final int LOADER_ID = 0x02;
@@ -123,7 +125,10 @@ public class ListPageFragment extends ListFragment implements
 
 	@Override
 	public void onResume() {
-		setListShown(true);
+		
+		setListShown(false);
+		getActivity().getSupportLoaderManager().restartLoader(LOADER_ID +  (int) Math.random()*1000, null,
+				this);
 		BusProvider.getInstance().register(this);
 		super.onResume();
 	}
@@ -135,16 +140,19 @@ public class ListPageFragment extends ListFragment implements
 	}
 
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+		
 		setListShown(true);
-		mListAdapter.swapCursor(cursor);
-		myCursor = cursor;
+		mListAdapter.changeCursor(cursor);
+		//mListAdapter.swapCursor(cursor);
+		//myCursor = cursor;
 
 	}
 
 	public void onLoaderReset(Loader<Cursor> cursorLoader) {
 		setListShown(true);
-		mListAdapter.swapCursor(null);
-		myCursor = null;
+		
+	//mListAdapter.swapCursor(null);
+		//myCursor = null;
 	}
 	
 	@Subscribe
@@ -174,6 +182,8 @@ public class ListPageFragment extends ListFragment implements
 											.getColumnIndexOrThrow("subtitle")));
 		}
 	}
+
+	
 
 	
 }

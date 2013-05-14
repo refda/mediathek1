@@ -176,6 +176,9 @@ public class MovieListPagerFragment extends SherlockFragment {
 				f.setSelectMovieAfterLoad(true);
 				 triggeredLoadOnce = true;
 			}
+			if (offset == 0){
+				f.setIsToday(true);
+			}
 			// this is now the offset
 			Date dt = new Date();
 			dt.setHours(0);
@@ -187,8 +190,20 @@ public class MovieListPagerFragment extends SherlockFragment {
 			args.putInt("initialOffset", offset);
 			f.setArguments(args);
 			f.setDateint(datestamp);
+		
 			return f;
 		}
+		// http://stackoverflow.com/questions/10849552/android-viewpager-cant-update-dynamically
+				public int getItemPosition(Object item) {
+					HeadlinesFragment fragment = (HeadlinesFragment) item;
+				if (fragment.getIsToday() == true){
+					return POSITION_NONE;
+					
+				}else{
+					return super.getItemPosition(item);
+				}
+					
+				}
 	}
 	
 }

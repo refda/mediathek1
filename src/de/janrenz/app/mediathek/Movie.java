@@ -18,6 +18,7 @@ public class Movie implements Parcelable {
 	private String starttime;
 	private Boolean isLive;
 	private int starttimestamp;
+	private String description;
 	private ArrayList<String[]> sources = new ArrayList<String[]>() ;
 	
 	 public Movie(Parcel in) {  
@@ -34,6 +35,7 @@ public class Movie implements Parcelable {
 	        thumbnail = in.readString();  
 	        duration = in.readString();  
 	        starttime = in.readString();  
+	        description = in.readString();
 	        starttimestamp = in.readInt();  
 	         int isLiveInt =in.readInt();
 	         if (isLiveInt == 1){
@@ -118,6 +120,7 @@ public class Movie implements Parcelable {
 		dest.writeString(duration);
 		dest.writeString(thumbnail);
 		dest.writeString(getStarttime());
+		dest.writeString(description);
 		dest.writeInt(getStarttimestamp());
 		dest.writeInt(getIsLiveAsInt());
 		dest.writeList(sources);
@@ -151,5 +154,11 @@ public class Movie implements Parcelable {
 		}else{
 			this.setIsLive(false);
 		}
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

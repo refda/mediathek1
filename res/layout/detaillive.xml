@@ -54,8 +54,23 @@
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/white" />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/live"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:background="@color/yellow"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="0dp"
+                
+                android:text="LIVE"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white" />
         </FrameLayout>
 
+        
         <TextView
             android:id="@+id/headline1"
             android:layout_width="fill_parent"
@@ -64,6 +79,16 @@
             android:paddingTop="5dp"
             android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge" />
+          
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:layout_marginBottom="5dp"
+            android:paddingTop="5dp"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <LinearLayout
             android:id="@+id/hideAfterLoadItems"
@@ -142,7 +167,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:background="#235fa0"
-                android:text="@string/jetzt_ansehen"
+                android:text="@string/jetzt_stream_ansehen"
                 android:textColor="#FFFFFF" />
 
             <Button

@@ -1,18 +1,15 @@
 package de.janrenz.app.mediathek;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+
 import java.net.URLEncoder;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import java.util.Date;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.turbomanage.httpclient.BasicHttpClient;
+import com.turbomanage.httpclient.HttpResponse;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
@@ -27,70 +24,122 @@ public class ArdMediathekProvider extends ContentProvider {
 
 	@Override
 	public boolean onCreate() {
-		
+
 		return true;
 	}
-	
 
 	public String readJSONFeed(String URL) {
-		StringBuilder stringBuilder = new StringBuilder();
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet(URL);
+		
+		
+	
 		try {
-			HttpResponse response = httpClient.execute(httpGet);
-			StatusLine statusLine = response.getStatusLine();
-			int statusCode = statusLine.getStatusCode();
-			if (statusCode == 200) {
-				HttpEntity entity = response.getEntity();
-				InputStream inputStream = entity.getContent();
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(inputStream));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					stringBuilder.append(line);
-				}
-				inputStream.close();
-			} else {
-				Log.e("readJSONFeed", "Failed to download file");
-				return "";
-			}
+			
+			 BasicHttpClient httpClient = new BasicHttpClient(URL);
+		       
+		        HttpResponse httpResponse = httpClient.get("", null);
+
+		       return httpResponse.getBodyAsString();
 		} catch (Exception e) {
 			Log.e("readJSONFeed", e.getLocalizedMessage());
 			return "";
 		}
-		return stringBuilder.toString();
+		
 	}
 
 	@Override
-	public Cursor query(Uri uri, String[] strings, String s, String[] strings1,
-			String s1) {
-
+	public Cursor query(Uri uri, String[] strings, String s,
+			String[] strings1, String s1) {
+		String url = "";
 		String queryparam = uri.getQueryParameter("timestamp");
+		Integer timestamp = null;
 		if (queryparam == null) {
-			queryparam = "0";
+			Date dt = new Date();
+			timestamp = dt.getSeconds();
+		} else {
+
+			timestamp = Integer.parseInt(queryparam);
+		}
+
+		String queryparammethod = uri.getQueryParameter("method");
+		if (queryparammethod == null) {
+			queryparammethod = "list";
+			url = "http://m-service.daserste.de/appservice/1.4.1/video/list/"
+					+ timestamp + "?func=getVideoList&unixTimestamp="
+					+ timestamp;
+		} else if (queryparammethod.equalsIgnoreCase("broadcast")) {
+			url = "http://m-service.daserste.de/appservice/1.4.1/broadcast/current/"
+					+ timestamp
+					+ "?func=getCurrentBroadcast&unixTimestamp="
+					+ timestamp;
+		} else {
+			// oh oh
 		}
 		String queryparamReload = uri.getQueryParameter("reload");
 		String queryExtReload = "";
 		if (queryparamReload != null) {
 			queryExtReload = "&reload=" + Math.random();
 		}
-		Integer timestamp = Integer.parseInt(queryparam);
-	
-		// String url=
-		// "http://m-service.daserste.de/appservice/1.4.1/video/list/" + curtime
-		// + "?func=getBroadcastList&unixTimestamp=" + curtime;
-
-		String url = "http://m-service.daserste.de/appservice/1.4.1/video/list/"
-				+ timestamp + "?func=getVideoList&unixTimestamp=" + timestamp;
 
 		String result = "";
-		MatrixCursor cursor = new MatrixCursor(new String[] { "_id", "title",
-				"subtitle", "image", "extId", "startTime", "startTimeAsTimestamp", "isLive" });
 		result = readJSONFeed(url);
+		MatrixCursor cursor = new MatrixCursor(new String[] { "_id", "title",
+				"subtitle", "image", "extId", "startTime",
+				"startTimeAsTimestamp", "isLive" });
+		if (result == "") {
+			return cursor;
+		}
+
+		if (queryparammethod.equalsIgnoreCase("broadcast")) {
+			cursor = processResultForBroadcast(result);
+		} else {
+			cursor = processResultForList(result);
+		}
+
+		return (Cursor) cursor;
+	}
+
+	private MatrixCursor processResultForBroadcast(String result) {
+		MatrixCursor cursor = new MatrixCursor(new String[] { "_id", "title",
+				"subtitle", "image", "extId", "startTime",
+				"startTimeAsTimestamp", "isLive", "description", "timeinfo" });
 		try {
-			if (result == "") {
-				return cursor;
+			// TODO Auto-generated catch block
+			JSONArray jsonArray = new JSONArray(result);
+
+			for (int i = 0; i < jsonArray.length(); i++) {
+
+				JSONObject json_data = jsonArray.getJSONObject(i);
+				// build the Headline
+				String t1 = android.text.Html.fromHtml(
+						json_data.getString("Title1")).toString();
+				String t2 = android.text.Html.fromHtml(
+						json_data.getString("Title3")).toString();
+				String t3 = android.text.Html.fromHtml(
+						json_data.getString("Title2")).toString();
+				cursor.addRow(new Object[] { i, t1 , t3,
+						json_data.getString("ImageUrl").toString(),
+						json_data.getString("VId"),
+						json_data.getString("BTimeF").toString(),
+						json_data.getString("BTime").toString(),
+						json_data.getString("IsLive"),
+						android.text.Html.fromHtml(json_data.getString("Teasertext").toString()).toString(),
+						android.text.Html.fromHtml(json_data.getString("Title5").toString()).toString()
+
+				});
+
 			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return cursor;
+		}
+		return cursor;
+	}
+
+	private MatrixCursor processResultForList(String result) {
+		MatrixCursor cursor = new MatrixCursor(new String[] { "_id", "title",
+				"subtitle", "image", "extId", "startTime",
+				"startTimeAsTimestamp", "isLive" });
+		try {
 			// TODO Auto-generated catch block
 			JSONArray jsonArray = new JSONArray(result);
 			for (int i = 0; i < jsonArray.length(); i++) {
@@ -134,8 +183,7 @@ public class ArdMediathekProvider extends ContentProvider {
 									json_data2.getString("VId"),
 									json_data2.getString("BTimeF").toString(),
 									json_data2.getString("BTime").toString(),
-									json_data2.getString("IsLive")
-									});
+									json_data2.getString("IsLive") });
 						}
 					}
 				}
@@ -147,7 +195,7 @@ public class ArdMediathekProvider extends ContentProvider {
 								json_data.getString("VId"),
 								json_data.getString("BTimeF").toString(),
 								json_data.getString("BTime").toString(),
-								json_data.getString("IsLive")});
+								json_data.getString("IsLive") });
 					}
 				}
 			}

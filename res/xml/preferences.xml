@@ -8,5 +8,11 @@
         android:title="@string/pref_hide_copyurl_button"
         android:summary="@string/pref_hide_copyurl_button_summ"
         android:defaultValue="false" />
+     <CheckBoxPreference
+        android:key="pref_always_show_long_desc"
+          android:title="@string/pref_always_show_long_desc"
+        android:summary="@string/pref_always_show_long_desc_summ"
+
+        android:defaultValue="false" />
    </PreferenceCategory>
 </PreferenceScreen>

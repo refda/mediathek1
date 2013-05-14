@@ -22,15 +22,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -72,6 +68,8 @@ import com.actionbarsherlock.internal.widget.IcsSpinner;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.otto.Subscribe;
+import com.turbomanage.httpclient.BasicHttpClient;
+import com.turbomanage.httpclient.HttpResponse;
 
 /**
  * Fragment that displays a news article.
@@ -179,7 +177,7 @@ public class ArticleFragment extends Fragment {
 		}
 	}
 	
-	private Integer getQualityPositionForString(String quality) {
+	public Integer getQualityPositionForString(String quality) {
 		for (int j = 0; j < videoSources.size(); j++) {
 			String[] arr = videoSources.get(j);
 			if (arr[0].equals(quality)) {
@@ -265,9 +263,8 @@ public class ArticleFragment extends Fragment {
 							.build();
 					ImageView image_view = (ImageView) mView
 							.findViewById(R.id.thumbnail);
-
 					if (image_view != null) {
-						ImageLoader.getInstance().displayImage(url, image_view,
+							ImageLoader.getInstance().displayImage(url, image_view,
 								loadingOptions);
 					}
 				}
@@ -280,11 +277,9 @@ public class ArticleFragment extends Fragment {
 			inputSrc = new InputSource(new StringReader(result));
 			inputSrc.setEncoding("UTF-8");
 		
-			videoSources = new ArrayList<String[]>();
-			Boolean canHandleRtmp = true;//canDisplayRtmp(getActivity());
-	
 			// list of nodes queried
 			try {
+				Boolean canHandleRtmp = canDisplayRtsp(getActivity());
 				String tempUrl = "";
 				NodeList nodes = (NodeList) xpath.evaluate(expression,
 						inputSrc, XPathConstants.NODESET);
@@ -397,14 +392,17 @@ public class ArticleFragment extends Fragment {
 							if (videoPath.startsWith("http")) {
 
 							} else {
-								mime = "video/rtmp";
+								mime = "video/rtsp";
 							}
 							intent.setDataAndType(Uri.parse(videoPath), mime);
-							intent.putExtra(Intent.EXTRA_SUBJECT, title);
+							if (title != null) {
+								intent.putExtra(Intent.EXTRA_SUBJECT, title);
+								
+							}
 							try {
 								startActivity(intent);								
 							} catch (Exception e) {
-								
+								Log.e("e", e.getMessage());
 								// Kein passender IntentHandler gefunden
 								 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 							        
@@ -487,11 +485,15 @@ public class ArticleFragment extends Fragment {
 	 * @param context
 	 * @return
 	 */
-	public static boolean canDisplayRtmp(Context context) {
+	public static boolean canDisplayRtsp(Context context) {
+		if (context == null){
+			return false;
+		}
 	    PackageManager packageManager = context.getPackageManager();
 	    Intent testIntent = new Intent(Intent.ACTION_VIEW);
-	    testIntent.setType("video/rtmp");
-	    //testIntent.setData(Uri.parse("rtmp://mystream"));
+	    testIntent.setType("video/rtsp");
+	   
+	    //testIntent.setData(Uri.parse("rtsp://mystream"));
 	    if (packageManager.queryIntentActivities(testIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0) {
 	        return true;
 	    } else {
@@ -505,46 +507,14 @@ public class ArticleFragment extends Fragment {
 	 * appropriate article's text.
 	 */
 	String loadXML(String URL) {
-		final long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
-		File httpCacheDir = null;
 		try {
-			httpCacheDir = new File(getActivity().getCacheDir(), "http");
+			 BasicHttpClient httpClient = new BasicHttpClient(URL);
+		     HttpResponse httpResponse = httpClient.get("", null);
+		     return httpResponse.getBodyAsString();
 		} catch (Exception e) {
-			// TODO: handle exception
+			Log.e("readXMLFeed", e.getLocalizedMessage());
 			return "";
 		}
-		try {
-			Class.forName("android.net.http.HttpResponseCache")
-					.getMethod("install", File.class, long.class)
-					.invoke(null, httpCacheDir, httpCacheSize);
-		} catch (Exception httpResponseCacheNotAvailable) {
-
-		}
-		StringBuilder stringBuilder = new StringBuilder();
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet(URL);
-		try {
-			HttpResponse response = httpClient.execute(httpGet);
-			StatusLine statusLine = response.getStatusLine();
-			int statusCode = statusLine.getStatusCode();
-			if (statusCode == 200) {
-				HttpEntity entity = response.getEntity();
-				InputStream inputStream = entity.getContent();
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(inputStream, "UTF-8"));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					stringBuilder.append(line);
-				}
-				inputStream.close();
-			} else {
-				Log.d("readXML", "Failed to download file");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		String xml = stringBuilder.toString();
-		return xml;
 	}
 
 }

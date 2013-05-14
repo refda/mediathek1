@@ -38,22 +38,30 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.text.TextUtils.TruncateAt;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,48 +84,15 @@ import com.squareup.otto.Subscribe;
 /**
  * Fragment that displays a news article.
  */
-public class LiveFragment extends ArticleFragment {
+public class LiveFragment extends ArticleFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-	View mView = null;
-	// The article we are to display
-
-	// The id of our movie
-	String extId = null;
-
-	// The cvideo path
-	String videoPath = null;
-
-	String title = "";
-	ArrayList<String[]> videoSources = new ArrayList<String[]>();
 
 	// Parameterless constructor is needed by framework
 	public LiveFragment() {
 		super();
 	}
 
-	public void setExtId(String id) {
-		extId = id;
-	}
-
-	public String getExtId() {
-		return extId;
-	}
-
-	OnMovieClickedListener mOnMovieClickedListener = null;
-
-	/**
-	 * Represents a listener that will be notified of selections.
-	 */
-	public interface OnMovieClickedListener {
-		/**
-		 * Called when a given item is selected.
-		 * 
-		 * @param index
-		 *            the index of the selected item.
-		 * @param string
-		 */
-		public void onMovieSelected(String url);
-	}
+	
 
 	/**
 	 * Sets up the UI.
@@ -125,7 +100,8 @@ public class LiveFragment extends ArticleFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		mView = inflater.inflate(R.layout.detail, container, false);
+		mView = inflater.inflate(R.layout.detaillive, container, false);
+		setRetainInstance(false);
 		try {
 			displayArticle();
 		} catch (Exception e) {
@@ -133,61 +109,22 @@ public class LiveFragment extends ArticleFragment {
 		}
 		return mView;
 	}
-
+	
+	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		BusProvider.getInstance().register(this);
-		return;
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
-
-		BusProvider.getInstance().register(this);
-	}
-
-	@Override
-	public void onPause() {
-		super.onPause();
-		BusProvider.getInstance().unregister(this);
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-
-	};
-
-	public void setOnMovieClickedListener(OnMovieClickedListener listener) {
-		mOnMovieClickedListener = listener;
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		
+        triggerLoad(true);
 	}
 	
-	public Boolean shareMovieUrl(){
-		if (videoPath != null){
-			Intent sendIntent = new Intent();
-			sendIntent.setAction(Intent.ACTION_SEND);
-			sendIntent.putExtra(Intent.EXTRA_TEXT, videoPath);
-			sendIntent.putExtra(Intent.EXTRA_SUBJECT, this.title);
-			sendIntent.setType("text/plain");
-			startActivity(sendIntent);
-			return true;
-		}else{
-			return false;
-			//nothing to show here, maybe show toast
-		}
+	private void triggerLoad(Boolean forceReload ){
+		    
+	    int loaderId = 200;
+		    	getActivity().getSupportLoaderManager().restartLoader(loaderId, null, this);
+	 
 	}
 	
-	private Integer getQualityPositionForString(String quality) {
-		for (int j = 0; j < videoSources.size(); j++) {
-			String[] arr = videoSources.get(j);
-			if (arr[0].equals(quality)) {
-				return j;
-			}
-		}
-		return 1;
-	}
 
 	/**
 	 * Displays a particular article.
@@ -198,17 +135,32 @@ public class LiveFragment extends ArticleFragment {
 	public void displayArticle() {
 		//display the information we already got, then fetch the detail information 
 		TextView text = (TextView) mView.findViewById(R.id.headline1);
-		text.setText(getArguments().getString("title"));
 		TextView text2 = (TextView) mView.findViewById(R.id.headline2);
-		text2.setText(getArguments().getString("subtitle"));
 		TextView text3 = (TextView) mView.findViewById(R.id.senderinfo);
+		text2.setText(getArguments().getString("title"));
+		text.setText(getArguments().getString("subtitle"));
 		text3.setText(getArguments().getString("senderinfo"));
 		this.title = getArguments().getString("title");
 		new AccessWebServiceTask()
-				.execute("http://m-service.daserste.de/appservice/1.4.1/video/"
-						+ getArguments().getString("extId"));
+				.execute("http://m.daserste.de/resources/data/livestream_de.xml");
+		triggerLoad(true);
+				
 	}
-
+	public static boolean canDisplayM3u8(Context context) {
+		if (context != null ){
+			 return false;
+		}
+	    PackageManager packageManager = context.getPackageManager();
+	    Intent testIntent = new Intent(Intent.ACTION_VIEW);
+	    testIntent.setType("application/x-mpegURL");
+	   
+	    //testIntent.setData(Uri.parse("rtsp://mystream"));
+	    if (packageManager.queryIntentActivities(testIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0) {
+	        return true;
+	    } else {
+	        return false;
+	    }
+	}
 	private class AccessWebServiceTask extends AsyncTask<String, Void, String> {
 		protected String doInBackground(String... urls) {
 			return loadXML(urls[0]);
@@ -220,68 +172,11 @@ public class LiveFragment extends ArticleFragment {
 			InputSource inputSrc = new InputSource(new StringReader(result));
 			inputSrc.setEncoding("UTF-8");
 			XPath xpath = XPathFactory.newInstance().newXPath();
-			String expression = "//playlist/video/duration";
+			String expression = "//playlist/video/streamingRTSP/stream";
 			// list of nodes queried
-			try {
-				NodeList nodes = (NodeList) xpath.evaluate(expression,
-						inputSrc, XPathConstants.NODESET);
-				Node node = nodes.item(0);
-				String duration = node.getTextContent();
-				TextView tView = (TextView) mView
-						.findViewById(R.id.durationText);
-				tView.setText(duration);
-			} catch (Exception e) {
-				// TODO: handle exception
-				Log.e("onPostExecute", "failed 1: "  + e.getMessage() + result);
-				return;
-			}
-			// TODO: MAybe we can rewind the StringReader and reuse it
-			inputSrc = new InputSource(new StringReader(result));
-			inputSrc.setEncoding("UTF-8");
-			// specify the xpath expression
-			expression = "//playlist/video/teaserImage/variants/variant/url";
-			// list of nodes queried
-			try {
-				NodeList nodes = (NodeList) xpath.evaluate(expression,
-						inputSrc, XPathConstants.NODESET);
-				for (int i = 0; i < Math.max(nodes.getLength(), 1); i++) {
-					Node node = nodes.item(i);
-					String url = "";
-					try {
-						url = node.getTextContent();
-					} catch (Exception e) {
-						Log.e("onPostExecute", "failed, no image found ");
-						//return;
-					}
-					/**
-					 * Set the image
-					 */
-					DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
-							.showStubImage(R.drawable.ic_empty)
-							// .showImageForEmptyUri(R.drawable.ic_empty)
-							.showImageOnFail(R.drawable.ic_error)
-							.cacheInMemory()
-							// .cacheOnDisc()
-							.build();
-					ImageView image_view = (ImageView) mView
-							.findViewById(R.id.thumbnail);
-
-					if (image_view != null) {
-						ImageLoader.getInstance().displayImage(url, image_view,
-								loadingOptions);
-					}
-				}
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
-
-			// get the streams
-			expression = "//playlist/video/assets/asset";
-			inputSrc = new InputSource(new StringReader(result));
-			inputSrc.setEncoding("UTF-8");
-		
+			
 			videoSources = new ArrayList<String[]>();
-			Boolean canHandleRtmp = true;//canDisplayRtmp(getActivity());
+			Boolean canHandleRtmp = canDisplayRtsp(getActivity());
 	
 			// list of nodes queried
 			try {
@@ -291,7 +186,7 @@ public class LiveFragment extends ArticleFragment {
 				for (int i = 0; i < nodes.getLength(); i++) {
 					Node node = nodes.item(i);
 					String bandwidth = null;
-					String serverPrefix = null;
+					String serverPrefix = "";
 					NodeList nodeChilds = node.getChildNodes();
 					for (int j = 0; j < nodeChilds.getLength(); j++) {
 						Node childNode = nodeChilds.item(j);
@@ -301,7 +196,7 @@ public class LiveFragment extends ArticleFragment {
 							bandwidth = nodeValue;
 							break;
 
-						} else if (nodeName.equals("fileName")) {
+						} else if (nodeName.equals("url")) {
 							tempUrl = nodeValue;
 						} else if (nodeName.equals("serverPrefix")) {
 							serverPrefix = nodeValue;
@@ -313,20 +208,32 @@ public class LiveFragment extends ArticleFragment {
 					if (bandwidth.equals("")) {
 						bandwidth = "HbbTV";
 					}
-					if (videoUrl.startsWith("http")) {
-						bandwidth = bandwidth + " (MP4)";
+					if (videoUrl.startsWith("rtsp")) {
+						bandwidth = bandwidth + " (RTSP)";
 						if (!videoUrl.equals("")) {
 							videoSources
 									.add(new String[] { bandwidth, videoUrl });
 						}
 					} else if (canHandleRtmp){
-						bandwidth = bandwidth + " (RTMP)";
+						bandwidth = bandwidth + " ";
 					}
 
-					// }
+				
+					
+				}
+				// }
+				if (canDisplayM3u8(getActivity()) == true){
+					InputSource inputSrc2 = new InputSource(new StringReader(result));
+					inputSrc2.setEncoding("UTF-8");
+					XPath xpath2 = XPathFactory.newInstance().newXPath();
+					String expression2 = "//playlist/video/streamingUrlIPad";
+					NodeList nodes2 = (NodeList) xpath2.evaluate(expression2,
+							inputSrc2, XPathConstants.NODESET);	
+					videoSources
+					.add(new String[] { "Dynamisch (.m3u8)",  nodes2.item(0).getTextContent() });
 
 				}
-
+				
 				// Spinner population
 				// default quality
 
@@ -348,8 +255,7 @@ public class LiveFragment extends ArticleFragment {
 				SharedPreferences appSettings = getActivity()
 						.getSharedPreferences("AppPreferences",
 								getActivity().MODE_PRIVATE);
-				String defaultQuality = appSettings.getString("Quality",
-						"DSL768");
+				String defaultQuality = appSettings.getString("QualityLive", "DSL768");
 
 				videoPath = videoSources
 						.get(getQualityPositionForString(defaultQuality))[1];
@@ -369,7 +275,7 @@ public class LiveFragment extends ArticleFragment {
 										getActivity().MODE_PRIVATE);
 						SharedPreferences.Editor prefEditor = appSettings
 								.edit();
-						prefEditor.putString("Quality",
+						prefEditor.putString("QualityLive",
 								videoSources.get(arg2)[0]);
 						prefEditor.commit();
 					}
@@ -393,18 +299,18 @@ public class LiveFragment extends ArticleFragment {
 						// if (mOnMovieClickedListener != null) {
 						if (videoPath != null) {
 							Intent intent = new Intent(Intent.ACTION_VIEW);
-							String mime = "video/mp4";
-							if (videoPath.startsWith("http")) {
+							String mime = "application/x-mpegURL";
+							if (videoPath.startsWith("rtsp")) {
+								mime = "video/rtsp";
 
 							} else {
-								mime = "video/rtmp";
 							}
 							intent.setDataAndType(Uri.parse(videoPath), mime);
-							intent.putExtra(Intent.EXTRA_SUBJECT, title);
+							//intent.putExtra(Intent.EXTRA_SUBJECT, title);
 							try {
 								startActivity(intent);								
 							} catch (Exception e) {
-								
+								Log.e("e", e.getMessage());
 								// Kein passender IntentHandler gefunden
 								 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 							        
@@ -428,9 +334,7 @@ public class LiveFragment extends ArticleFragment {
 							       AlertDialog dialog = builder.create();
 							       dialog.show();
 							}
-							//Toast.makeText(getActivity(),
-							//		"Lade Video " + videoPath,
-							//		Toast.LENGTH_LONG).show();
+							
 						}
 
 					}
@@ -480,71 +384,106 @@ public class LiveFragment extends ArticleFragment {
 		}
 
 	}
-	/**
-	 * Check if the supplied context can handle a certain format
-	 * http://stackoverflow.com/questions/2784847/how-do-i-determine-if-android-can-handle-pdf
-	 *
-	 * @param context
-	 * @return
-	 */
-	public static boolean canDisplayRtmp(Context context) {
-	    PackageManager packageManager = context.getPackageManager();
-	    Intent testIntent = new Intent(Intent.ACTION_VIEW);
-	    testIntent.setType("video/rtmp");
-	    //testIntent.setData(Uri.parse("rtmp://mystream"));
-	    if (packageManager.queryIntentActivities(testIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0) {
-	        return true;
-	    } else {
-	        return false;
-	    }
-	}
-	/**
-	 * Loads article data into the webview.
-	 * 
-	 * This method is called internally to update the webview's contents to the
-	 * appropriate article's text.
-	 */
-	String loadXML(String URL) {
-		final long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
-		File httpCacheDir = null;
-		try {
-			httpCacheDir = new File(getActivity().getCacheDir(), "http");
-		} catch (Exception e) {
-			// TODO: handle exception
-			return "";
-		}
-		try {
-			Class.forName("android.net.http.HttpResponseCache")
-					.getMethod("install", File.class, long.class)
-					.invoke(null, httpCacheDir, httpCacheSize);
-		} catch (Exception httpResponseCacheNotAvailable) {
 
-		}
-		StringBuilder stringBuilder = new StringBuilder();
-		HttpClient httpClient = new DefaultHttpClient();
-		HttpGet httpGet = new HttpGet(URL);
-		try {
-			HttpResponse response = httpClient.execute(httpGet);
-			StatusLine statusLine = response.getStatusLine();
-			int statusCode = statusLine.getStatusCode();
-			if (statusCode == 200) {
-				HttpEntity entity = response.getEntity();
-				InputStream inputStream = entity.getContent();
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(inputStream, "UTF-8"));
-				String line;
-				while ((line = reader.readLine()) != null) {
-					stringBuilder.append(line);
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
+		// query code
+		Log.v("Loader", "creates");
+				Uri queryUri = Uri.parse("content://de.janrenz.app.mediathek.cursorloader.data");
+				queryUri = queryUri.buildUpon().appendQueryParameter("method", "broadcast").build();
+				try {			
+					//
+				} catch (Exception e) {
+					Log.e("ERROR", e.getMessage());
 				}
-				inputStream.close();
-			} else {
-				Log.d("readXML", "Failed to download file");
+				return new CursorLoader(
+						getActivity(),
+						queryUri,
+						new String[] { "title", "image" , "extId", "startTime", "startTimeAsTimestamp", "isLive", "description", "timeinfo"}, 
+						null, 
+						null, 
+						null);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		// TODO Auto-generated method stub
+		if (cursor != null && cursor.getCount()>0){
+		
+			Cursor myCursor = cursor;
+			myCursor.moveToFirst();
+			TextView tView = (TextView) mView
+					.findViewById(R.id.description);
+			tView.setText(myCursor.getString(myCursor.getColumnIndexOrThrow("description")));
+			Boolean showLongDesc = false;
+			try {
+				SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+				 showLongDesc = sharedPref.getBoolean(SettingsActivity.SHOW_LONG_DESC, false);
+				
+			} catch (Exception e) {
+				// use the default if we cant fetch it
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		String xml = stringBuilder.toString();
-		return xml;
+			if (showLongDesc == false){
+				tView.setMaxLines(5);
+				
+		        tView.setHorizontalFadingEdgeEnabled(true);
+		        
+				tView.setOnClickListener(  new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						TextView tv = (TextView) v;
+						tv.setMaxLines(200);
+						tv.setHorizontalFadingEdgeEnabled(false);
+					}
+				} );
+				
+			}else{
+				
+			}
+			TextView dView = (TextView) mView
+					.findViewById(R.id.durationText);
+			dView.setText(myCursor.getString(myCursor.getColumnIndexOrThrow("timeinfo")));
+			/**
+			 * Set the image
+			 */
+			DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
+					.showStubImage(R.drawable.ic_empty)
+					// .showImageForEmptyUri(R.drawable.ic_empty)
+					.showImageOnFail(R.drawable.ic_error)
+					.cacheInMemory()
+					// .cacheOnDisc()
+					.build();
+			ImageView image_view = (ImageView) mView
+					.findViewById(R.id.thumbnail);
+
+			if (image_view != null) {
+				ImageLoader.getInstance().displayImage(myCursor.getString(myCursor.getColumnIndexOrThrow("image"))+"/"+image_view.getWidth(), image_view,
+						loadingOptions);
+			}
+			TextView h1 = (TextView) mView.findViewById(R.id.headline1);
+			h1.setText(myCursor.getString(myCursor.getColumnIndexOrThrow("title")));
+			
+				// The Cursor is now set to the right position
+				Movie mMovie = new Movie();
+				mMovie.setTitle(myCursor.getString(myCursor.getColumnIndexOrThrow("title")));
+				mMovie.setSubtitle(myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle")));
+				mMovie.setExtId(myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
+				mMovie.setStarttime(myCursor.getString(myCursor.getColumnIndexOrThrow("startTime")));
+				mMovie.setStarttimestamp(myCursor.getInt(myCursor.getColumnIndexOrThrow("startTimeAsTimestamp")));
+				mMovie.setIsLive(myCursor.getString(myCursor.getColumnIndexOrThrow("isLive")));
+				mView.findViewById(R.id.showAfterLoadItems).setVisibility(
+						View.VISIBLE);
+				mView.findViewById(R.id.hideAfterLoadItems).setVisibility(
+						View.GONE);
+		}	
+				
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -35,12 +35,12 @@
           
  <TextView
                     android:id="@+id/live"
-                      android:layout_gravity="bottom|right"
+                    android:layout_gravity="bottom|right"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/yellow"
                     android:paddingLeft="5dp"
-                     android:paddingRight="5dp" android:paddingTop="0dp"
+                    android:paddingRight="5dp" android:paddingTop="0dp"
                      
                     android:text="LIVE"
                     android:textAppearance="?android:attr/textAppearanceSmall"

@@ -1,5 +1,6 @@
 package de.janrenz.app.mediathek;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,10 +45,15 @@ public class ArticlePagerFragment extends Fragment implements OnPageChangeListen
 		f.setArguments(args);
 		return f;
 	}
-
+       
 	@Override
 	public void onResume() {
-		super.onResume();
+		try {
+			super.onResume();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		BusProvider.getInstance().register(this);
 	}
 
@@ -128,8 +135,8 @@ public class ArticlePagerFragment extends Fragment implements OnPageChangeListen
 		private int mcount = 0;
 		private ArrayList<Movie> mallItems;
 		private ArrayList<String> extIds;
-		private Map<Integer, ArticleFragment> mPageReferenceMap = new HashMap<Integer, ArticleFragment>();
-		
+		private SparseArray<WeakReference<ArticleFragment>> mPageReferenceMap = new SparseArray<WeakReference<ArticleFragment>>();
+
 		public MyAdapter(FragmentManager fm) {
 			super(fm);
 		}
@@ -171,14 +178,15 @@ public class ArticlePagerFragment extends Fragment implements OnPageChangeListen
 			if (mallItems.get(position).getIsLive() == true){
 				LiveFragment f = new LiveFragment();
 				ArticleFragment fcast = (ArticleFragment)  f;
-				mPageReferenceMap.put(Integer.valueOf(position), fcast);
+				mPageReferenceMap.put(Integer.valueOf(position), new WeakReference<ArticleFragment>(fcast));
 				f.setArguments(args);
 				// we need to have this accessible from the outside as well
 				f.setExtId(mallItems.get(position).getExtId());
 				return f;
 			}else{
 				ArticleFragment f = new ArticleFragment();	
-				mPageReferenceMap.put(Integer.valueOf(position), f);
+				
+				mPageReferenceMap.put(Integer.valueOf(position), new WeakReference<ArticleFragment>(f));
 				f.setArguments(args);
 				// we need to have this accessible from the outside as well
 				f.setExtId(mallItems.get(position).getExtId());
@@ -201,14 +209,27 @@ public class ArticlePagerFragment extends Fragment implements OnPageChangeListen
 			}
 		}
 		public ArticleFragment getFragment(int key) {
-			
-			return mPageReferenceMap.get(key);
+			WeakReference<ArticleFragment> weakReference = mPageReferenceMap.get(key);
+
+			if (null != weakReference) {
+
+				return (ArticleFragment) weakReference.get();
+			}
+			else {
+
+				return null;
+			}
+		
 		}
 		
 		@Override
 		public void destroyItem(View container, int position, Object object) {
-		
+		try {
+			
 			super.destroyItem(container, position, object);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 			mPageReferenceMap.remove(Integer.valueOf(position));
 		}
 	}

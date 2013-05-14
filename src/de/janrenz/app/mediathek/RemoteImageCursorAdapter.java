@@ -51,9 +51,10 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	           */
 	    	  
 	          if (isLive.equalsIgnoreCase("true")){
+	        	  v.findViewById(R.id.live).setVisibility(View.VISIBLE);
 	        	  //v.setBackgroundColor(   context.getResources().getColor(R.color.highlight_live_list));
 	          }else{
-	        	  v.findViewById(R.id.live).setVisibility(View.INVISIBLE);
+	        	  v.findViewById(R.id.live).setVisibility(View.GONE);
 	        	  //v.setBackgroundColor(   context.getResources().getColor(R.color.list_background));
 	          }
 	          
@@ -87,7 +88,7 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	          //.cacheOnDisc()
 	          .build();
 	          ImageView image_view =  (ImageView) v.findViewById(R.id.thumbnail);
-	         
+	         imagePath = imagePath + "/"+image_view.getWidth();
 	          if (image_view != null) {
 	        	  ImageLoader.getInstance().displayImage(imagePath, image_view, loadingOptions);
 	          }

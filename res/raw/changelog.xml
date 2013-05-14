@@ -15,4 +15,10 @@
        <change>Es erscheint nun eine Fehlermeldung wenn das Gerät die Filmurl nicht öffnen kann, bspw. weil kein passender Player installiert ist.</change>
        <change>Layout(farb)probleme unter Android 2.x behoben</change>
     </release>
+     <release version="0.6" versioncode="6">
+       <change>Neue Funktionem zum teilen der Film-Url</change>
+       <change>Anzeige von Live Beiträgen inkl Beschreibung</change>
+       <change>Verbesserte Bildqualität</change>
+       <change>Kopieren Button ist nun standardmäßig unsichtbar, kann über die neuen App-Einstellungen reaktiviert werden.</change>
+    </release>
 </changelog>

@@ -41,7 +41,7 @@ import de.janrenz.app.mediathek.R;
  * category. When an item is selected, it notifies the configured listener that
  * a headlines was selected.
  */
-public class HeadlinesFragment extends SherlockListFragment implements
+public class LiveHeadlinesFragment extends SherlockListFragment implements
 		OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
 	// The list adapter for the list we are displaying
@@ -55,11 +55,10 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	private Boolean selectMovieAfterLoad = false;
 	private static final String STATE_CURRENT_POSITION = "current_scrollpos";
 	private Bundle instanceState = null;
-	private Boolean isToday = false;
 	/**
 	 * Default constructor required by framework.
 	 */
-	public HeadlinesFragment() {
+	public LiveHeadlinesFragment() {
 		super();
 	}
 	
@@ -89,7 +88,7 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	
 	public void reloadAllVisisble() { 
 		try {
-			triggerLoad(false);
+			triggerLoad(true);
 		} catch (Exception e) {
 
 		}
@@ -97,13 +96,12 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	
 	@Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
 		this.setEmptyText("Keine Einträge gefunden.");
 		setListShown(false);
 		if (getResources().getBoolean(R.bool.has_two_panes)) {
 			this.getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		}
-		//this.instanceState = savedInstanceState;
+		this.instanceState = savedInstanceState;
         triggerLoad(true);
 	}
 	
@@ -298,13 +296,5 @@ public class HeadlinesFragment extends SherlockListFragment implements
 
 	public void setSelectMovieAfterLoad(Boolean selectMovieAfterLoad) {
 		this.selectMovieAfterLoad = selectMovieAfterLoad;
-	}
-
-	public Boolean getIsToday() {
-		return isToday;
-	}
-
-	public void setIsToday(Boolean isToday) {
-		this.isToday = isToday;
 	}
 }
