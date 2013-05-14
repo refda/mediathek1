@@ -160,18 +160,32 @@ public class ArticlePagerFragment extends Fragment implements OnPageChangeListen
 		@Override
 		public Fragment getItem(int position) {
 			
-			ArticleFragment f = new ArticleFragment();
+			//check if isLiveItem
+		
 			Bundle args = new Bundle();
 			args.putInt("num", position);
 			args.putString("extId", mallItems.get(position).getExtId());
 			args.putString("title", mallItems.get(position).getTitle());
 			args.putString("subtitle", mallItems.get(position).getSubtitle());
 			args.putString("senderinfo", mallItems.get(position).getSenderinfo());
-			f.setArguments(args);
-			// we need to have this accessible from the outside as well
-			f.setExtId(mallItems.get(position).getExtId());
-			mPageReferenceMap.put(Integer.valueOf(position), f);
-			return f;
+			if (mallItems.get(position).getIsLive() == true){
+				LiveFragment f = new LiveFragment();
+				ArticleFragment fcast = (ArticleFragment)  f;
+				mPageReferenceMap.put(Integer.valueOf(position), fcast);
+				f.setArguments(args);
+				// we need to have this accessible from the outside as well
+				f.setExtId(mallItems.get(position).getExtId());
+				return f;
+			}else{
+				ArticleFragment f = new ArticleFragment();	
+				mPageReferenceMap.put(Integer.valueOf(position), f);
+				f.setArguments(args);
+				// we need to have this accessible from the outside as well
+				f.setExtId(mallItems.get(position).getExtId());
+				return f;
+			}
+			
+			
 		}
 
 		// http://stackoverflow.com/questions/10849552/android-viewpager-cant-update-dynamically
@@ -195,7 +209,6 @@ public class ArticlePagerFragment extends Fragment implements OnPageChangeListen
 		public void destroyItem(View container, int position, Object object) {
 		
 			super.destroyItem(container, position, object);
-			
 			mPageReferenceMap.remove(Integer.valueOf(position));
 		}
 	}
@@ -206,7 +219,7 @@ public class ArticlePagerFragment extends Fragment implements OnPageChangeListen
 		try {
 			int currentItem = this.mPager.getCurrentItem();
 			MyAdapter adapter = ((MyAdapter)mPager.getAdapter());
-			ArticleFragment fragment = adapter.getFragment(currentItem);
+			ArticleFragment fragment = (ArticleFragment) adapter.getFragment(currentItem);
 			fragment.shareMovieUrl();
 			
 		} catch (Exception e) {

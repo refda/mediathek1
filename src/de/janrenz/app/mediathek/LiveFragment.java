@@ -76,7 +76,7 @@ import com.squareup.otto.Subscribe;
 /**
  * Fragment that displays a news article.
  */
-public class ArticleFragment extends Fragment {
+public class LiveFragment extends ArticleFragment {
 
 	View mView = null;
 	// The article we are to display
@@ -91,7 +91,7 @@ public class ArticleFragment extends Fragment {
 	ArrayList<String[]> videoSources = new ArrayList<String[]>();
 
 	// Parameterless constructor is needed by framework
-	public ArticleFragment() {
+	public LiveFragment() {
 		super();
 	}
 

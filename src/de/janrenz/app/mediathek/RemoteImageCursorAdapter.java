@@ -51,10 +51,12 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	           */
 	    	  
 	          if (isLive.equalsIgnoreCase("true")){
-	        	  v.setBackgroundColor(   context.getResources().getColor(R.color.highlight_live_list));
+	        	  //v.setBackgroundColor(   context.getResources().getColor(R.color.highlight_live_list));
 	          }else{
-	        	  v.setBackgroundColor(   context.getResources().getColor(R.color.list_background));
+	        	  v.findViewById(R.id.live).setVisibility(View.INVISIBLE);
+	        	  //v.setBackgroundColor(   context.getResources().getColor(R.color.list_background));
 	          }
+	          
 	          TextView title_text = (TextView) v.findViewById(R.id.text_view);
 	          if (title_text != null) {
 	              title_text.setText(title);

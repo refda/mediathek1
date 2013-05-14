@@ -39,6 +39,7 @@ public class MediathekActivity extends SherlockFragmentActivity {
 	public final int MENUINFOID = 1;
 	public final int MENUUPDATEID = 2;
 	public final int MENUSETTINGSID = 3;
+	public final int MENUSHAREID = 4;
 	// Whether or not we are in dual-pane mode
 	boolean mIsDualPane = false;
 
@@ -148,6 +149,14 @@ public class MediathekActivity extends SherlockFragmentActivity {
 		.setShowAsAction(
 				MenuItem.SHOW_AS_ACTION_NEVER
 						| MenuItem.SHOW_AS_ACTION_NEVER);
+		if (mIsDualPane) {
+		menu.add(Menu.NONE, MENUSHAREID, Menu.NONE, "Teilen")
+		.setIcon(R.drawable.menu_social_share)
+		.setShowAsAction(
+				MenuItem.SHOW_AS_ACTION_IF_ROOM
+						| MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+		}
 		
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -204,6 +213,9 @@ public class MediathekActivity extends SherlockFragmentActivity {
 			  Intent i = new Intent(this, SettingsActivity.class);
 	            //i.putExtra("pos", position );
 	            startActivity(i);
+			return true;
+		case MENUSHAREID:
+			BusProvider.getInstance().post(new ShareActionSelectedEvent());	
 			return true;
 		case android.R.id.home:
 			// This ID represents the Home or Up button. In the case of this
