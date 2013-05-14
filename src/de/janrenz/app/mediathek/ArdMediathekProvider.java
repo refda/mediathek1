@@ -13,9 +13,11 @@ import com.turbomanage.httpclient.HttpResponse;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class ArdMediathekProvider extends ContentProvider {
@@ -164,6 +166,8 @@ public class ArdMediathekProvider extends ContentProvider {
 					String result2 = "";
 					result2 = readJSONFeed(cliplisturl);
 					JSONArray jsonArray2 = new JSONArray(result2);
+					
+					
 					for (int j = 0; j < jsonArray2.length(); j++) {
 						JSONObject json_data2 = jsonArray2.getJSONObject(j);
 						t2 = android.text.Html.fromHtml(
@@ -174,7 +178,7 @@ public class ArdMediathekProvider extends ContentProvider {
 						// only add movie if it has a video
 						if (android.text.Html.fromHtml(
 								json_data2.getString("VId")).toString() != "") {
-
+							
 							cursor.addRow(new Object[] {
 									1000 + j,
 									t2,
@@ -184,12 +188,22 @@ public class ArdMediathekProvider extends ContentProvider {
 									json_data2.getString("BTimeF").toString(),
 									json_data2.getString("BTime").toString(),
 									json_data2.getString("IsLive") });
-						}
+							}
+						
 					}
+				}
+				Boolean hideLive = false;
+				try {
+					SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+					hideLive = sharedPref.getBoolean(SettingsActivity.HIDE_LIVE, false);		
+				} catch (Exception e) {
 				}
 				if (!json_data.getBoolean("IsGrouped")) {
 					if (android.text.Html.fromHtml(json_data.getString("VId"))
-							.toString() != "") {
+							.toString() != "" ) {
+						if (json_data.getString("IsLive").toString().equalsIgnoreCase("false") ||  (
+								json_data.getString("IsLive").toString().equalsIgnoreCase("true") && hideLive == false )	
+								)
 						cursor.addRow(new Object[] { i, t2, t3,
 								json_data.getString("ImageUrl").toString(),
 								json_data.getString("VId"),

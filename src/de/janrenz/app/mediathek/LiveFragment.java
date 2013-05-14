@@ -92,7 +92,6 @@ public class LiveFragment extends ArticleFragment implements LoaderManager.Loade
 		super();
 	}
 
-	
 
 	/**
 	 * Sets up the UI.
@@ -121,7 +120,7 @@ public class LiveFragment extends ArticleFragment implements LoaderManager.Loade
 	private void triggerLoad(Boolean forceReload ){
 		    
 	    int loaderId = 200;
-		    	getActivity().getSupportLoaderManager().restartLoader(loaderId, null, this);
+		getActivity().getSupportLoaderManager().restartLoader(loaderId, null, this);
 	 
 	}
 	
