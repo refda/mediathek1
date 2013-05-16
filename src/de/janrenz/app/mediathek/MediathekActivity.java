@@ -40,6 +40,7 @@ public class MediathekActivity extends SherlockFragmentActivity {
 	public final int MENUUPDATEID = 2;
 	public final int MENUSETTINGSID = 3;
 	public final int MENUSHAREID = 4;
+	public final int MENUSEARCHID = 4;
 	// Whether or not we are in dual-pane mode
 	boolean mIsDualPane = false;
 
@@ -132,7 +133,10 @@ public class MediathekActivity extends SherlockFragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		//lets add some menu stuff
-		
+		 menu.add(Menu.NONE, MENUSEARCHID, Menu.NONE, "Suche")
+		 .setIcon(R.drawable.ic_action_search)//.setActionView(R.layout.action_search)
+		 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		 
 		menu.add(Menu.NONE, MENUUPDATEID, Menu.NONE, "Aktualisieren")
 		.setIcon(R.drawable.ic_menu_refresh)
 		.setShowAsAction(
@@ -240,7 +244,12 @@ public class MediathekActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putInt("artIndex", mArtIndex);
-		super.onSaveInstanceState(outState);
+		try {
+			super.onSaveInstanceState(outState);
+		} catch (Exception e) {
+			// TODO: handle exception
+			//may throw java.lang.IllegalStateException
+		}
 	}
 
 }
