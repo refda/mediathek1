@@ -192,15 +192,21 @@ public class HeadlinesFragment extends SherlockListFragment implements
 	}
 	@Subscribe public void movieFocused(MovieFocusedEvent event) {
 		//be sure to do BusProvider.getInstance().register(this);
-		if (event.dayTimestamp == this.dateint){
-			getListView().setSelector(R.color.abs__bright_foreground_holo_dark);
-			if (event.pos <= getListView().getCount()){
-				getListView().clearChoices();
-				getListView().setItemChecked(event.pos, true);
-				getListView().setSelectionFromTop(event.pos, 20);
+		try {
+			if (event.dayTimestamp == this.dateint){
+				getListView().setSelector(R.color.abs__bright_foreground_holo_dark);
+				if (event.pos <= getListView().getCount()){
+					getListView().clearChoices();
+					getListView().setItemChecked(event.pos, true);
+					getListView().setSelectionFromTop(event.pos, 20);
+				}
+				
 			}
-			
+		} catch (Exception e) {
+			// TODO: handle exception
+			//view might not be created yet
 		}
+		
 	}
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
 			if (cursor != null && cursor.getCount()>0){
