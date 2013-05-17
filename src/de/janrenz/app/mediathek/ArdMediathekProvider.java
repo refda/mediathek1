@@ -1,5 +1,20 @@
-package de.janrenz.app.mediathek;
+/*
+ * Copyright (C) 2013 Jan Renz
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+package de.janrenz.app.mediathek;
 
 import java.net.URLEncoder;
 import java.util.Date;
@@ -53,6 +68,7 @@ public class ArdMediathekProvider extends ContentProvider {
 			String[] strings1, String s1) {
 		String url = "";
 		String queryparam = uri.getQueryParameter("timestamp");
+      ;
 		Integer timestamp = null;
 		if (queryparam == null) {
 			Date dt = new Date();
@@ -68,6 +84,14 @@ public class ArdMediathekProvider extends ContentProvider {
 			url = "http://m-service.daserste.de/appservice/1.4.1/video/list/"
 					+ timestamp + "?func=getVideoList&unixTimestamp="
 					+ timestamp;
+        } else if (queryparammethod.equalsIgnoreCase("search")) {
+            // url = /appservice/1.4.1/search/heiter/0/25?func=getSearchResultList&searchPattern=heiter&searchOffset=0&searchLength=25
+            String searchQuery = uri.getQueryParameter("query");
+            url = "http://m-service.daserste.de/appservice/1.4.1/search/"
+                    + searchQuery
+                    + "/0/50/?func=getSearchResultList&searchPattern="
+                    + searchQuery
+                    + "&searchOffset=0&searchLength=50";
 		} else if (queryparammethod.equalsIgnoreCase("broadcast")) {
 			url = "http://m-service.daserste.de/appservice/1.4.1/broadcast/current/"
 					+ timestamp

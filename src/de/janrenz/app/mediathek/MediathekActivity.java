@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2013 Jan Renz
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package de.janrenz.app.mediathek;
 
 import android.app.SearchManager;
@@ -266,9 +282,7 @@ public class MediathekActivity extends SherlockFragmentActivity implements Searc
     public boolean onQueryTextSubmit(String query) {
 
         //lets close the input field
-
         if (mMenu != null){
-
             MenuItem searchMenuItem = mMenu.findItem(MENUSEARCHID);
             searchMenuItem.collapseActionView();
             searchView.setQuery("", false);
@@ -279,6 +293,7 @@ public class MediathekActivity extends SherlockFragmentActivity implements Searc
             i.putExtra(SearchManager.QUERY, query );
             startActivity(i);
         }
+
         return true;
     }
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011 The Android Open Source Project
+ * Copyright (C) 2013 Jan Renz
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,11 @@
 
 package de.janrenz.app.mediathek;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -29,7 +31,6 @@ import com.actionbarsherlock.widget.SearchView;
 
 
 public class SearchActivity extends SherlockFragmentActivity implements SearchView.OnQueryTextListener {
-
 
     public void onCreate(Bundle savedInstanceState) {
 
@@ -62,6 +63,15 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                NavUtils.navigateUpTo(this, new Intent(this, MediathekActivity.class));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     public void onNewIntent(Intent intent) {
 
