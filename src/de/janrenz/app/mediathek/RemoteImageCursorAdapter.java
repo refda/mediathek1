@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Filterable {
 		 
@@ -46,7 +47,9 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	 
 	    @Override
 	    public View newView(Context context, Cursor cursor, ViewGroup parent) {
-	    	  View v = mLayoutInflater.inflate(R.layout.headline_item, parent, false);
+
+	    	  View v = mLayoutInflater.inflate(this.layout, parent, false);
+
 	          return v;
 	    }
 	    
@@ -98,15 +101,19 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	           */
 	          DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
 	          .showStubImage(R.drawable.abs__item_background_holo_light)
+                      .imageScaleType(ImageScaleType.EXACTLY)
 	          // .showImageForEmptyUri(R.drawable.ic_empty)
-	          .showImageOnFail(R.drawable.ic_error)
 	          .cacheInMemory()
 	          //.cacheOnDisc()
 	          .build();
 	          ImageView image_view =  (ImageView) v.findViewById(R.id.thumbnail);
-	         imagePath = imagePath + "/"+image_view.getWidth();
+	          imagePath = imagePath + "/"+image_view.getWidth();
 	          if (image_view != null) {
-	        	  ImageLoader.getInstance().displayImage(imagePath, image_view, loadingOptions);
+                  if (this.layout == R.layout.headline_item_grid){
+
+
+                  }
+                  ImageLoader.getInstance().displayImage(imagePath, image_view, loadingOptions);
 	          }
 	    }
 	

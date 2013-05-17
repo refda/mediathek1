@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="dexedLibs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/assets/bin/dexedLibs/action-bar-sherlock-7f10bf9a8183fc4209515eb47dfa89d2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/assets/bin/dexedLibs/square-otto-1.3.2-05327fd081a96441a4c6b9e485c1ccb6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/assets/bin/dexedLibs/android-smart-image-view-1.0.0-a34cec1e1f7bcc36bb92d86e4ad2abaf.jar!/" />
+      <root url="jar://$PROJECT_DIR$/assets/bin/dexedLibs/pageindicator-ad107b4df52f89b1e98cdd6e9402c475.jar!/" />
+      <root url="jar://$PROJECT_DIR$/assets/bin/dexedLibs/android-support-v4-d0d58fdafbf6d30f22a3507b4d4b8e84.jar!/" />
+      <root url="jar://$PROJECT_DIR$/assets/bin/dexedLibs/universal-image-loader-1.8.3-7fb6aa0afdae6d00944f0badeedf10e2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

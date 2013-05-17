@@ -23,7 +23,6 @@ import com.actionbarsherlock.view.MenuItem;
 
 import com.actionbarsherlock.widget.SearchView;
 import de.cketti.library.changelog.ChangeLog;
-import de.janrenz.app.mediathek.R;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -69,7 +68,6 @@ public class MediathekActivity extends SherlockFragmentActivity implements Searc
 	ArticlePagerFragment mArticleFragment;
 
 	// The news category and article index currently being displayed
-	int mCatIndex = 0;
 	int mArtIndex = 0;
 
 	// List of category titles
@@ -87,19 +85,10 @@ public class MediathekActivity extends SherlockFragmentActivity implements Searc
 		mArticleFragment = (ArticlePagerFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.article);
 
-		// Determine whether we are in single-pane or dual-pane mode by testing
-		// the visibility
-		// of the article view.
 		View articleView = findViewById(R.id.article);
 		mIsDualPane = articleView != null
 				&& articleView.getVisibility() == View.VISIBLE;
-		// int catIndex = savedInstanceState == null ? 0 :
-		// savedInstanceState.getInt("catIndex", 0);
-		// setUpActionBar(mIsDualPane, catIndex);
 
-		// Set up headlines fragment
-
-		// restoreSelection(savedInstanceState);
 		
 		cl = new ChangeLog(this);
 		//only show changelog if there are breaking changes
@@ -156,6 +145,7 @@ public class MediathekActivity extends SherlockFragmentActivity implements Searc
         searchView = new SearchView(getSupportActionBar().getThemedContext());
         searchView.setQueryHint("Suche in Mediathek…");
         searchView.setOnQueryTextListener(this);
+
        // searchView.setOnSuggestionListener(this);
 
 		 menu.add(Menu.NONE, MENUSEARCHID, Menu.NONE, "Suche")

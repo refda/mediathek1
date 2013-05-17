@@ -87,10 +87,11 @@ public class ArdMediathekProvider extends ContentProvider {
         } else if (queryparammethod.equalsIgnoreCase("search")) {
             // url = /appservice/1.4.1/search/heiter/0/25?func=getSearchResultList&searchPattern=heiter&searchOffset=0&searchLength=25
             String searchQuery = uri.getQueryParameter("query");
+            //!TODO make this url safe
             url = "http://m-service.daserste.de/appservice/1.4.1/search/"
-                    + searchQuery
-                    + "/0/50/?func=getSearchResultList&searchPattern="
-                    + searchQuery
+                    + URLEncoder.encode(searchQuery)
+                    + "/0/50?func=getSearchResultList&searchPattern="
+                    + URLEncoder.encode(searchQuery)
                     + "&searchOffset=0&searchLength=50";
 		} else if (queryparammethod.equalsIgnoreCase("broadcast")) {
 			url = "http://m-service.daserste.de/appservice/1.4.1/broadcast/current/"
@@ -108,6 +109,7 @@ public class ArdMediathekProvider extends ContentProvider {
 
 		String result = "";
 		result = readJSONFeed(url);
+        Log.e("___", result);
 		MatrixCursor cursor = new MatrixCursor(new String[] { "_id", "title",
 				"subtitle", "image", "extId", "startTime",
 				"startTimeAsTimestamp", "isLive" });
@@ -178,7 +180,13 @@ public class ArdMediathekProvider extends ContentProvider {
 						json_data.getString("Title2")).toString();
 
 				// Handle grouped views, like tatort
-				if (json_data.getBoolean("IsGrouped")) {
+                Boolean IsGrouped = false;
+                try {
+                    IsGrouped = json_data.getBoolean("IsGrouped");
+                }catch (Exception e){
+                    //this value might not exists
+                }
+				if (IsGrouped) {
 					String mtime = json_data.getString("BTime").toString();
 					String cliplisturl = "http://m-service.daserste.de/appservice/1.4.1/video/clip/list/"
 							+ mtime
@@ -222,9 +230,16 @@ public class ArdMediathekProvider extends ContentProvider {
 					hideLive = sharedPref.getBoolean(SettingsActivity.HIDE_LIVE, false);		
 				} catch (Exception e) {
 				}
-				if (!json_data.getBoolean("IsGrouped")) {
-					if (android.text.Html.fromHtml(json_data.getString("VId"))
-							.toString() != "" ) {
+
+                Boolean IsGrouped2 = false;
+                try {
+                    IsGrouped2 = json_data.getBoolean("IsGrouped");
+                }catch (Exception e){
+                    //this value might not exists
+                }
+                if (!IsGrouped2) {
+                    Log.e("______",json_data.getString("VId") );
+					if (! json_data.getString("VId").equalsIgnoreCase( "" )) {
 						if (json_data.getString("IsLive").toString().equalsIgnoreCase("false") ||  (
 								json_data.getString("IsLive").toString().equalsIgnoreCase("true") && hideLive == false )	
 								)
@@ -239,8 +254,10 @@ public class ArdMediathekProvider extends ContentProvider {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
+            Log.e("_____", e.getMessage());
 			return cursor;
 		}
+        Log.e("__________", "count here is : " + cursor.getCount());
 		return cursor;
 	}
 

@@ -56,6 +56,7 @@
         <activity
                 android:name="de.janrenz.app.mediathek.SearchActivity"
                 android:label="Suche"
+                android:windowSoftInputMode="stateHidden"
                 android:theme="@style/Theme.Mediathek" >
 
             <intent-filter >
