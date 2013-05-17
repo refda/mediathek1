@@ -58,6 +58,8 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
     // The list adapter for the list we are displaying
     SimpleCursorAdapter mListAdapter;
     private Cursor myCursor;
+
+
     // The listener we are to notify when a headline is selected
 
     private ArrayList<Movie> mAllItems = new ArrayList<Movie>();
@@ -78,9 +80,6 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
             mGridView.setNumColumns(3);
             layoutId = R.layout.headline_item_grid;
         }
-
-
-
         mListAdapter = new RemoteImageCursorAdapter(
                 this,
                 layoutId, null,
@@ -159,15 +158,10 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
 
         if (mMenu != null){
             MenuItem searchMenuItem = mMenu.findItem(MENUSEARCHID);
-            //set text if there is onw
-            //searchMenuItem.expandActionView();
         }
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 
             String query =    mQuery =         intent.getStringExtra(SearchManager.QUERY);
-            //display the query
-            //searchView.setQuery(query, false);
-            // and finally search it
             doSearch(query);
 
         }
@@ -187,13 +181,17 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
         }
     }
     private void doSearch(String queryStr) {
+        try {
+            this.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+            mGridView.setVisibility(View.GONE);
 
+        }catch(Exception e){}
+        triggerLoad(queryStr, true);
         searchView.clearFocus();
 
-        triggerLoad(queryStr, true);
         InputMethodManager imm = (InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mGridView.getApplicationWindowToken(), 0);
-        getSupportActionBar().setTitle("Suche nach " + queryStr);
+        getSupportActionBar().setTitle("Suche nach \"" + queryStr + "\"");
 
     }
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -216,10 +214,11 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        //Log.e("______", "loadFinished");
+        Log.e("______", "loadFinished");
         Log.e("____", "count :" + cursor.getCount());
         mListAdapter.swapCursor(cursor);
         mAllItems = new ArrayList<Movie>();
+
 
         myCursor = cursor;
         for(myCursor.moveToFirst(); !myCursor.isAfterLast(); myCursor.moveToNext()) {
@@ -237,23 +236,26 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
         try {
             this.findViewById(R.id.progressBar).setVisibility(View.GONE);
             mGridView.setVisibility(View.VISIBLE);
-            View emptyView = LayoutInflater.from(this).inflate(R.layout.no_items_search, null);
-            addContentView(emptyView, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-            mGridView.setEmptyView(emptyView);
+
         }catch(Exception e){}
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        //Log.e("______", "loadReset");
+        Log.e("______", "loadReset");
+        if (myCursor != null) {
+            mListAdapter.swapCursor(null);
+            myCursor = null;
+        }
     }
 
     /** if a user enters some text in the search field in the action bar **/
     @Override
     public boolean onQueryTextSubmit(String query) {
         mQuery = query;
-        triggerLoad(query, true);
+        doSearch(query);
+        mMenu.findItem(MENUSEARCHID).collapseActionView();
 
         return true;
     }

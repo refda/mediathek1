@@ -18,6 +18,8 @@ package de.janrenz.app.mediathek;
 
 import java.util.Date;
 
+import android.util.DisplayMetrics;
+import android.util.Log;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import android.content.Context;
@@ -35,14 +37,16 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 		 
 	    private Context context;
 	    private int layout;
-	 
+
 	    private LayoutInflater mLayoutInflater;
 	    
 	    public RemoteImageCursorAdapter (Context context, int layout, Cursor c, String[] from, int[] to) {
 	        super(context, layout, c, from, to);
 	        this.context = context;
 	        this.layout = layout;
-	        this.mLayoutInflater = LayoutInflater.from(context); 
+	        this.mLayoutInflater = LayoutInflater.from(context);
+
+
 	    }
 	 
 	    @Override
@@ -107,11 +111,15 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	          //.cacheOnDisc()
 	          .build();
 	          ImageView image_view =  (ImageView) v.findViewById(R.id.thumbnail);
-	          imagePath = imagePath + "/"+image_view.getWidth();
+
 	          if (image_view != null) {
+
                   if (this.layout == R.layout.headline_item_grid){
+                      imagePath = imagePath + "/" + 320;
 
+                  }else{
 
+                      imagePath = imagePath + "/" + 100;
                   }
                   ImageLoader.getInstance().displayImage(imagePath, image_view, loadingOptions);
 	          }

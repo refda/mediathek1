@@ -275,7 +275,7 @@ public class MediathekActivity extends SherlockFragmentActivity implements Searc
         if (mMenu != null){
             MenuItem searchMenuItem = mMenu.findItem(MENUSEARCHID);
             searchMenuItem.collapseActionView();
-            searchView.setQuery("", false);
+            searchView.clearFocus();
             // lets open up the search intent
             Intent i = new Intent(this, SearchActivity.class);
             i.setAction(Intent.ACTION_SEARCH);
@@ -291,7 +291,7 @@ public class MediathekActivity extends SherlockFragmentActivity implements Searc
         //kind of a hack to close the action view if a users clicks on the x,
         if (query.equalsIgnoreCase("")){
             MenuItem searchMenuItem = mMenu.findItem(MENUSEARCHID);
-            searchView.clearFocus();
+
         }
         return true;
     }

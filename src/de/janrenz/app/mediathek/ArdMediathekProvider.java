@@ -119,8 +119,10 @@ public class ArdMediathekProvider extends ContentProvider {
 
 		if (queryparammethod.equalsIgnoreCase("broadcast")) {
 			cursor = processResultForBroadcast(result);
-		} else {
-			cursor = processResultForList(result);
+        } else if (queryparammethod.equalsIgnoreCase("search")) {
+            cursor = processResultForList(result, true);
+        } else {
+			cursor = processResultForList(result, false);
 		}
 
 		return (Cursor) cursor;
@@ -163,23 +165,27 @@ public class ArdMediathekProvider extends ContentProvider {
 		return cursor;
 	}
 
-	private MatrixCursor processResultForList(String result) {
+	private MatrixCursor processResultForList(String result, Boolean doReverse) {
 		MatrixCursor cursor = new MatrixCursor(new String[] { "_id", "title",
 				"subtitle", "image", "extId", "startTime",
 				"startTimeAsTimestamp", "isLive" });
 		try {
-			// TODO Auto-generated catch block
 			JSONArray jsonArray = new JSONArray(result);
 			for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject json_data;
+                if (doReverse == true){
+                    json_data = jsonArray.getJSONObject( jsonArray.length()-(i+1) );
+                }else{
+                    json_data = jsonArray.getJSONObject(i);
+                }
 
-				JSONObject json_data = jsonArray.getJSONObject(i);
 				// build the Headline
 				String t2 = android.text.Html.fromHtml(
 						json_data.getString("Title3")).toString();
 				String t3 = android.text.Html.fromHtml(
 						json_data.getString("Title2")).toString();
 
-				// Handle grouped views, like tatort
+				// Handle grouped views
                 Boolean IsGrouped = false;
                 try {
                     IsGrouped = json_data.getBoolean("IsGrouped");
