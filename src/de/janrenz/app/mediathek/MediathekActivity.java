@@ -1,9 +1,11 @@
 package de.janrenz.app.mediathek;
 
+import android.app.SearchManager;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
+import com.actionbarsherlock.widget.SearchView;
 import de.cketti.library.changelog.ChangeLog;
 import de.janrenz.app.mediathek.R;
 
@@ -35,7 +37,7 @@ import android.widget.TextView;
  * } on the right side. When the user selects a headline on the
  * left, the corresponding article is shown on the right.
  */
-public class MediathekActivity extends SherlockFragmentActivity {
+public class MediathekActivity extends SherlockFragmentActivity implements SearchView.OnQueryTextListener {
 	public final int MENUINFOID = 1;
 	public final int MENUUPDATEID = 2;
 	public final int MENUSETTINGSID = 3;
@@ -129,12 +131,19 @@ public class MediathekActivity extends SherlockFragmentActivity {
 	public void setUpActionBar(boolean showTabs, int selTab) {
 		return;
 	}
+    private SearchView searchView = null;
 
+    Menu mMenu = null;
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		//lets add some menu stuff
+        searchView = new SearchView(getSupportActionBar().getThemedContext());
+        searchView.setQueryHint("Suche in Mediathek…");
+        searchView.setOnQueryTextListener(this);
+       // searchView.setOnSuggestionListener(this);
+
 		 menu.add(Menu.NONE, MENUSEARCHID, Menu.NONE, "Suche")
-		 .setIcon(R.drawable.ic_action_search)//.setActionView(R.layout.action_search)
+		 .setIcon(R.drawable.ic_action_search).setActionView(searchView)
 		 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 		 
 		menu.add(Menu.NONE, MENUUPDATEID, Menu.NONE, "Aktualisieren")
@@ -161,7 +170,7 @@ public class MediathekActivity extends SherlockFragmentActivity {
 						| MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
 		}
-		
+		mMenu = menu;
 		return super.onCreateOptionsMenu(menu);
 	}
 	  protected AlertDialog getInfoDialog() {
@@ -175,7 +184,7 @@ public class MediathekActivity extends SherlockFragmentActivity {
 	        
 	        builder.setTitle("Mediathek 1")         
 	                .setView(tv)
-	                .setInverseBackgroundForced(true)//needded for old android version
+	                .setInverseBackgroundForced(true)//needed for old android version
 	                .setCancelable(false)
 	                // OK button
 	                .setPositiveButton(
@@ -252,4 +261,33 @@ public class MediathekActivity extends SherlockFragmentActivity {
 		}
 	}
 
+    /** if a user enters some text in the search field in the action bar **/
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+
+        //lets close the input field
+        //searchView.clearFocus();
+        if (mMenu != null){
+
+            MenuItem searchMenuItem = mMenu.findItem(MENUSEARCHID);
+            searchMenuItem.collapseActionView();
+            searchView.setQuery("", false);
+            // lets open up the search intent
+            Intent i = new Intent(this, SearchActivity.class);
+
+            //add search string to our search activity
+            i.putExtra(SearchManager.QUERY, query );
+            startActivity(i);
+        }
+        return true;
+    }
+    @Override
+    public boolean onQueryTextChange(String query) {
+        //kind of a hack to close the action view if a users clicks on the x,
+        if (query.equalsIgnoreCase("")){
+            MenuItem searchMenuItem = mMenu.findItem(MENUSEARCHID);
+            searchMenuItem.collapseActionView();
+        }
+        return true;
+    }
 }

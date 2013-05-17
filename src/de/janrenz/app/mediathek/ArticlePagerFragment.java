@@ -2,8 +2,6 @@ package de.janrenz.app.mediathek;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

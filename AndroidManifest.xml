@@ -53,7 +53,19 @@
             android:name="de.janrenz.app.mediathek.ArticleActivity"
             android:label="Detailansicht"
             android:theme="@style/Theme.Mediathek" />
+        <activity
+                android:name="de.janrenz.app.mediathek.SearchActivity"
+                android:label="Suche"
+                android:theme="@style/Theme.Mediathek" >
 
+            <intent-filter >
+
+                <action android:name="android.intent.action.SEARCH" />
+
+            </intent-filter>
+
+
+        </activity>
         <provider
             android:name="de.janrenz.app.mediathek.ArdMediathekProvider"
             android:authorities="de.janrenz.app.mediathek.cursorloader.data"
