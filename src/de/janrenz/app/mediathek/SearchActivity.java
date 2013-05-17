@@ -23,18 +23,44 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
 
 
-public class SearchActivity extends SherlockFragmentActivity {
+public class SearchActivity extends SherlockFragmentActivity implements SearchView.OnQueryTextListener {
+
 
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.movielist);
 
-        handleIntent(getIntent());
 
     }
 
+
+    private SearchView searchView = null;
+    public final int MENUSEARCHID = 5;
+
+    Menu mMenu = null;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //lets add some menu stuff
+        searchView = new SearchView(getSupportActionBar().getThemedContext());
+        searchView.setQueryHint("Suche in Mediathek…");
+        searchView.setOnQueryTextListener(this);
+        // searchView.setOnSuggestionListener(this);
+
+        menu.add(Menu.NONE, MENUSEARCHID, Menu.NONE, "Suche")
+                .setIcon(R.drawable.ic_action_search).setActionView(searchView)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
+
+        mMenu = menu;
+        handleIntent(getIntent());
+        return super.onCreateOptionsMenu(menu);
+    }
 
 
     public void onNewIntent(Intent intent) {
@@ -53,17 +79,39 @@ public class SearchActivity extends SherlockFragmentActivity {
 
     private void handleIntent(Intent intent) {
 
+        if (mMenu != null){
+            MenuItem searchMenuItem = mMenu.findItem(MENUSEARCHID);
+            //set text if there is onw
+            searchMenuItem.expandActionView();
+        }
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 
             String query =            intent.getStringExtra(SearchManager.QUERY);
-
+            //display the query
+            searchView.setQuery(query, false);
+            // and finally search it
             doSearch(query);
 
         }
-
     }
 
     private void doSearch(String queryStr) {
         Log.v("___", queryStr);
+    }
+
+    /** if a user enters some text in the search field in the action bar **/
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+
+        return true;
+    }
+    @Override
+    public boolean onQueryTextChange(String query) {
+        //kind of a hack to close the action view if a users clicks on the x,
+        if (query.equalsIgnoreCase("")){
+           // MenuItem searchMenuItem = mMenu.findItem(MENUSEARCHID);
+            searchView.clearFocus();
+        }
+        return true;
     }
 }

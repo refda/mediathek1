@@ -42,7 +42,7 @@ public class MediathekActivity extends SherlockFragmentActivity implements Searc
 	public final int MENUUPDATEID = 2;
 	public final int MENUSETTINGSID = 3;
 	public final int MENUSHAREID = 4;
-	public final int MENUSEARCHID = 4;
+	public final int MENUSEARCHID = 5;
 	// Whether or not we are in dual-pane mode
 	boolean mIsDualPane = false;
 
@@ -266,7 +266,7 @@ public class MediathekActivity extends SherlockFragmentActivity implements Searc
     public boolean onQueryTextSubmit(String query) {
 
         //lets close the input field
-        //searchView.clearFocus();
+
         if (mMenu != null){
 
             MenuItem searchMenuItem = mMenu.findItem(MENUSEARCHID);
@@ -274,7 +274,7 @@ public class MediathekActivity extends SherlockFragmentActivity implements Searc
             searchView.setQuery("", false);
             // lets open up the search intent
             Intent i = new Intent(this, SearchActivity.class);
-
+            i.setAction(Intent.ACTION_SEARCH);
             //add search string to our search activity
             i.putExtra(SearchManager.QUERY, query );
             startActivity(i);
@@ -286,7 +286,7 @@ public class MediathekActivity extends SherlockFragmentActivity implements Searc
         //kind of a hack to close the action view if a users clicks on the x,
         if (query.equalsIgnoreCase("")){
             MenuItem searchMenuItem = mMenu.findItem(MENUSEARCHID);
-            searchMenuItem.collapseActionView();
+            searchView.clearFocus();
         }
         return true;
     }
