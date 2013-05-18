@@ -71,13 +71,6 @@ public class ArticleActivity extends SherlockFragmentActivity {
 		extId = getIntent().getExtras().getString("extId");
 		allItems = getIntent().getExtras().getParcelableArrayList("allItems");
 
-		// If we are in two-pane layout mode, this activity is no longer
-		// necessary
-		if (getResources().getBoolean(R.bool.has_two_panes)) {
-			finish();
-			return;
-		}
-
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		// Check that the activity is using the layout version with

@@ -17,9 +17,10 @@
             <ImageView
                 android:id="@+id/thumbnail"
                 android:layout_width="fill_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity=""
                 android:background="#EEEEEE"
+                android:adjustViewBounds="true"
                 android:contentDescription="@string/teaserbild"
                 android:scaleType="centerCrop" />
 

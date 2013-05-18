@@ -91,7 +91,6 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
 
                 myCursor.moveToPosition(position);
                 String cExtId = myCursor.getString(myCursor.getColumnIndexOrThrow("extId"));
@@ -214,8 +213,7 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        Log.e("______", "loadFinished");
-        Log.e("____", "count :" + cursor.getCount());
+
         mListAdapter.swapCursor(cursor);
         mAllItems = new ArrayList<Movie>();
 
@@ -224,8 +222,9 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
         for(myCursor.moveToFirst(); !myCursor.isAfterLast(); myCursor.moveToNext()) {
             // The Cursor is now set to the right position
             Movie mMovie = new Movie();
-            mMovie.setTitle(myCursor.getString(myCursor.getColumnIndexOrThrow("title")));
-            mMovie.setSubtitle(myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle")));
+            //this seems to be reverse here
+            mMovie.setTitle(myCursor.getString(myCursor.getColumnIndexOrThrow("subtitle")));
+            mMovie.setSubtitle(myCursor.getString(myCursor.getColumnIndexOrThrow("title")));
             mMovie.setExtId(myCursor.getString(myCursor.getColumnIndexOrThrow("extId")));
             mMovie.setStarttime(myCursor.getString(myCursor.getColumnIndexOrThrow("startTime")));
             mMovie.setStarttimestamp(myCursor.getInt(myCursor.getColumnIndexOrThrow("startTimeAsTimestamp")));
@@ -243,7 +242,6 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        Log.e("______", "loadReset");
         if (myCursor != null) {
             mListAdapter.swapCursor(null);
             myCursor = null;

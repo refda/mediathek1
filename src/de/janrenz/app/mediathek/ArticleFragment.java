@@ -63,6 +63,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
@@ -210,7 +211,32 @@ public class ArticleFragment extends Fragment {
 		text2.setText(getArguments().getString("subtitle"));
 		TextView text3 = (TextView) mView.findViewById(R.id.senderinfo);
 		text3.setText(getArguments().getString("senderinfo"));
+        this.extId = getArguments().getString("extId");
 		this.title = getArguments().getString("title");
+        //http://m-service.daserste.de/appservice/1.4.0/image/video/das-morgenmagazin-ueber-den-tatort-mit-nora-tschirner-und-christian-ulmen-100/jpg/257
+        int jpegWidth = 257;
+        if (getResources().getBoolean(R.bool.has_two_panes)) {
+            jpegWidth = 1024;
+        }
+        //images are not vailable in 1.4.1 api
+        String url = "http://m-service.daserste.de/appservice/1.4.0/image/video/" + this.extId + "/jpg/" + jpegWidth;
+        DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
+                .showStubImage(R.drawable.ic_empty)
+                        // .showImageForEmptyUri(R.drawable.ic_empty)
+                .showImageOnFail(R.drawable.ic_error)
+                .cacheInMemory()
+                //TODO Handle out of memory exceptions!
+                        .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+                        // .cacheOnDisc()
+                .build();
+
+        ImageView image_view = (ImageView) mView
+                .findViewById(R.id.thumbnail);
+
+        if (image_view != null) {
+            ImageLoader.getInstance().displayImage(url, image_view,
+                    loadingOptions);
+        }
 		new AccessWebServiceTask()
 				.execute("http://m-service.daserste.de/appservice/1.4.1/video/"
 						+ getArguments().getString("extId"));
@@ -242,44 +268,7 @@ public class ArticleFragment extends Fragment {
 				Log.e("onPostExecute", "failed 1: "  + e.getMessage() + result);
 				return;
 			}
-			// TODO: MAybe we can rewind the StringReader and reuse it
-			inputSrc = new InputSource(new StringReader(result));
-			inputSrc.setEncoding("UTF-8");
-			// specify the xpath expression
-			expression = "//playlist/video/teaserImage/variants/variant/url";
-			// list of nodes queried
-			try {
-				NodeList nodes = (NodeList) xpath.evaluate(expression,
-						inputSrc, XPathConstants.NODESET);
-				for (int i = 0; i < Math.max(nodes.getLength(), 1); i++) {
-					Node node = nodes.item(i);
-					String url = "";
-					try {
-						url = node.getTextContent();
-					} catch (Exception e) {
-						Log.e("onPostExecute", "failed, no image found ");
-						//return;
-					}
-					/**
-					 * Set the image
-					 */
-					DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
-							.showStubImage(R.drawable.ic_empty)
-							// .showImageForEmptyUri(R.drawable.ic_empty)
-							.showImageOnFail(R.drawable.ic_error)
-							.cacheInMemory()
-							// .cacheOnDisc()
-							.build();
-					ImageView image_view = (ImageView) mView
-							.findViewById(R.id.thumbnail);
-					if (image_view != null) {
-							ImageLoader.getInstance().displayImage(url, image_view,
-								loadingOptions);
-					}
-				}
-			} catch (XPathExpressionException e) {
-				e.printStackTrace();
-			}
+
 
 			// get the streams
 			expression = "//playlist/video/assets/asset";
@@ -353,7 +342,7 @@ public class ArticleFragment extends Fragment {
 						.getSharedPreferences("AppPreferences",
 								getActivity().MODE_PRIVATE);
 				String defaultQuality = appSettings.getString("Quality",
-						"DSL768");
+						"DSL 1500 (MP4)");
 
 				videoPath = videoSources
 						.get(getQualityPositionForString(defaultQuality))[1];
