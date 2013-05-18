@@ -20,8 +20,7 @@ import java.util.Date;
 
 import android.util.DisplayMetrics;
 import android.util.Log;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -31,6 +30,11 @@ import android.view.ViewGroup;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+
+import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
 public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Filterable {
@@ -105,9 +109,10 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	           */
 	          DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
 	          .showStubImage(R.drawable.abs__item_background_holo_light)
-                      .imageScaleType(ImageScaleType.EXACTLY)
+              .imageScaleType(ImageScaleType.EXACTLY)
 	          // .showImageForEmptyUri(R.drawable.ic_empty)
-	          .cacheInMemory()
+                    //  .memoryCache(new WeakMemoryCache())
+                      .cacheInMemory()
 	          //.cacheOnDisc()
 	          .build();
 	          ImageView image_view =  (ImageView) v.findViewById(R.id.thumbnail);
