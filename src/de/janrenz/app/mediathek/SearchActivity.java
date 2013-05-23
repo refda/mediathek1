@@ -64,13 +64,18 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
 
     private ArrayList<Movie> mAllItems = new ArrayList<Movie>();
 
+    @Override
     public void onStart(){
         super.onStart();
     }
 
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         setContentView(R.layout.searchresults);
+
         mGridView = (GridView) this.findViewById(R.id.searchResultGrid);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -114,9 +119,18 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
                 startActivity(i);
             }
         });
-        super.onCreate(savedInstanceState);
+        restoreMe(savedInstanceState);
     }
 
+    private void restoreMe(Bundle state) {
+        if (state!=null) {
+            mQuery = state.getString("query");
+
+            if (mQuery!=null) {
+              this.doSearch(mQuery);
+            }
+        }
+    }
 
 
     @Override
@@ -147,11 +161,6 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
         return super.onOptionsItemSelected(item);
     }
 
-    public void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        handleIntent(intent);
-    }
-
 
     private void handleIntent(Intent intent) {
 
@@ -165,6 +174,17 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
 
         }
     }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        if ( mQuery != null ) {
+            outState.putString("query", mQuery.toString());
+        }
+    }
+
     private void triggerLoad(String query, Boolean forceReload ){
 
 
@@ -186,7 +206,9 @@ public class SearchActivity extends SherlockFragmentActivity implements SearchVi
 
         }catch(Exception e){}
         triggerLoad(queryStr, true);
-        searchView.clearFocus();
+        if (searchView != null){
+            searchView.clearFocus();
+        }
 
         InputMethodManager imm = (InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mGridView.getApplicationWindowToken(), 0);

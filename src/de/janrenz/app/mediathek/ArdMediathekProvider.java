@@ -46,18 +46,15 @@ public class ArdMediathekProvider extends ContentProvider {
 	}
 
 	public String readJSONFeed(String URL) {
-		
-		
-	
+
 		try {
 			
-			 BasicHttpClient httpClient = new BasicHttpClient(URL);
-		       
-		        HttpResponse httpResponse = httpClient.get("", null);
+			BasicHttpClient httpClient = new BasicHttpClient(URL);
+		    HttpResponse httpResponse = httpClient.get("", null);
 
-		       return httpResponse.getBodyAsString();
+		    return httpResponse.getBodyAsString();
 		} catch (Exception e) {
-			Log.e("readJSONFeed", e.getLocalizedMessage());
+			Log.e("readJSONFeed", "error:" + e.getLocalizedMessage());
 			return "";
 		}
 		
@@ -109,8 +106,7 @@ public class ArdMediathekProvider extends ContentProvider {
 
 		String result = "";
 		result = readJSONFeed(url);
-        Log.e("___", result);
-		MatrixCursor cursor = new MatrixCursor(new String[] { "_id", "title",
+        MatrixCursor cursor = new MatrixCursor(new String[] { "_id", "title",
 				"subtitle", "image", "extId", "startTime",
 				"startTimeAsTimestamp", "isLive" });
 		if (result == "") {
@@ -244,7 +240,6 @@ public class ArdMediathekProvider extends ContentProvider {
                     //this value might not exists
                 }
                 if (!IsGrouped2) {
-                    Log.e("______",json_data.getString("VId") );
 					if (! json_data.getString("VId").equalsIgnoreCase( "" )) {
 						if (json_data.getString("IsLive").toString().equalsIgnoreCase("false") ||  (
 								json_data.getString("IsLive").toString().equalsIgnoreCase("true") && hideLive == false )	
@@ -260,10 +255,8 @@ public class ArdMediathekProvider extends ContentProvider {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-            Log.e("_____", e.getMessage());
 			return cursor;
 		}
-        Log.e("__________", "count here is : " + cursor.getCount());
 		return cursor;
 	}
 

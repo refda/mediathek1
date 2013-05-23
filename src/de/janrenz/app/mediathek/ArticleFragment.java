@@ -16,11 +16,9 @@
 
 package de.janrenz.app.mediathek;
 
-import java.io.BufferedInputStream;
+
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
@@ -30,7 +28,6 @@ import java.util.ArrayList;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -49,6 +46,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -63,23 +61,14 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import org.apache.http.HttpEntity;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import com.actionbarsherlock.internal.widget.IcsAdapterView;
-import com.actionbarsherlock.internal.widget.IcsSpinner;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.otto.Subscribe;
-import com.turbomanage.httpclient.BasicHttpClient;
-import com.turbomanage.httpclient.HttpResponse;
+
 
 /**
  * Fragment that displays a news article.
@@ -119,10 +108,7 @@ public class ArticleFragment extends Fragment {
 	public interface OnMovieClickedListener {
 		/**
 		 * Called when a given item is selected.
-		 * 
-		 * @param index
-		 *            the index of the selected item.
-		 * @param string
+		 *
 		 */
 		public void onMovieSelected(String url);
 	}
@@ -137,7 +123,7 @@ public class ArticleFragment extends Fragment {
 		try {
 			displayArticle();
 		} catch (Exception e) {
-			// TODO: handle exception
+
 		}
 		return mView;
 	}
@@ -154,6 +140,18 @@ public class ArticleFragment extends Fragment {
 		super.onResume();
 
 		BusProvider.getInstance().register(this);
+
+        getView().findViewById(R.id.thumbnail).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override public void onGlobalLayout() {
+                View imgView = getView().findViewById(R.id.thumbnail);
+                ViewGroup.LayoutParams layout = imgView.getLayoutParams();
+                layout.height = imgView.getWidth()/16*9;
+                imgView.setLayoutParams(layout);
+                try {
+                    imgView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }catch (Exception e){}
+            }
+        });
 	}
 
 	@Override
@@ -199,8 +197,7 @@ public class ArticleFragment extends Fragment {
 
 	/**
 	 * Displays a particular article.
-	 * 
-	 * @param extId
+	 *
 	 *            the article to display
 	 */
 	public void displayArticle() {
@@ -221,19 +218,36 @@ public class ArticleFragment extends Fragment {
         //images are not vailable in 1.4.1 api
         String url = "http://m-service.daserste.de/appservice/1.4.0/image/video/" + this.extId + "/jpg/" + jpegWidth;
         DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
-                .showStubImage(R.drawable.ic_empty)
+                .showStubImage(R.drawable.progress_primary_mediathek)
                         // .showImageForEmptyUri(R.drawable.ic_empty)
                 .showImageOnFail(R.drawable.ic_error)
                 .cacheInMemory()
                 //TODO Handle out of memory exceptions!
-                        .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
+                       // .imageScaleType(ImageScaleType.EXACTLY_STRETCHED)
                         // .cacheOnDisc()
                 .build();
 
         ImageView image_view = (ImageView) mView
                 .findViewById(R.id.thumbnail);
 
-        if (image_view != null) {
+
+        image_view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override public void onGlobalLayout() {
+
+                try {
+
+                    View imgView = getView().findViewById(R.id.thumbnail);
+                    imgView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    ViewGroup.LayoutParams layout = imgView.getLayoutParams();
+                    layout.height = imgView.getWidth()/16*9;
+                    imgView.setLayoutParams(layout);
+                }catch (Exception e){}
+            }
+        });
+
+
+
+    if (image_view != null) {
             ImageLoader.getInstance().displayImage(url, image_view,
                     loadingOptions);
         }
@@ -313,7 +327,11 @@ public class ArticleFragment extends Fragment {
 									.add(new String[] { bandwidth, videoUrl });
 						}
 					} else if (canHandleRtmp){
-						bandwidth = bandwidth + " (RTMP)";
+						bandwidth = bandwidth + " (RTSP)";
+                        if (!videoUrl.equals("")) {
+                            videoSources
+                                    .add(new String[] { bandwidth, videoUrl });
+                        }
 					}
 
 					// }
@@ -489,9 +507,9 @@ public class ArticleFragment extends Fragment {
 		}
 	    PackageManager packageManager = context.getPackageManager();
 	    Intent testIntent = new Intent(Intent.ACTION_VIEW);
-	    testIntent.setType("video/rtsp");
+	    //testIntent.setType("video/rtsp");
 	   
-	    //testIntent.setData(Uri.parse("rtsp://mystream"));
+	    testIntent.setData(Uri.parse("rtmp://mystream"));
 	    if (packageManager.queryIntentActivities(testIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0) {
 	        return true;
 	    } else {
@@ -581,5 +599,4 @@ public class ArticleFragment extends Fragment {
 	      }
 	    }
 	  }
-
 }

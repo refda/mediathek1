@@ -27,6 +27,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -73,13 +74,30 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	    	  String startTime = c.getString(c.getColumnIndexOrThrow("startTime"));
 	    	  String startTimeAsTimestamp = c.getString(c.getColumnIndex("startTimeAsTimestamp"));
 	    	  String isLive = c.getString(c.getColumnIndex("isLive"));
-	          /**
-	           * Next set the text of the entry.
-	           */
-	    	  
-	          if (isLive.equalsIgnoreCase("true")){
-	        	  v.findViewById(R.id.live).setVisibility(View.VISIBLE);
-	        	  //v.setBackgroundColor(   context.getResources().getColor(R.color.highlight_live_list));
+            if (this.layout == R.layout.headline_item_grid){
+            final View vl = v;
+
+            v.findViewById(R.id.thumbnail).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override public void onGlobalLayout() {
+
+                    try {
+
+                        View imgView = vl.findViewById(R.id.thumbnail);
+                        imgView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        ViewGroup.LayoutParams layout = imgView.getLayoutParams();
+                        layout.height = imgView.getWidth()/16*9;
+                        imgView.setLayoutParams(layout);
+                    }catch (Exception e){}
+                }
+            });
+            }
+
+            /**
+             * Next set the text of the entry.
+             */
+            if (isLive.equalsIgnoreCase("true")){
+                v.findViewById(R.id.live).setVisibility(View.VISIBLE);
+                //v.setBackgroundColor(   context.getResources().getColor(R.color.highlight_live_list));
 	          }else{
 	        	  v.findViewById(R.id.live).setVisibility(View.GONE);
 	        	  //v.setBackgroundColor(   context.getResources().getColor(R.color.list_background));
@@ -109,7 +127,7 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 	           */
 	          DisplayImageOptions loadingOptions = new DisplayImageOptions.Builder()
 	          .showStubImage(R.drawable.abs__item_background_holo_light)
-              .imageScaleType(ImageScaleType.EXACTLY)
+              //.imageScaleType(ImageScaleType.EXACTLY)
 	          // .showImageForEmptyUri(R.drawable.ic_empty)
                     //  .memoryCache(new WeakMemoryCache())
                       .cacheInMemory()
@@ -124,7 +142,7 @@ public class RemoteImageCursorAdapter  extends SimpleCursorAdapter implements Fi
 
                   }else{
 
-                      imagePath = imagePath + "/" + 100;
+                      imagePath = imagePath + "/" + 150;
                   }
                   ImageLoader.getInstance().displayImage(imagePath, image_view, loadingOptions);
 	          }

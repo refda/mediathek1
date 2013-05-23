@@ -144,17 +144,19 @@ public class LiveFragment extends ArticleFragment implements LoaderManager.Loade
 		if (context != null ){
 			 return false;
 		}
-	    PackageManager packageManager = context.getPackageManager();
-	    Intent testIntent = new Intent(Intent.ACTION_VIEW);
-	    testIntent.setType("application/x-mpegURL");
-	   
-	    //testIntent.setData(Uri.parse("rtsp://mystream"));
-	    if (packageManager.queryIntentActivities(testIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0) {
-	        return true;
-	    } else {
-	        return false;
-	    }
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            Intent testIntent = new Intent(Intent.ACTION_VIEW);
+            testIntent.setType("application/x-mpegURL");
+            if (packageManager.queryIntentActivities(testIntent, PackageManager.MATCH_DEFAULT_ONLY).size() > 0) {
+                return true;
+            }
+        }catch (Exception e){
+
+        }
+        return false;
 	}
+
 	private class AccessWebServiceTask extends AsyncTask<String, Void, String> {
 		protected String doInBackground(String... urls) {
 			return loadXML(urls[0]);
@@ -304,7 +306,6 @@ public class LiveFragment extends ArticleFragment implements LoaderManager.Loade
 							try {
 								startActivity(intent);								
 							} catch (Exception e) {
-								Log.e("e", e.getMessage());
 								// Kein passender IntentHandler gefunden
 								 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 							        
@@ -322,8 +323,6 @@ public class LiveFragment extends ArticleFragment implements LoaderManager.Loade
 							                            }
 							                        });
 						            // Show "More…" button if we're only displaying a partial change log.
-						     
-							        
 
 							       AlertDialog dialog = builder.create();
 							       dialog.show();
@@ -382,8 +381,7 @@ public class LiveFragment extends ArticleFragment implements LoaderManager.Loade
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-		// query code
-		Log.v("Loader", "creates");
+		// query codea
 				Uri queryUri = Uri.parse("content://de.janrenz.app.mediathek.cursorloader.data");
 				queryUri = queryUri.buildUpon().appendQueryParameter("method", "broadcast").build();
 				try {			

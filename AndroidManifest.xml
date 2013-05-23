@@ -58,11 +58,8 @@
                 android:label="Suche"
                 android:windowSoftInputMode="stateHidden"
                 android:theme="@style/Theme.Mediathek" >
-
             <intent-filter >
-
                 <action android:name="android.intent.action.SEARCH" />
-
             </intent-filter>
 
 
