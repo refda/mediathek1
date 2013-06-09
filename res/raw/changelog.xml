@@ -25,4 +25,9 @@
         <change>Suchfunktion</change>
 
     </release>
+    <release version="0.71" versioncode="9">
+        <change>Bugfix für Android Version 2.2, behebt Absturz</change>
+        <change>Holo-Theme nun auch für alte Android Versionen</change>
+
+    </release>
 </changelog>

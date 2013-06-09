@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="Theme.Mediathek" parent="@style/Theme.Sherlock.Light.DarkActionBar">
+    <style name="Theme.Mediathek" parent="@style/Holo.Theme.Light.DarkActionBar">
         <item name="actionBarItemBackground">@drawable/selectable_background_mediathek</item>
         <item name="popupMenuStyle">@style/PopupMenu.Mediathek</item>
         <item name="dropDownListViewStyle">@style/DropDownListView.Mediathek</item>

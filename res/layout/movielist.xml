@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- BEGIN_INCLUDE(all) -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.holoeverywhere.widget.LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -27,5 +27,5 @@
     
             android:layout_weight="1">
     </android.support.v4.view.ViewPager>
-</LinearLayout>
+</org.holoeverywhere.widget.LinearLayout>
 <!-- END_INCLUDE(all) -->

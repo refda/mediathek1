@@ -16,16 +16,6 @@
 
 package de.janrenz.app.mediathek;
 
-import java.net.URLEncoder;
-import java.util.Date;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.turbomanage.httpclient.BasicHttpClient;
-import com.turbomanage.httpclient.HttpResponse;
-
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
@@ -33,7 +23,16 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.util.Log;
+
+import com.turbomanage.httpclient.HttpResponse;
+import com.turbomanage.httpclient.android.AndroidHttpClient;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URLEncoder;
+import java.util.Date;
 
 public class ArdMediathekProvider extends ContentProvider {
 
@@ -48,13 +47,14 @@ public class ArdMediathekProvider extends ContentProvider {
 	public String readJSONFeed(String URL) {
 
 		try {
-			
-			BasicHttpClient httpClient = new BasicHttpClient(URL);
-		    HttpResponse httpResponse = httpClient.get("", null);
 
-		    return httpResponse.getBodyAsString();
+            AndroidHttpClient httpClient = new AndroidHttpClient(URL);
+		    HttpResponse httpResponse;
+            httpResponse = httpClient.get("", null);
+
+            return httpResponse.getBodyAsString();
 		} catch (Exception e) {
-			Log.e("readJSONFeed", "error:" + e.getLocalizedMessage());
+			//Log.e("readJSONFeed", "error:" + e.getLocalizedMessage());
 			return "";
 		}
 		
@@ -62,7 +62,7 @@ public class ArdMediathekProvider extends ContentProvider {
 
 	@Override
 	public Cursor query(Uri uri, String[] strings, String s,
-			String[] strings1, String s1) {
+		String[] strings1, String s1) {
 		String url = "";
 		String queryparam = uri.getQueryParameter("timestamp");
       ;

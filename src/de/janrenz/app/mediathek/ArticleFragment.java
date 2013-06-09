@@ -17,15 +17,6 @@
 package de.janrenz.app.mediathek;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-
-
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ClipData;
@@ -40,21 +31,31 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import org.holoeverywhere.widget.Button;
+import org.holoeverywhere.widget.Spinner;
+import org.holoeverywhere.widget.TextView;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
@@ -62,18 +63,10 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-
 /**
  * Fragment that displays a news article.
  */
-public class ArticleFragment extends Fragment {
+public class ArticleFragment extends org.holoeverywhere.app.Fragment {
 
 	View mView = null;
 	// The article we are to display
@@ -116,8 +109,8 @@ public class ArticleFragment extends Fragment {
 	/**
 	 * Sets up the UI.
 	 */
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    @Override
+	public View onCreateView(org.holoeverywhere.LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		mView = inflater.inflate(R.layout.detail, container, false);
 		try {
@@ -125,6 +118,7 @@ public class ArticleFragment extends Fragment {
 		} catch (Exception e) {
 
 		}
+
 		return mView;
 	}
 
@@ -140,18 +134,19 @@ public class ArticleFragment extends Fragment {
 		super.onResume();
 
 		BusProvider.getInstance().register(this);
-
+        try {
         getView().findViewById(R.id.thumbnail).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override public void onGlobalLayout() {
                 View imgView = getView().findViewById(R.id.thumbnail);
                 ViewGroup.LayoutParams layout = imgView.getLayoutParams();
                 layout.height = imgView.getWidth()/16*9;
-                imgView.setLayoutParams(layout);
-                try {
                     imgView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }catch (Exception e){}
+                    imgView.setLayoutParams(layout);
+
+
             }
         });
+        }catch (Exception e){}
 	}
 
 	@Override
@@ -188,7 +183,7 @@ public class ArticleFragment extends Fragment {
 	public Integer getQualityPositionForString(String quality) {
 		for (int j = 0; j < videoSources.size(); j++) {
 			String[] arr = videoSources.get(j);
-			if (arr[0].equals(quality)) {
+			if (arr[0].equalsIgnoreCase(quality)) {
 				return j;
 			}
 		}
@@ -324,13 +319,13 @@ public class ArticleFragment extends Fragment {
 						bandwidth = bandwidth + " (MP4)";
 						if (!videoUrl.equals("")) {
 							videoSources
-									.add(new String[] { bandwidth, videoUrl });
+									.add(new String[] { bandwidth.trim(), videoUrl });
 						}
 					} else if (canHandleRtmp){
 						bandwidth = bandwidth + " (RTSP)";
                         if (!videoUrl.equals("")) {
                             videoSources
-                                    .add(new String[] { bandwidth, videoUrl });
+                                    .add(new String[] { bandwidth.trim(), videoUrl });
                         }
 					}
 
@@ -366,12 +361,11 @@ public class ArticleFragment extends Fragment {
 						.get(getQualityPositionForString(defaultQuality))[1];
 				s.setSelection(getQualityPositionForString(defaultQuality));
 
-				s.setOnItemSelectedListener(new OnItemSelectedListener() {
+				s.setOnItemSelectedListener(new org.holoeverywhere.widget.AdapterView.OnItemSelectedListener() {
 
-					@Override
-					public void onItemSelected(AdapterView<?> arg0, View arg1,
+                    @Override
+					public void onItemSelected(org.holoeverywhere.widget.AdapterView<?> arg0, View arg1,
 							int arg2, long arg3) {
-						// TODO Auto-generated method stub
 						// Integer item = s.getSelectedItemPosition();
 
 						videoPath = videoSources.get(arg2)[1];
@@ -389,14 +383,13 @@ public class ArticleFragment extends Fragment {
 			
 
 					@Override
-					public void onNothingSelected(AdapterView<?> arg0) {
+					public void onNothingSelected(org.holoeverywhere.widget.AdapterView<?> arg0) {
 						// TODO Auto-generated method stub
 						
 					}
 
-					
-					
-				});
+
+                });
 				Button button = (Button) mView.findViewById(R.id.buttonWatch);
 
 				button.setOnClickListener(new View.OnClickListener() {
@@ -478,9 +471,43 @@ public class ArticleFragment extends Fragment {
 				SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 				Boolean hideCopyButtonSetting = sharedPref.getBoolean(SettingsActivity.HIDE_COPYBUTTON, false);
 				if (hideCopyButtonSetting == true){
-					
 					buttonCopy.setVisibility(View.GONE);
 				}
+                /**
+                //set download button
+                Boolean showDownloadButtonSetting = sharedPref.getBoolean(SettingsActivity.SHOW_DOWNLOAD_BUTTON, false);
+                Button buttonDownload = (Button) mView.findViewById(R.id.buttonDownload);
+
+                if (showDownloadButtonSetting != true){
+                    buttonDownload.setVisibility(View.GONE);
+                }else{
+                    buttonDownload.setOnClickListener(new View.OnClickListener() {
+
+                         public void onClick(View v) {
+                             String serviceString = Context.DOWNLOAD_SERVICE;
+                             DownloadManager downloadManager;
+                             downloadManager = (DownloadManager)getActivity().getSystemService(serviceString);
+
+                             Uri uri = Uri.parse(videoPath);
+                             DownloadManager.Request request = new DownloadManager.Request(uri);
+
+
+                             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS.toString() , uri.getLastPathSegment());
+
+
+                             request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
+                             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                             request.allowScanningByMediaScanner();
+                             long reference = downloadManager.enqueue(request);
+                             Toast.makeText(getActivity(),
+                             		"Download von Video gestartet",
+                             		Toast.LENGTH_LONG).show();
+                        }
+
+                    });
+                }
+                */
+
 
 				mView.findViewById(R.id.showAfterLoadItems).setVisibility(
 						View.VISIBLE);

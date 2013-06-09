@@ -22,10 +22,12 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="libs" level="project" />
-    <orderEntry type="module" module-name="ActionBarSherlock" />
     <orderEntry type="module" module-name="ViewPagerIndicator" />
     <orderEntry type="module" module-name="ckChangeLog" />
-    <orderEntry type="library" name="android-support-v47" level="project" />
+    <orderEntry type="module" module-name="library1" />
+    <orderEntry type="module" module-name="addon-preferences" />
+    <orderEntry type="library" name="android-support-v4-r13" level="project" />
+    <orderEntry type="module" module-name="library" />
   </component>
 </module>
 

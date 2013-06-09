@@ -16,9 +16,6 @@
 
 package de.janrenz.app.mediathek;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,18 +24,23 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+
 import com.squareup.otto.Subscribe;
 import com.viewpagerindicator.LinePageIndicator;
+
+import org.holoeverywhere.LayoutInflater;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 /**
  * Fragment that displays a news article.
  */
-public class ArticlePagerFragment extends Fragment implements OnPageChangeListener, OnTouchListener{
+public class ArticlePagerFragment extends org.holoeverywhere.app.Fragment implements OnPageChangeListener, OnTouchListener{
 
 	MyAdapter mAdapter;
 	ViewPager mPager;
@@ -90,7 +92,8 @@ public class ArticlePagerFragment extends Fragment implements OnPageChangeListen
 			
 			LinePageIndicator titleIndicator = (LinePageIndicator) getActivity()
 					.findViewById(R.id.detailpageindicator);
-			titleIndicator.setViewPager((ViewPager) getActivity().findViewById(R.id.singlepager));
+            mPager = (ViewPager) getActivity().findViewById(R.id.singlepager);
+            titleIndicator.setViewPager(mPager);
 			titleIndicator.setCurrentItem(event.pos);
 		}
 	

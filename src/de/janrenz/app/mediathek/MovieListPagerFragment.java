@@ -22,19 +22,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.squareup.otto.Subscribe;
 import com.viewpagerindicator.TitlePageIndicator;
 
-import de.janrenz.app.mediathek.R;
+import org.holoeverywhere.LayoutInflater;
 
-public class MovieListPagerFragment extends SherlockFragment {
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class MovieListPagerFragment extends org.holoeverywhere.app.Fragment {
 
 	// The list adapter for the list we are displaying
 

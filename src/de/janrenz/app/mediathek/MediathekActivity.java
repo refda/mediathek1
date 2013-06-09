@@ -16,15 +16,8 @@
 
 package de.janrenz.app.mediathek;
 
-import android.app.SearchManager;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-
-import com.actionbarsherlock.widget.SearchView;
-import de.cketti.library.changelog.ChangeLog;
-
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,6 +27,12 @@ import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.TextView;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.widget.SearchView;
+
+import de.cketti.library.changelog.ChangeLog;
 
 /**
  * Main activity: shows headlines list and articles, if layout permits.
@@ -52,7 +51,7 @@ import android.widget.TextView;
  * } on the right side. When the user selects a headline on the
  * left, the corresponding article is shown on the right.
  */
-public class MediathekActivity extends SherlockFragmentActivity implements SearchView.OnQueryTextListener {
+public class MediathekActivity extends org.holoeverywhere.app.Activity implements SearchView.OnQueryTextListener {
 	public final int MENUINFOID = 1;
 	public final int MENUUPDATEID = 2;
 	public final int MENUSETTINGSID = 3;

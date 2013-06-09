@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_ardtheke" default="compile.module.ardtheke">
+  <dirname property="module.ardtheke.basedir" file="${ant.file.module_ardtheke}"/>
+  
+  <property name="module.jdk.home.ardtheke" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.ardtheke" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.ardtheke" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.ardtheke" value="${compiler.args}"/>
+  
+  <property name="ardtheke.output.dir" value="${module.ardtheke.basedir}/out/production/ardtheke"/>
+  <property name="ardtheke.testoutput.dir" value="${module.ardtheke.basedir}/out/test/ardtheke"/>
+  
+  <path id="ardtheke.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="ardtheke.module.production.classpath">
+    <path refid="${module.jdk.classpath.ardtheke}"/>
+    <path refid="library.libs.classpath"/>
+  </path>
+  
+  <path id="ardtheke.runtime.production.module.classpath">
+    <pathelement location="${ardtheke.output.dir}"/>
+    <path refid="library.libs.classpath"/>
+  </path>
+  
+  <path id="ardtheke.module.classpath">
+    <path refid="${module.jdk.classpath.ardtheke}"/>
+    <pathelement location="${ardtheke.output.dir}"/>
+    <path refid="library.libs.classpath"/>
+  </path>
+  
+  <path id="ardtheke.runtime.module.classpath">
+    <pathelement location="${ardtheke.testoutput.dir}"/>
+    <pathelement location="${ardtheke.output.dir}"/>
+    <path refid="library.libs.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.ardtheke">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.ardtheke">
+    <patternset refid="excluded.from.module.ardtheke"/>
+  </patternset>
+  
+  <path id="ardtheke.module.sourcepath">
+    <dirset dir="${module.ardtheke.basedir}">
+      <include name="gen"/>
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.ardtheke" depends="compile.module.ardtheke.production,compile.module.ardtheke.tests" description="Compile module ardtheke"/>
+  
+  <target name="compile.module.ardtheke.production" depends="register.custom.compilers" description="Compile module ardtheke; production classes">
+    <mkdir dir="${ardtheke.output.dir}"/>
+    <javac2 destdir="${ardtheke.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.ardtheke}/javac">
+      <compilerarg line="${compiler.args.ardtheke}"/>
+      <bootclasspath refid="ardtheke.module.bootclasspath"/>
+      <classpath refid="ardtheke.module.production.classpath"/>
+      <src refid="ardtheke.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.ardtheke"/>
+    </javac2>
+    
+    <copy todir="${ardtheke.output.dir}">
+      <fileset dir="${module.ardtheke.basedir}/gen">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.ardtheke.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.ardtheke.tests" depends="register.custom.compilers,compile.module.ardtheke.production" description="compile module ardtheke; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.ardtheke" description="cleanup module">
+    <delete dir="${ardtheke.output.dir}"/>
+    <delete dir="${ardtheke.testoutput.dir}"/>
+  </target>
+</project>

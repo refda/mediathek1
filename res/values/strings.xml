@@ -25,14 +25,14 @@
         <p>Mediathek 1 ist eine alternative native Oberfläche für die Inhalte der ARD Mediathek. Mediathek 1 entstand als Android-Lernprojekt und um für mich selbst eine bessere Oberfläche zu den Inhalten der ARD Mediathek zur Verfügung zu haben.<p>
         <p>Mediathek 1 ist Open Source, der Quelltext ist frei verfügbar unter https://github.com/jprberlin/mediathek1. Wer möchte kann dort auch Fehler reporten oder Verbesserungen und Erweiterungen am Programmcode zur Verfügung stellen (Pull Request).</p>
         <p>Mediathek 1 ist kein offizielles Angebot der ARD. Bitte beachten Sie die Nutzungshinweise und Bedingungen der ARD Mediathek unter http://m.daserste.de</p>
-        <p>Tipp: Wählen Sie die Qualität so gut wie möglich, aber eben auhc nicht schneller als der Internetanschluss über den zu surfen. Wenn die Filme beim Abspielen stocken, so versuchen Sie eine geringere Qualität auszuwählen. Achten Sie darauf das Filme viel Datenvolumen verbrauchen und hierdurch ggf. Kosten entstehen können. </p>
-        <p>Die Qualität der Livestreams hängt stark von INternetverbindung und verwendetem Player ab."       
+        <p>Tipp: Wählen Sie die Qualität so gut wie möglich, aber eben auch nicht schneller als der Internetanschluss über den Sie surfen. Wenn die Filme beim Abspielen stocken, so versuchen Sie eine geringere Qualität auszuwählen. Achten Sie darauf das Filme viel Datenvolumen verbrauchen und hierdurch ggf. Kosten entstehen können. </p>
+        <p>Die Qualität der Livestreams hängt stark von Internetverbindung und verwendetem Player ab."
         <p>Danke an Sasche Huth für Tipps zum Einstieg in die Android Entwicklung.<p/>
         <p><strong>Verwendete Bibliotheken:</strong><br />
         - Android Smart Image View<br />
         - Square Event Bus<br />
         - Action Bar Sherlock<br />
-        - Basic Http Client<br />
+        - Android Async Http<br />
         - Android-ViewPagerIndicator</p>    
         ]]>
     </string>
@@ -48,9 +48,10 @@
     <string name="pref_always_show_long_desc_summ">Zeigt lange Beschreibungen, ohne dass man auf den Text klicken muß</string>
     <string name="pref_hide_live_entries_desc">Verstecke Live Einträge</string>
     <string name="pref_hide_live_entries_desc_summ">Live Einträge werden versteckt</string>
-    
-      <string name="pref_display_title">Darstellung</string>
-      <string name="teaserbild">Teaserbild</string>
+    <string name="pref_show_download_button_desc">Aktiviere Download Funktion</string>
+    <string name="pref_show_download_button_summ">Aktiviere Funktion um Beiträge zwischen zu speichern um Sie später zu schauen</string>
+    <string name="pref_display_title">Darstellung</string>
+    <string name="teaserbild">Teaserbild</string>
 
     
 </resources>

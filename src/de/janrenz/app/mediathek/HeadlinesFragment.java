@@ -43,7 +43,7 @@ import de.janrenz.app.mediathek.R;
  * category. When an item is selected, it notifies the configured listener that
  * a headlines was selected.
  */
-public class HeadlinesFragment extends SherlockListFragment implements
+public class HeadlinesFragment extends org.holoeverywhere.app.ListFragment implements
 		OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
 	// The list adapter for the list we are displaying

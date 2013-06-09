@@ -16,19 +16,17 @@
 
 package de.janrenz.app.mediathek;
 
-import java.io.File;
-import java.io.IOException;
-
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.net.http.HttpResponseCache;
 import android.util.Log;
 
-public class BaseApplication extends Application {
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
+import java.io.File;
+import java.io.IOException;
+
+public class BaseApplication extends org.holoeverywhere.app.Application {
    
     @SuppressLint("NewApi") 
     @Override

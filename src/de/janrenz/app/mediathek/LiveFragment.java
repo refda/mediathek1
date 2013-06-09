@@ -15,13 +15,6 @@
  */
 package de.janrenz.app.mediathek;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.util.ArrayList;
-
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.ClipData;
@@ -37,44 +30,35 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.text.TextUtils.TruncateAt;
-
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.turbomanage.httpclient.HttpResponse;
+import com.turbomanage.httpclient.android.AndroidHttpClient;
+
+import org.holoeverywhere.widget.Button;
+import org.holoeverywhere.widget.Spinner;
+import org.holoeverywhere.widget.TextView;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
+import java.io.StringReader;
+import java.util.ArrayList;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import com.actionbarsherlock.internal.widget.IcsAdapterView;
-import com.actionbarsherlock.internal.widget.IcsSpinner;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.otto.Subscribe;
-import com.turbomanage.httpclient.BasicHttpClient;
-import com.turbomanage.httpclient.HttpResponse;
 
 /**
  * Fragment that displays a news article.
@@ -92,7 +76,7 @@ public class LiveFragment extends ArticleFragment implements LoaderManager.Loade
 	 * Sets up the UI.
 	 */
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+	public View onCreateView(org.holoeverywhere.LayoutInflater  inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		mView = inflater.inflate(R.layout.detaillive, container, false);
 		setRetainInstance(false);
@@ -122,8 +106,7 @@ public class LiveFragment extends ArticleFragment implements LoaderManager.Loade
 
 	/**
 	 * Displays a particular article.
-	 * 
-	 * @param extId
+	 *
 	 *            the article to display
 	 */
 	public void displayArticle() {
@@ -257,10 +240,10 @@ public class LiveFragment extends ArticleFragment implements LoaderManager.Loade
 						.get(getQualityPositionForString(defaultQuality))[1];
 				s.setSelection(getQualityPositionForString(defaultQuality));
 
-				s.setOnItemSelectedListener(new OnItemSelectedListener() {
+				s.setOnItemSelectedListener(new org.holoeverywhere.widget.AdapterView.OnItemSelectedListener() {
 
 					@Override
-					public void onItemSelected(AdapterView<?> arg0, View arg1,
+					public void onItemSelected(org.holoeverywhere.widget.AdapterView<?> arg0, View arg1,
 							int arg2, long arg3) {
 						// TODO Auto-generated method stub
 						// Integer item = s.getSelectedItemPosition();
@@ -280,7 +263,7 @@ public class LiveFragment extends ArticleFragment implements LoaderManager.Loade
 			
 
 					@Override
-					public void onNothingSelected(AdapterView<?> arg0) {
+					public void onNothingSelected(org.holoeverywhere.widget.AdapterView<?> arg0) {
 						// TODO Auto-generated method stub
 						
 					}
@@ -384,11 +367,7 @@ public class LiveFragment extends ArticleFragment implements LoaderManager.Loade
 		// query codea
 				Uri queryUri = Uri.parse("content://de.janrenz.app.mediathek.cursorloader.data");
 				queryUri = queryUri.buildUpon().appendQueryParameter("method", "broadcast").build();
-				try {			
-					//
-				} catch (Exception e) {
-					Log.e("ERROR", e.getMessage());
-				}
+
 				return new CursorLoader(
 						getActivity(),
 						queryUri,
@@ -480,11 +459,10 @@ public class LiveFragment extends ArticleFragment implements LoaderManager.Loade
 	//this is a non cached lib
 	String loadXML(String URL) {
 		try {
-			 BasicHttpClient httpClient = new BasicHttpClient(URL);
+            AndroidHttpClient httpClient = new AndroidHttpClient(URL);
 		     HttpResponse httpResponse = httpClient.get("", null);
 		     return httpResponse.getBodyAsString();
 		} catch (Exception e) {
-			Log.e("readXMLFeed", e.getLocalizedMessage());
 			return "";
 		}
 	}

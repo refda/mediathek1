@@ -29,7 +29,7 @@
                 android:layout_gravity="bottom|left"
                 android:orientation="vertical" >
 
-                <TextView
+                <org.holoeverywhere.widget.TextView
                     android:id="@+id/senderinfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@color/white" />
 
-                <TextView
+                <org.holoeverywhere.widget.TextView
                     android:id="@+id/headline2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                     android:textColor="@color/white" />
             </LinearLayout>
 
-            <TextView
+            <org.holoeverywhere.widget.TextView
                 android:id="@+id/live"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
         </FrameLayout>
 
         
-        <TextView
+        <org.holoeverywhere.widget.TextView
             android:id="@+id/headline1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
             android:text=""
             android:textAppearance="?android:attr/textAppearanceLarge" />
           
-        <TextView
+        <org.holoeverywhere.widget.TextView
             android:id="@+id/description"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
             android:orientation="vertical"
             android:visibility="visible" >
 
-            <ProgressBar
+            <org.holoeverywhere.widget.ProgressBar
                 android:id="@+id/laodingProgressBar"
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="fill_parent"
@@ -124,14 +124,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
-                    <TextView
+                    <org.holoeverywhere.widget.TextView
                         android:id="@+id/qualityText"
                         android:layout_width="96dp"
                         android:layout_height="wrap_content"
                         android:text="@string/qualitaet"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                    <Spinner
+                    <org.holoeverywhere.widget.Spinner
                         android:id="@+id/qualitySpinner"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -144,13 +144,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
 
-                    <TextView
+                    <org.holoeverywhere.widget.TextView
                         android:layout_width="96dp"
                         android:layout_height="match_parent"
                         android:text="@string/dauer_"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                    <TextView
+                    <org.holoeverywhere.widget.TextView
                         android:id="@+id/durationText"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -160,7 +160,7 @@
                 </TableRow>
             </TableLayout>
 
-            <Button
+            <org.holoeverywhere.widget.Button
                 android:id="@+id/buttonWatch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -170,7 +170,7 @@
                 android:text="@string/jetzt_stream_ansehen"
                 android:textColor="#FFFFFF" />
 
-            <Button
+            <org.holoeverywhere.widget.Button
                 android:id="@+id/buttonCopy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

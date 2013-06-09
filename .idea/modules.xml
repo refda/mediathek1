@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$USER_HOME$/AndroidStudioProjects/ViewPagerIndicator/ViewPagerIndicator.iml" filepath="$USER_HOME$/AndroidStudioProjects/ViewPagerIndicator/ViewPagerIndicator.iml" />
+      <module fileurl="file://$USER_HOME$/HoloEverywhere/addons/preferences/addon-preferences.iml" filepath="$USER_HOME$/HoloEverywhere/addons/preferences/addon-preferences.iml" group="addons and modules" />
+      <module fileurl="file://$USER_HOME$/HoloEverywhere/addons/addons.iml" filepath="$USER_HOME$/HoloEverywhere/addons/addons.iml" group="addons and modules" />
+      <module fileurl="file://$USER_HOME$/HoloEverywhere/application/application.iml" filepath="$USER_HOME$/HoloEverywhere/application/application.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ardtheke.iml" filepath="$PROJECT_DIR$/ardtheke.iml" />
+      <module fileurl="file://$USER_HOME$/AndroidStudioProjects/ckChangeLog/ckChangeLog.iml" filepath="$USER_HOME$/AndroidStudioProjects/ckChangeLog/ckChangeLog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../JakeWharton-ActionBarSherlock-e5c2d1c/library/library.iml" filepath="$PROJECT_DIR$/../JakeWharton-ActionBarSherlock-e5c2d1c/library/library.iml" />
+      <module fileurl="file://$USER_HOME$/HoloEverywhere/library/library1.iml" filepath="$USER_HOME$/HoloEverywhere/library/library1.iml" />
+    </modules>
+  </component>
+</project>
+

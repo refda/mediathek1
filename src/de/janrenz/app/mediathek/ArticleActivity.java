@@ -16,20 +16,16 @@
 
 package de.janrenz.app.mediathek;
 
-import java.util.ArrayList;
-
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import de.janrenz.app.mediathek.R;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+
+import java.util.ArrayList;
 
 /**
  * Activity that displays a particular news article onscreen.
@@ -41,7 +37,7 @@ import android.util.Log;
  * the news article will be displayed by the {@link MediathekActivity} and this
  * Activity therefore becomes unnecessary.
  */
-public class ArticleActivity extends SherlockFragmentActivity {
+public class ArticleActivity extends org.holoeverywhere.app.Activity {
 	private static final int MENUSHAREID = 1;
 	// The news category index and the article index for the article we are to
 	// display
@@ -71,7 +67,7 @@ public class ArticleActivity extends SherlockFragmentActivity {
 		extId = getIntent().getExtras().getString("extId");
 		allItems = getIntent().getExtras().getParcelableArrayList("allItems");
 
-		ActionBar actionBar = getSupportActionBar();
+		com.actionbarsherlock.app.ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		// Check that the activity is using the layout version with
 		// the fragment_container FrameLayout

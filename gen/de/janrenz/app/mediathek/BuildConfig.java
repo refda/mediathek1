@@ -1,5 +1,7 @@
+/*___Generated_by_IDEA___*/
+
 /** Automatically generated file. DO NOT MODIFY */
-package de.janrenz.app.ardtheke;
+package de.janrenz.app.mediathek;
 
 public final class BuildConfig {
     public final static boolean DEBUG = true;

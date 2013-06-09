@@ -19,21 +19,18 @@ package de.janrenz.app.mediathek;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.app.LoaderManager;
-
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.squareup.otto.Subscribe;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.squareup.otto.Subscribe;
-import de.janrenz.app.mediathek.R;
 
 /**
  * Fragment that displays the news headlines for a particular news category.
@@ -42,7 +39,7 @@ import de.janrenz.app.mediathek.R;
  * category. When an item is selected, it notifies the configured listener that
  * a headlines was selected.
  */
-public class ListPageFragment extends ListFragment implements
+public class ListPageFragment extends org.holoeverywhere.app.ListFragment implements
 		OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 	// The list of headlines that we are displaying
 	List<String> mHeadlinesList = new ArrayList<String>();

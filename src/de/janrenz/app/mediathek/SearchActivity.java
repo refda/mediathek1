@@ -47,7 +47,7 @@ import com.actionbarsherlock.widget.SearchView;
 import java.util.ArrayList;
 
 
-public class SearchActivity extends SherlockFragmentActivity implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class SearchActivity extends org.holoeverywhere.app.Activity implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private SearchView searchView = null;
     public final int MENUSEARCHID = 5;
