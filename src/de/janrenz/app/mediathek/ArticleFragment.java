@@ -18,7 +18,6 @@ package de.janrenz.app.mediathek;
 
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -42,6 +41,7 @@ import android.widget.Toast;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.holoeverywhere.app.AlertDialog;
 import org.holoeverywhere.widget.Button;
 import org.holoeverywhere.widget.Spinner;
 import org.holoeverywhere.widget.TextView;
@@ -137,11 +137,18 @@ public class ArticleFragment extends org.holoeverywhere.app.Fragment {
         try {
         getView().findViewById(R.id.thumbnail).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override public void onGlobalLayout() {
-                View imgView = getView().findViewById(R.id.thumbnail);
+                View v = getView();
+                View imgView = null;
+                if (v != null){
+                    imgView = getView().findViewById(R.id.thumbnail);
+                }
+                if (imgView != null) {
+
                 ViewGroup.LayoutParams layout = imgView.getLayoutParams();
                 layout.height = imgView.getWidth()/16*9;
                     imgView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     imgView.setLayoutParams(layout);
+}
 
 
             }
@@ -416,7 +423,7 @@ public class ArticleFragment extends org.holoeverywhere.app.Fragment {
 								 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 							        
 							        builder.setTitle("Fehler")         
-							                .setMessage("Auf diesem Smartphone kann die URL "+ videoPath +" mit dem Dateityp "+ mime + " nicht geöffnet werden. Bitte lade Dir ein passenden Player herunter.")
+							                .setMessage("Auf diesem Smartphone kann die URL "+ videoPath +" mit dem Dateityp "+ mime + " nicht geöffnet werden. Bitte lade Dir ein passenden Player herunter oder veruschen Sie es mit einem anderem Format.")
 							                .setInverseBackgroundForced(true)//needded for old android version
 							                .setCancelable(true)
 							                // OK button

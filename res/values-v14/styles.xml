@@ -19,12 +19,12 @@
 
 <resources>
 <!--  -->
-    <style name="Theme.Mediathek" parent="@style/Theme.Sherlock.Light.DarkActionBar">
+    <style name="Theme.Mediathek" parent="@style/Holo.Theme.Light.DarkActionBar">
         <item name="android:actionBarItemBackground">@drawable/selectable_background_mediathek</item>
         <item name="android:popupMenuStyle">@style/PopupMenu.Mediathek</item>
         <item name="android:dropDownListViewStyle">@style/DropDownListView.Mediathek</item>
         <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Mediathek</item>
-        <item name="android:actionDropDownStyle">@style/DropDownNav.Mediathek</item>
+
         <item name="android:actionBarStyle">@style/ActionBar.Solid.Mediathek</item>
         <item name="android:actionModeBackground">@drawable/cab_background_top_mediathek</item>
         <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_mediathek</item>
@@ -32,9 +32,22 @@
         
                 <!-- Light.DarkActionBar specific -->
         <item name="android:actionBarWidgetTheme">@style/Theme.Mediathek.Widget</item>
+        <!--ActionBar (SearchView) fix-->
+        <item name="textColorPrimary">@color/abs__primary_text_holo_light</item>
+        <item name="textColorPrimaryInverse">@color/abs__primary_text_holo_dark</item>
+        <item name="searchDropdownBackground">@drawable/abs__search_dropdown_dark</item>
+        <item name="searchViewTextField">@drawable/abs__textfield_searchview_holo_dark</item>
+        <item name="searchViewTextFieldRight">@drawable/abs__textfield_searchview_right_holo_dark</item>
+        <item name="searchViewCloseIcon">@drawable/abs__ic_clear</item>
+        <item name="searchViewSearchIcon">@drawable/abs__ic_search</item>
+        <item name="searchViewGoIcon">@drawable/abs__ic_go</item>
+        <item name="searchViewVoiceIcon">@drawable/abs__ic_voice_search</item>
+        <item name="searchAutoCompleteTextView">@style/Widget.Sherlock.SearchAutoCompleteTextView.DarkActionBar</item>
 
     </style>
-
+    <style name="Widget.Sherlock.SearchAutoCompleteTextView.DarkActionBar">
+        <item name="android:textColor">?attr/textColorPrimaryInverse</item>
+    </style>
     <style name="ActionBar.Solid.Mediathek" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@drawable/ab_solid_mediathek</item>
         <item name="android:backgroundStacked">@drawable/ab_stacked_solid_mediathek</item>

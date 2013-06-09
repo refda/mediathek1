@@ -49,9 +49,9 @@ public class ArdMediathekProvider extends ContentProvider {
 		try {
 
             AndroidHttpClient httpClient = new AndroidHttpClient(URL);
+
 		    HttpResponse httpResponse;
             httpResponse = httpClient.get("", null);
-
             return httpResponse.getBodyAsString();
 		} catch (Exception e) {
 			//Log.e("readJSONFeed", "error:" + e.getLocalizedMessage());

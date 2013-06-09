@@ -5,7 +5,6 @@
         <item name="popupMenuStyle">@style/PopupMenu.Mediathek</item>
         <item name="dropDownListViewStyle">@style/DropDownListView.Mediathek</item>
         <item name="actionBarTabStyle">@style/ActionBarTabStyle.Mediathek</item>
-        <item name="actionDropDownStyle">@style/DropDownNav.Mediathek</item>
         <item name="actionBarStyle">@style/ActionBar.Solid.Mediathek</item>
         <item name="actionModeBackground">@drawable/cab_background_top_mediathek</item>
         <item name="actionModeSplitBackground">@drawable/cab_background_bottom_mediathek</item>
@@ -43,13 +42,7 @@
     <style name="ActionBarTabStyle.Mediathek" parent="@style/Widget.Sherlock.ActionBar.TabView">
         <item name="android:background">@drawable/tab_indicator_ab_mediathek</item>
     </style>
-	
-    <style name="DropDownNav.Mediathek" parent="@style/Widget.Sherlock.Spinner.DropDown.ActionBar">
-        <item name="android:background">@color/abs__bright_foreground_holo_light</item>
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_mediathek</item>
-        <item name="android:dropDownSelector">@color/abs__bright_foreground_holo_light</item>
-       
-    </style>
+
     
     <style name="ProgressBar.Mediathek" parent="@style/Widget.Sherlock.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_mediathek</item>

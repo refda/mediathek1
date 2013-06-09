@@ -16,7 +16,7 @@
 
 package de.janrenz.app.mediathek;
 
-import android.app.AlertDialog;
+
 import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,6 +31,8 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.widget.SearchView;
+
+import org.holoeverywhere.app.AlertDialog;
 
 import de.cketti.library.changelog.ChangeLog;
 

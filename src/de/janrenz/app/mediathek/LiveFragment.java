@@ -16,7 +16,6 @@
 package de.janrenz.app.mediathek;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -45,6 +44,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.turbomanage.httpclient.HttpResponse;
 import com.turbomanage.httpclient.android.AndroidHttpClient;
 
+import org.holoeverywhere.app.AlertDialog;
 import org.holoeverywhere.widget.Button;
 import org.holoeverywhere.widget.Spinner;
 import org.holoeverywhere.widget.TextView;
