@@ -157,24 +157,25 @@ public class MediathekActivity extends org.holoeverywhere.app.Activity implement
 		.setIcon(R.drawable.ic_menu_refresh)
 		.setShowAsAction(
 				MenuItem.SHOW_AS_ACTION_IF_ROOM
-						| MenuItem.SHOW_AS_ACTION_IF_ROOM);
+						| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 		
 		menu.add(Menu.NONE, MENUSETTINGSID, Menu.NONE, "Einstellungen")
 		.setIcon(R.drawable.ic_action_settings)
 		.setShowAsAction(
-				MenuItem.SHOW_AS_ACTION_NEVER
-						| MenuItem.SHOW_AS_ACTION_NEVER);
+				MenuItem.SHOW_AS_ACTION_IF_ROOM
+						| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+
 		menu.add(Menu.NONE, MENUINFOID, Menu.NONE, "Info")
 		.setIcon(R.drawable.action_about)
 		.setShowAsAction(
-				MenuItem.SHOW_AS_ACTION_NEVER
-						| MenuItem.SHOW_AS_ACTION_NEVER);
+				MenuItem.SHOW_AS_ACTION_IF_ROOM
+						| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 		if (mIsDualPane) {
 		menu.add(Menu.NONE, MENUSHAREID, Menu.NONE, "Teilen")
 		.setIcon(R.drawable.menu_social_share)
 		.setShowAsAction(
 				MenuItem.SHOW_AS_ACTION_IF_ROOM
-						| MenuItem.SHOW_AS_ACTION_IF_ROOM);
+						| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 
 		}
 		mMenu = menu;

@@ -21,9 +21,10 @@ import android.preference.PreferenceActivity;
 
 public class SettingsActivity extends PreferenceActivity {
 	public static String HIDE_COPYBUTTON = "pref_hide_copyurl_button";
-	public static String SHOW_LONG_DESC = "pref_always_show_long_desc";
+	public static String SHOW_LONG_DESC = "pref_always_show_long";
 	public static String HIDE_LIVE = "pref_hide_live_entries";
     public static String SHOW_DOWNLOAD_BUTTON = "pref_show_download_button";
+    public static String REVERSE_LIST_ORDER = "pref_reverse_list_order";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

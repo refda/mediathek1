@@ -21,8 +21,10 @@ import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.MatrixCursor;
+import android.database.MergeCursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.turbomanage.httpclient.HttpResponse;
 import com.turbomanage.httpclient.android.AndroidHttpClient;
@@ -114,20 +116,38 @@ public class ArdMediathekProvider extends ContentProvider {
 		}
 
 		if (queryparammethod.equalsIgnoreCase("broadcast")) {
-			cursor = processResultForBroadcast(result);
+			cursor = (MatrixCursor) processResultForBroadcast(result);
         } else if (queryparammethod.equalsIgnoreCase("search")) {
-            cursor = processResultForList(result, true);
+            cursor =  (MatrixCursor) processResultForList(result, true);
         } else {
-			cursor = processResultForList(result, false);
+            Boolean orderParam = false;
+            try {
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                Boolean reverse = sharedPref.getBoolean(SettingsActivity.REVERSE_LIST_ORDER, false);
+
+                //reverse is menat by user perspective here, by default its false
+                if (reverse == true){
+                    orderParam = true;
+                }
+            } catch (Exception e) {
+                // use the default if we cant fetch it
+            }
+            Log.e("order Param", orderParam.toString());
+			cursor = (MatrixCursor) processResultForList(result, orderParam);
 		}
 
 		return (Cursor) cursor;
 	}
 
-	private MatrixCursor processResultForBroadcast(String result) {
+	private Cursor processResultForBroadcast(String result) {
 		MatrixCursor cursor = new MatrixCursor(new String[] { "_id", "title",
 				"subtitle", "image", "extId", "startTime",
 				"startTimeAsTimestamp", "isLive", "description", "timeinfo" });
+
+        MatrixCursor extras = new MatrixCursor(new String[] { "_id", "title",
+                "subtitle", "image", "extId", "startTime",
+                "startTimeAsTimestamp", "isLive", "description", "timeinfo" });
+
 		try {
 			// TODO Auto-generated catch block
 			JSONArray jsonArray = new JSONArray(result);
@@ -142,26 +162,50 @@ public class ArdMediathekProvider extends ContentProvider {
 						json_data.getString("Title3")).toString();
 				String t3 = android.text.Html.fromHtml(
 						json_data.getString("Title2")).toString();
-				cursor.addRow(new Object[] { i, t1 , t3,
-						json_data.getString("ImageUrl").toString(),
-						json_data.getString("VId"),
-						json_data.getString("BTimeF").toString(),
-						json_data.getString("BTime").toString(),
-						json_data.getString("IsLive"),
-						android.text.Html.fromHtml(json_data.getString("Teasertext").toString()).toString(),
-						android.text.Html.fromHtml(json_data.getString("Title5").toString()).toString()
 
-				});
+                if (json_data.getString("IsLive") == "true")
+                {
+
+
+                    extras.addRow(new Object[] { i, t1 , t3,
+                            json_data.getString("ImageUrl").toString(),
+                            json_data.getString("VId"),
+                            json_data.getString("BTimeF").toString(),
+                            json_data.getString("BTime").toString(),
+                            json_data.getString("IsLive"),
+                            android.text.Html.fromHtml(json_data.getString("Teasertext").toString()).toString(),
+                            android.text.Html.fromHtml(json_data.getString("Title5").toString()).toString()
+
+                    });
+
+                }else{
+                    cursor.addRow(new Object[] { i, t1 , t3,
+                            json_data.getString("ImageUrl").toString(),
+                            json_data.getString("VId"),
+                            json_data.getString("BTimeF").toString(),
+                            json_data.getString("BTime").toString(),
+                            json_data.getString("IsLive"),
+                            android.text.Html.fromHtml(json_data.getString("Teasertext").toString()).toString(),
+                            android.text.Html.fromHtml(json_data.getString("Title5").toString()).toString()
+
+                    });
+                }
+
+
 
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-			return cursor;
+            Cursor[] cursors = { extras, cursor };
+            MergeCursor mcursor = new MergeCursor(cursors);
+			return  (Cursor) mcursor;
 		}
-		return cursor;
+        Cursor[] cursors = { extras, cursor };
+		MergeCursor mcursor = new MergeCursor(cursors);
+        return  (Cursor) mcursor;
 	}
 
-	private MatrixCursor processResultForList(String result, Boolean doReverse) {
+	private Cursor processResultForList(String result, Boolean doReverse) {
 		MatrixCursor cursor = new MatrixCursor(new String[] { "_id", "title",
 				"subtitle", "image", "extId", "startTime",
 				"startTimeAsTimestamp", "isLive" });
@@ -255,9 +299,9 @@ public class ArdMediathekProvider extends ContentProvider {
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
-			return cursor;
+			return (Cursor) cursor;
 		}
-		return cursor;
+		return (Cursor) cursor;
 	}
 
 	@Override
